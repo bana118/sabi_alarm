@@ -1,12 +1,13 @@
 package net.banatech.app.android.sabi_alarm
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.alarm_view.view.*
 
-class AlarmAdapter(private val timeDataset: ArrayList<String>) :
+class AlarmAdapter(private val timeDataset: ArrayList<Alarm>) :
     RecyclerView.Adapter<AlarmAdapter.AlarmViewHolder>() {
     lateinit var listener: OnItemClickListener
 
@@ -23,7 +24,6 @@ class AlarmAdapter(private val timeDataset: ArrayList<String>) :
         val textView = LayoutInflater.from(parent.context)
             .inflate(R.layout.alarm_view, parent, false)
         // set the view's size, margins, paddings and layout parameters
-
         return AlarmViewHolder(textView)
     }
 
@@ -31,15 +31,20 @@ class AlarmAdapter(private val timeDataset: ArrayList<String>) :
     override fun onBindViewHolder(holder: AlarmViewHolder, position: Int) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.alarmView.text_view.text = timeDataset[position]
+        holder.alarmView.text_view.text = timeDataset[position].timeText
         holder.alarmView.setOnClickListener {
-            listener.onItemClickListener(it, position, timeDataset[position])
+            listener.onItemClickListener(it, position, timeDataset[position].timeText)
+        }
+        holder.alarmView.delete_button.setOnClickListener {
+            holder.alarmView.delete_button.visibility = View.GONE
+            timeDataset.removeAt(position)
+            this.notifyItemRemoved(position)
+            this.notifyItemRangeChanged(position, timeDataset.size)
         }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     override fun getItemCount() = timeDataset.size
-
 
     interface OnItemClickListener{
         fun onItemClickListener(view: View, position: Int, clickedText: String)

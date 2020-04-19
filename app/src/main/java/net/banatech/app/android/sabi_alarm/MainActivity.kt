@@ -2,19 +2,20 @@ package net.banatech.app.android.sabi_alarm
 
 import android.app.TimePickerDialog
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TimePicker
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.alarm_view.view.*
+import java.text.SimpleDateFormat
 import java.util.*
 
+
 class MainActivity : AppCompatActivity() {
-    private var timeDataset: ArrayList<String> = arrayListOf()
+    private var timeDataset: ArrayList<Alarm> = arrayListOf()
     private var viewManager = LinearLayoutManager(this)
     private var viewAdapter = AlarmAdapter(timeDataset)
 
@@ -42,15 +43,25 @@ class MainActivity : AppCompatActivity() {
         alarm_list.setHasFixedSize(true)
         viewAdapter.setOnItemClickListener(object:AlarmAdapter.OnItemClickListener{
             override fun onItemClickListener(view: View, position: Int, clickedText: String) {
-                Toast.makeText(applicationContext, "${clickedText}がタップされました", Toast.LENGTH_LONG).show()
+                val deleteButton = view.delete_button
+                if(deleteButton.visibility == View.GONE){
+                    deleteButton.visibility = View.VISIBLE
+                }else{
+                    deleteButton.visibility = View.GONE
+                }
+                //Toast.makeText(applicationContext, "${clickedText}がタップされました", Toast.LENGTH_LONG).show()
             }
         })
 
     }
 
     private fun setAlarm(hour: Int, minute: Int) {
-        timeDataset.add("$hour:$minute")
-        viewAdapter.notifyDataSetChanged()
+        val df = SimpleDateFormat("yyyyMMddHHmmssSSS", Locale.JAPAN)
+        val currentTime = df.format(Date()).toLong()
+        val setTimeText = String.format("%02d:%02d", hour, minute)
+        val alarmData = Alarm(currentTime, setTimeText)
+        timeDataset.add(alarmData)
+        viewAdapter.notifyItemInserted(timeDataset.size-1)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
