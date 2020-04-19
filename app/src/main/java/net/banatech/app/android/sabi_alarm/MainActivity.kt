@@ -1,13 +1,14 @@
 package net.banatech.app.android.sabi_alarm
 
+import android.app.TimePickerDialog
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.TimePicker
 
 import kotlinx.android.synthetic.main.activity_main.*
-import net.banatech.app.android.sabi_alarm.ui.TimePickerFragment
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,8 +18,22 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         fab.setOnClickListener {
-            TimePickerFragment().show(supportFragmentManager, "timePicker")
+            val calendar = Calendar.getInstance()
+            val nowHour = calendar.get(Calendar.HOUR_OF_DAY)
+            val nowMinute = calendar.get(Calendar.MINUTE)
+            val timePickerDialog = TimePickerDialog(
+                this,
+                TimePickerDialog.OnTimeSetListener{
+                 _: TimePicker, pickerHour: Int, pickerMinute: Int ->
+                    setAlarm(pickerHour, pickerMinute)
+                },
+                nowHour, nowMinute, true)
+            timePickerDialog.show()
         }
+    }
+
+    private fun setAlarm(hour: Int, minute: Int) {
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
