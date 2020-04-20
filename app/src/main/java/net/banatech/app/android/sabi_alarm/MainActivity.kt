@@ -7,8 +7,10 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.TimePicker
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.alarm_detail.view.*
 import kotlinx.android.synthetic.main.alarm_view.view.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -40,14 +42,16 @@ class MainActivity : AppCompatActivity() {
 
         alarm_list.layoutManager = viewManager
         alarm_list.adapter = viewAdapter
+        val dividerItemDecoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
+        alarm_list.addItemDecoration(dividerItemDecoration)
         alarm_list.setHasFixedSize(true)
         viewAdapter.setOnItemClickListener(object:AlarmAdapter.OnItemClickListener{
             override fun onItemClickListener(view: View, position: Int, clickedText: String) {
-                val deleteButton = view.delete_button
-                if(deleteButton.visibility == View.GONE){
-                    deleteButton.visibility = View.VISIBLE
+                val alarmDetail = view.include_alarm_detail
+                if(alarmDetail.visibility == View.GONE){
+                    alarmDetail.visibility = View.VISIBLE
                 }else{
-                    deleteButton.visibility = View.GONE
+                    alarmDetail.visibility = View.GONE
                 }
                 //Toast.makeText(applicationContext, "${clickedText}がタップされました", Toast.LENGTH_LONG).show()
             }
@@ -59,7 +63,12 @@ class MainActivity : AppCompatActivity() {
         val df = SimpleDateFormat("yyyyMMddHHmmssSSS", Locale.JAPAN)
         val currentTime = df.format(Date()).toLong()
         val setTimeText = String.format("%02d:%02d", hour, minute)
-        val alarmData = Alarm(currentTime, setTimeText)
+        val weekAlarmList = (0 until 7).map{false}.toBooleanArray()
+        val alarmData = Alarm(currentTime, setTimeText,
+            isVibration = false,
+            isRepeatable = false,
+            weekAlarmList = weekAlarmList
+        )
         timeDataset.add(alarmData)
         viewAdapter.notifyItemInserted(timeDataset.size-1)
     }

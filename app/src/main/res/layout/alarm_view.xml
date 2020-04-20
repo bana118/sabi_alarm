@@ -15,7 +15,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/alarm_switch"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="parent" />
+        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
     <Switch
         android:id="@+id/alarm_switch"
@@ -25,14 +26,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/text_view" />
 
-    <Button
-        android:id="@+id/delete_button"
-        android:layout_width="wrap_content"
+    <include
+        android:id="@+id/include_alarm_detail"
+        layout="@layout/alarm_detail"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/delete_alarm"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.049"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_view" />
 
