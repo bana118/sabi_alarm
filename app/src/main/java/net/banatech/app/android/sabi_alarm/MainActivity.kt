@@ -53,7 +53,6 @@ class MainActivity : AppCompatActivity() {
                 }else{
                     alarmDetail.visibility = View.GONE
                 }
-                //Toast.makeText(applicationContext, "${clickedText}がタップされました", Toast.LENGTH_LONG).show()
             }
         })
 
