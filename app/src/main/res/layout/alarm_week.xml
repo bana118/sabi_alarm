@@ -78,7 +78,7 @@
         android:layout_height="@dimen/week_button_size"
         android:background="@drawable/unselected_round_button"
         android:text="@string/saturday"
-        android:textColor="@color/week_button_unselected_color"
+        android:textColor="@color/week_text_unselected_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/friday_button"
         app:layout_constraintTop_toTopOf="parent" />
