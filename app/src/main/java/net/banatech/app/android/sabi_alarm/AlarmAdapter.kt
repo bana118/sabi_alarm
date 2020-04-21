@@ -62,8 +62,10 @@ class AlarmAdapter(private val timeDataset: ArrayList<Alarm>) :
         )
         alarmDetail.delete_button.setOnClickListener {
             alarmDetail.visibility = View.GONE
+            alarmDetail.include_alarm_week.visibility = View.GONE
             alarmDetail.repeat_check_box.isChecked = false
             alarmDetail.vibration_check_box.isChecked = false
+            holder.alarmView.alarm_switch.isChecked = false
             for (weekdayButton in weekdayButtons) {
                 weekdayButton.setTextColor(
                     ContextCompat.getColor(
