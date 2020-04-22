@@ -1,14 +1,17 @@
 package net.banatech.app.android.sabi_alarm
 
+import android.app.TimePickerDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TimePicker
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.alarm_detail.view.*
 import kotlinx.android.synthetic.main.alarm_view.view.*
 import kotlinx.android.synthetic.main.alarm_week.view.*
+import kotlin.collections.ArrayList
 
 class AlarmAdapter(private val timeDataset: ArrayList<Alarm>) :
     RecyclerView.Adapter<AlarmAdapter.AlarmViewHolder>() {
@@ -39,6 +42,22 @@ class AlarmAdapter(private val timeDataset: ArrayList<Alarm>) :
         holder.alarmView.text_view.text = timeDataset[position].timeText
         holder.alarmView.setOnClickListener {
             listener.onItemClickListener(it, position, timeDataset[position].timeText)
+        }
+
+        holder.alarmView.text_view.setOnClickListener {
+            val hour = timeDataset[position].hour
+            val minute = timeDataset[position].minute
+            val timePickerDialog = TimePickerDialog(
+                holder.alarmView.context,
+                TimePickerDialog.OnTimeSetListener { _: TimePicker, pickerHour: Int, pickerMinute: Int ->
+                    timeDataset[position].hour = pickerHour
+                    timeDataset[position].minute = pickerMinute
+                    timeDataset[position].timeText = String.format("%02d:%02d", pickerHour, pickerMinute)
+                    this.notifyDataSetChanged()
+                },
+                hour, minute, true
+            )
+            timePickerDialog.show()
         }
         val alarmDetail = holder.alarmView.include_alarm_detail
         alarmDetail.repeat_check_box.setOnClickListener {

@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">sabi_alarm</string>
     <string name="action_settings">Settings</string>
+    <string name="alarm_down_arrow">show</string>
+    <string name="alarm_up_arrow">hide</string>
     <string name="delete_alarm">削除</string>
     <string name="repeat">繰り返し</string>
     <string name="vibration">バイブレーション</string>

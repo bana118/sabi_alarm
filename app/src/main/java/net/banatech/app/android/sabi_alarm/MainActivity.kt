@@ -32,11 +32,11 @@ class MainActivity : AppCompatActivity() {
             val nowMinute = calendar.get(Calendar.MINUTE)
             val timePickerDialog = TimePickerDialog(
                 this,
-                TimePickerDialog.OnTimeSetListener{
-                 _: TimePicker, pickerHour: Int, pickerMinute: Int ->
+                TimePickerDialog.OnTimeSetListener { _: TimePicker, pickerHour: Int, pickerMinute: Int ->
                     setAlarm(pickerHour, pickerMinute)
                 },
-                nowHour, nowMinute, true)
+                nowHour, nowMinute, true
+            )
             timePickerDialog.show()
         }
 
@@ -45,13 +45,16 @@ class MainActivity : AppCompatActivity() {
         val dividerItemDecoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         alarm_list.addItemDecoration(dividerItemDecoration)
         alarm_list.setHasFixedSize(true)
-        viewAdapter.setOnItemClickListener(object:AlarmAdapter.OnItemClickListener{
+        viewAdapter.setOnItemClickListener(object : AlarmAdapter.OnItemClickListener {
             override fun onItemClickListener(view: View, position: Int, clickedText: String) {
                 val alarmDetail = view.include_alarm_detail
-                if(alarmDetail.visibility == View.GONE){
+                val downArrow = view.alarm_down_arrow
+                if (alarmDetail.visibility == View.GONE) {
                     alarmDetail.visibility = View.VISIBLE
-                }else{
+                    downArrow.visibility = View.GONE
+                } else {
                     alarmDetail.visibility = View.GONE
+                    downArrow.visibility = View.VISIBLE
                 }
             }
         })
@@ -62,14 +65,15 @@ class MainActivity : AppCompatActivity() {
         val df = SimpleDateFormat("yyyyMMddHHmmssSSS", Locale.JAPAN)
         val currentTime = df.format(Date()).toLong()
         val setTimeText = String.format("%02d:%02d", hour, minute)
-        val weekAlarmList = (0 until 7).map{false}.toBooleanArray()
-        val alarmData = Alarm(currentTime, setTimeText,
+        val weekAlarmList = (0 until 7).map { false }.toBooleanArray()
+        val alarmData = Alarm(
+            currentTime, hour, minute, setTimeText,
             isVibration = false,
             isRepeatable = false,
             weekAlarmList = weekAlarmList
         )
         timeDataset.add(alarmData)
-        viewAdapter.notifyItemInserted(timeDataset.size-1)
+        viewAdapter.notifyItemInserted(timeDataset.size - 1)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
