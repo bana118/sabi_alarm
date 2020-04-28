@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.android.synthetic.main.default_sound_view.*
@@ -16,13 +17,6 @@ import kotlinx.android.synthetic.main.sound_select.*
 import net.banatech.app.android.sabi_alarm.R
 
 class SoundSelectActivity : AppCompatActivity(){
-    private val defaultSoundFileList = listOf(
-        R.raw.beethoven_no5_1st,
-        R.raw.dvorak_no9_4th,
-        R.raw.mozart_einekleine,
-        R.raw.pachelbel_canon,
-        R.raw.schubert_unfinished
-    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +24,14 @@ class SoundSelectActivity : AppCompatActivity(){
         setSupportActionBar(toolbar)
         sound_pager.adapter = SoundPagerAdapter(this)
         sound_pager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+        TabLayoutMediator(tab_layout, sound_pager){tab, position ->
+            require(position == 0 || position == 1){"Tab position must be 0 or 1"}
+            if(position == 0){
+                tab.text = "Default"
+            }else if(position == 1){
+                tab.text = "Local"
+            }
+        }.attach()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

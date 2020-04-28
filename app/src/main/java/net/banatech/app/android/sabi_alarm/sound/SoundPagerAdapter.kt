@@ -1,19 +1,20 @@
 package net.banatech.app.android.sabi_alarm.sound
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.ListFragment
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import kotlinx.android.synthetic.main.default_sound_view.*
+import kotlinx.android.synthetic.main.default_sound_view.view.*
 import net.banatech.app.android.sabi_alarm.R
 
-class SoundPagerAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter(fragmentActivity) {
+class SoundPagerAdapter(fragmentActivity: FragmentActivity) :
+    FragmentStateAdapter(fragmentActivity) {
 
     override fun getItemCount(): Int = 2
 
@@ -26,32 +27,25 @@ class SoundPagerAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapt
         }
     }
 
-    class DefaultSoundPageFragment : ListFragment() {
+    class DefaultSoundPageFragment : Fragment() {
         override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
         ): View {
-            // Inflate the layout for this fragment
+            return inflater.inflate(R.layout.default_sound_view, container, false)
+        }
+
+        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+            val soundList = view.default_sound_list
             val assetManager = this.resources.assets
             val defaultSoundDir = assetManager.list("default")
-            default_sound_list.layoutManager = LinearLayoutManager(this.context)
-            default_sound_list.adapter = DefaultSoundAdapter(defaultSoundDir)
-            val dividerItemDecoration = DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL)
-            default_sound_list.addItemDecoration(dividerItemDecoration)
-            default_sound_list.setHasFixedSize(true)
-            return inflater.inflate(R.layout.default_sound_view, container, false)
+            soundList.layoutManager =  LinearLayoutManager(this.context)
+            soundList.adapter = DefaultSoundAdapter(defaultSoundDir)
         }
     }
 
-    class LocalSoundPageFragment : ListFragment() {
-        override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-        ): View {
-            // Inflate the layout for this fragment
-            return inflater.inflate(R.layout.local_sound_view, container, false)
-        }
+    class LocalSoundPageFragment : Fragment() {
+
     }
 }

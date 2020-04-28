@@ -30,7 +30,7 @@ class DefaultSoundAdapter(private val defaultSoundFileList: Array<String>?) :
     override fun onBindViewHolder(holder: DefaultSoundViewHolder, position: Int) {
         val assetManager = holder.soundFileView.resources.assets
         if(defaultSoundFileList != null){
-            val soundFile = assetManager.open(defaultSoundFileList[position])
+            //val soundFile = assetManager.open(defaultSoundFileList[position])
             holder.soundFileView.sound_file_name.text = defaultSoundFileList[position]
         }
     }
