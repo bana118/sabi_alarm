@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.alarm_view.view.*
 import net.banatech.app.android.sabi_alarm.R
+import net.banatech.app.android.sabi_alarm.database.Alarm
 import java.text.SimpleDateFormat
 import java.util.*
 

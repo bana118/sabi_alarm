@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.alarm_detail.view.*
 import kotlinx.android.synthetic.main.alarm_view.view.*
 import kotlinx.android.synthetic.main.alarm_week.view.*
 import net.banatech.app.android.sabi_alarm.R
+import net.banatech.app.android.sabi_alarm.database.Alarm
 import net.banatech.app.android.sabi_alarm.sound.SoundSelectActivity
 import kotlin.collections.ArrayList
 
