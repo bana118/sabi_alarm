@@ -13,4 +13,5 @@
     <string name="thursday">木</string>
     <string name="friday">金</string>
     <string name="saturday">土</string>
+    <string name="sound_file_check_description">チェック</string>
 </resources>

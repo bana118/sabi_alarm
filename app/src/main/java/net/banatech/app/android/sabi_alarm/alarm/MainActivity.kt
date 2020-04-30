@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        fab.setOnClickListener {
+        add_alarm_button.setOnClickListener {
             val calendar = Calendar.getInstance()
             val nowHour = calendar.get(Calendar.HOUR_OF_DAY)
             val nowMinute = calendar.get(Calendar.MINUTE)
@@ -50,6 +50,10 @@ class MainActivity : AppCompatActivity() {
             override fun onItemClickListener(view: View, position: Int, clickedText: String) {
                 val alarmDetail = view.include_alarm_detail
                 val downArrow = view.alarm_down_arrow
+                check(alarmDetail.visibility == View.GONE || alarmDetail.visibility == View.VISIBLE)
+                {
+                    "Alarm detail layout visibility is invalid"
+                }
                 if (alarmDetail.visibility == View.GONE) {
                     alarmDetail.visibility = View.VISIBLE
                     downArrow.visibility = View.GONE
@@ -71,7 +75,10 @@ class MainActivity : AppCompatActivity() {
             currentTime, hour, minute, setTimeText,
             isVibration = false,
             isRepeatable = false,
-            weekAlarmList = weekAlarmList
+            weekAlarmList = weekAlarmList,
+            soundFileName = "beethoven_no5_1st.mp3",
+            soundStartTime = 0,
+            isDefaultSound = true
         )
         timeDataset.add(alarmData)
         viewAdapter.notifyItemInserted(timeDataset.size - 1)

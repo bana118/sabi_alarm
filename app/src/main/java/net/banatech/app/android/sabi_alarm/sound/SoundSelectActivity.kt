@@ -17,7 +17,6 @@ import kotlinx.android.synthetic.main.sound_select.*
 import net.banatech.app.android.sabi_alarm.R
 
 class SoundSelectActivity : AppCompatActivity(){
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.sound_select)
@@ -32,6 +31,7 @@ class SoundSelectActivity : AppCompatActivity(){
                 tab.text = "Local"
             }
         }.attach()
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

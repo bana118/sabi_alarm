@@ -44,12 +44,12 @@ class AlarmAdapter(private val timeDataset: ArrayList<Alarm>) :
     override fun onBindViewHolder(holder: AlarmViewHolder, position: Int) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.alarmView.text_view.text = timeDataset[position].timeText
+        holder.alarmView.alarm_time.text = timeDataset[position].timeText
         holder.alarmView.setOnClickListener {
             listener.onItemClickListener(it, position, timeDataset[position].timeText)
         }
 
-        holder.alarmView.text_view.setOnClickListener {
+        holder.alarmView.alarm_time.setOnClickListener {
             val hour = timeDataset[position].hour
             val minute = timeDataset[position].minute
             val timePickerDialog = TimePickerDialog(

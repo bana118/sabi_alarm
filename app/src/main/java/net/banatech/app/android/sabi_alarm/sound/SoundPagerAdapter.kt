@@ -1,17 +1,19 @@
 package net.banatech.app.android.sabi_alarm.sound
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.ListFragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import kotlinx.android.synthetic.main.alarm_view.view.*
 import kotlinx.android.synthetic.main.default_sound_view.view.*
+import kotlinx.android.synthetic.main.sound_file_view.view.*
 import net.banatech.app.android.sabi_alarm.R
+import net.banatech.app.android.sabi_alarm.alarm.AlarmAdapter
 
 class SoundPagerAdapter(fragmentActivity: FragmentActivity) :
     FragmentStateAdapter(fragmentActivity) {
@@ -40,8 +42,12 @@ class SoundPagerAdapter(fragmentActivity: FragmentActivity) :
             val soundList = view.default_sound_list
             val assetManager = this.resources.assets
             val defaultSoundDir = assetManager.list("default")
+            check(defaultSoundDir != null){"default sound list must not be null"}
             soundList.layoutManager =  LinearLayoutManager(this.context)
-            soundList.adapter = DefaultSoundAdapter(defaultSoundDir)
+            val defaultSoundAdapter = DefaultSoundAdapter(defaultSoundDir)
+            soundList.adapter = defaultSoundAdapter
+            val dividerItemDecoration = DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL)
+            soundList.addItemDecoration(dividerItemDecoration)
         }
     }
 
