@@ -4,49 +4,21 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(tableName = "alarms")
 data class Alarm(
-    @PrimaryKey val uid: Int,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "hour") var hour: Int,
     @ColumnInfo(name = "minute") var minute: Int,
     @ColumnInfo(name = "time_text") var timeText: String,
     @ColumnInfo(name = "is_boolean") val isVibration: Boolean,
     @ColumnInfo(name = "is_repeatable") var isRepeatable: Boolean,
-    @ColumnInfo(name = "boolean_array") val weekAlarmList: BooleanArray,
-    @ColumnInfo(name = "sound_file_name") val soundFileName: String,
-    @ColumnInfo(name = "sound_start_time") val soundStartTime: Int,
-    @ColumnInfo(name = "is_default_sound") val isDefaultSound: Boolean){
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Alarm
-
-        if (uid != other.uid) return false
-        if (hour != other.hour) return false
-        if (minute != other.minute) return false
-        if (timeText != other.timeText) return false
-        if (isVibration != other.isVibration) return false
-        if (isRepeatable != other.isRepeatable) return false
-        if (!weekAlarmList.contentEquals(other.weekAlarmList)) return false
-        if (soundFileName != other.soundFileName) return false
-        if (soundStartTime != other.soundStartTime) return false
-        if (isDefaultSound != other.isDefaultSound) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = uid
-        result = 31 * result + hour
-        result = 31 * result + minute
-        result = 31 * result + timeText.hashCode()
-        result = 31 * result + isVibration.hashCode()
-        result = 31 * result + isRepeatable.hashCode()
-        result = 31 * result + weekAlarmList.contentHashCode()
-        result = 31 * result + soundFileName.hashCode()
-        result = 31 * result + soundStartTime
-        result = 31 * result + isDefaultSound.hashCode()
-        return result
-    }
-}
+    @ColumnInfo(name = "is_sunday_alarm") var isSundayAlarm: Boolean,
+    @ColumnInfo(name = "is_monday_alarm") var isMondayAlarm: Boolean,
+    @ColumnInfo(name = "is_tuesday_alarm") var isTuesdayAlarm: Boolean,
+    @ColumnInfo(name = "is_wednesday_alarm") var isWednesdayAlarm: Boolean,
+    @ColumnInfo(name = "is_thursday_alarm") var isThursdayAlarm: Boolean,
+    @ColumnInfo(name = "is_friday_alarm") var isFridayAlarm: Boolean,
+    @ColumnInfo(name = "is_saturday_alarm") var isSaturdayAlarm: Boolean,
+    @ColumnInfo(name = "sound_file_name") var soundFileName: String,
+    @ColumnInfo(name = "sound_start_time") var soundStartTime: Int,
+    @ColumnInfo(name = "is_default_sound") var isDefaultSound: Boolean)

@@ -2,6 +2,7 @@ package net.banatech.app.android.sabi_alarm.alarm
 
 import android.app.TimePickerDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -68,19 +69,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setAlarm(hour: Int, minute: Int) {
-        val df = SimpleDateFormat("yyyyMMddHHmmssSSS", Locale.JAPAN)
-        val currentTime = df.format(Date()).toLong()
         val setTimeText = String.format("%02d:%02d", hour, minute)
-        val weekAlarmList = (0 until 7).map { false }.toBooleanArray()
         val alarmData = Alarm(
-            currentTime, hour, minute, setTimeText,
+            hour = hour,
+            minute = minute,
+            timeText = setTimeText,
             isVibration = false,
             isRepeatable = false,
-            weekAlarmList = weekAlarmList,
+            isSundayAlarm = false,
+            isMondayAlarm = true,
+            isTuesdayAlarm = false,
+            isWednesdayAlarm = true,
+            isThursdayAlarm = true,
+            isFridayAlarm = false,
+            isSaturdayAlarm = true,
             soundFileName = "beethoven_no5_1st.mp3",
             soundStartTime = 0,
             isDefaultSound = true
         )
+        Log.d("alarm id", alarmData.id.toString())
         timeDataset.add(alarmData)
         viewAdapter.notifyItemInserted(timeDataset.size - 1)
     }

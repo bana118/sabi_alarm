@@ -7,10 +7,10 @@ import androidx.room.Query
 
 @Dao
 interface AlarmDao {
-    @Query("SELECT * FROM alarm")
+    @Query("SELECT * FROM alarms")
     fun getAll(): List<Alarm>
 
-    @Query("SELECT * FROM alarm WHERE uid IN (:alarmIds)")
+    @Query("SELECT * FROM alarms WHERE id IN (:alarmIds)")
     fun loadAllByIds(alarmIds: IntArray): List<Alarm>
 
     @Insert
