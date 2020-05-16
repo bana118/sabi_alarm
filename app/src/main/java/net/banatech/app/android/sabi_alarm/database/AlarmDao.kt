@@ -8,14 +8,14 @@ import androidx.room.Query
 @Dao
 interface AlarmDao {
     @Query("SELECT * FROM alarms")
-    fun getAll(): List<Alarm>
+    suspend fun getAll(): List<Alarm>
 
     @Query("SELECT * FROM alarms WHERE id IN (:alarmIds)")
-    fun loadAllByIds(alarmIds: IntArray): List<Alarm>
+    suspend fun loadAllByIds(alarmIds: IntArray): List<Alarm>
 
     @Insert
-    fun insertAll(vararg alarms: Alarm)
+    suspend fun insertAll(vararg alarms: Alarm)
 
     @Delete
-    fun delete(alarm: Alarm)
+    suspend fun delete(alarm: Alarm)
 }

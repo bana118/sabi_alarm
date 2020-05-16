@@ -14,11 +14,15 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.alarm_view.view.*
 import net.banatech.app.android.sabi_alarm.R
 import net.banatech.app.android.sabi_alarm.database.Alarm
+import net.banatech.app.android.sabi_alarm.database.AlarmDatabase
 import java.text.SimpleDateFormat
 import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
+    companion object {
+        lateinit var db: AlarmDatabase
+    }
     private var timeDataset: ArrayList<Alarm> = arrayListOf()
     private var viewManager = LinearLayoutManager(this)
     private var viewAdapter =
@@ -26,6 +30,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        db = AlarmDatabase.getInstance(this.applicationContext)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
@@ -87,7 +92,8 @@ class MainActivity : AppCompatActivity() {
             soundStartTime = 0,
             isDefaultSound = true
         )
-        Log.d("alarm id", alarmData.id.toString())
+        val dao = db.alarmDao()
+
         timeDataset.add(alarmData)
         viewAdapter.notifyItemInserted(timeDataset.size - 1)
     }
