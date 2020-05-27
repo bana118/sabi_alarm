@@ -12,6 +12,10 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.alarm_view.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.banatech.app.android.sabi_alarm.R
 import net.banatech.app.android.sabi_alarm.database.Alarm
 import net.banatech.app.android.sabi_alarm.database.AlarmDatabase
@@ -30,7 +34,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        db = AlarmDatabase.getInstance(this.applicationContext)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
@@ -70,6 +73,16 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
+        db = AlarmDatabase.getInstance(this.applicationContext)
+        val dao = db.alarmDao()
+        CoroutineScope(Dispatchers.Main).launch {
+            withContext(Dispatchers.Main){
+                dao.getAll().forEach{
+                    timeDataset.add(it)
+                }
+                viewAdapter.notifyDataSetChanged()
+            }
+        }
 
     }
 
@@ -93,7 +106,12 @@ class MainActivity : AppCompatActivity() {
             isDefaultSound = true
         )
         val dao = db.alarmDao()
-
+        CoroutineScope(Dispatchers.Main).launch {
+            withContext(Dispatchers.Default){
+                dao.insertAll(alarmData)
+                Log.d("debug", dao.getAll().toString())
+            }
+        }
         timeDataset.add(alarmData)
         viewAdapter.notifyItemInserted(timeDataset.size - 1)
     }
