@@ -1,9 +1,6 @@
 package net.banatech.app.android.sabi_alarm.database
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
 interface AlarmDao {
@@ -15,6 +12,9 @@ interface AlarmDao {
 
     @Insert
     suspend fun insertAll(vararg alarms: Alarm)
+
+    @Update
+    suspend fun update(vararg alarms: Alarm)
 
     @Delete
     suspend fun delete(alarm: Alarm)

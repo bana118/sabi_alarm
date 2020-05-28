@@ -2,6 +2,7 @@ package net.banatech.app.android.sabi_alarm.alarm
 
 import android.app.TimePickerDialog
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,10 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.alarm_detail.view.*
 import kotlinx.android.synthetic.main.alarm_view.view.*
 import kotlinx.android.synthetic.main.alarm_week.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.banatech.app.android.sabi_alarm.R
 import net.banatech.app.android.sabi_alarm.database.Alarm
 import net.banatech.app.android.sabi_alarm.sound.SoundSelectActivity
@@ -45,11 +50,13 @@ class AlarmAdapter(private val timeDataset: ArrayList<Alarm>) :
     override fun onBindViewHolder(holder: AlarmViewHolder, position: Int) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
+
+        val dao = MainActivity.db.alarmDao()
+
         holder.alarmView.alarm_time.text = timeDataset[position].timeText
         holder.alarmView.setOnClickListener {
             listener.onItemClickListener(it, position, timeDataset[position].timeText)
         }
-
         holder.alarmView.alarm_time.setOnClickListener {
             val hour = timeDataset[position].hour
             val minute = timeDataset[position].minute
@@ -59,6 +66,11 @@ class AlarmAdapter(private val timeDataset: ArrayList<Alarm>) :
                     timeDataset[position].hour = pickerHour
                     timeDataset[position].minute = pickerMinute
                     timeDataset[position].timeText = String.format("%02d:%02d", pickerHour, pickerMinute)
+                    CoroutineScope(Dispatchers.Main).launch {
+                        withContext(Dispatchers.Default){
+                            dao.update(timeDataset[position])
+                        }
+                    }
                     this.notifyDataSetChanged()
                 },
                 hour, minute, true
@@ -66,11 +78,17 @@ class AlarmAdapter(private val timeDataset: ArrayList<Alarm>) :
             timePickerDialog.show()
         }
         val alarmDetail = holder.alarmView.include_alarm_detail
+        alarmDetail.repeat_check_box.isChecked = timeDataset[position].isRepeatable
+        if(alarmDetail.repeat_check_box.isChecked){
+            alarmDetail.include_alarm_week.visibility = View.VISIBLE
+        }
         alarmDetail.repeat_check_box.setOnClickListener {
             if (alarmDetail.repeat_check_box.isChecked) {
                 alarmDetail.include_alarm_week.visibility = View.VISIBLE
+                timeDataset[position].isRepeatable = false
             } else {
                 alarmDetail.include_alarm_week.visibility = View.GONE
+                timeDataset[position].isRepeatable = true
             }
         }
 
@@ -115,10 +133,16 @@ class AlarmAdapter(private val timeDataset: ArrayList<Alarm>) :
                     R.color.week_text_unselected_color
                 )
             )
+            val adapter = this
             alarmDetail.include_alarm_week.sunday_button.setBackgroundResource(R.drawable.unselected_round_button)
-            timeDataset.removeAt(position)
-            this.notifyItemRemoved(position)
-            this.notifyItemRangeChanged(position, timeDataset.size)
+            CoroutineScope(Dispatchers.Main).launch {
+                withContext(Dispatchers.Main){
+                    dao.delete(timeDataset[position])
+                    timeDataset.removeAt(position)
+                    adapter.notifyItemRemoved(position)
+                    adapter.notifyItemRangeChanged(position, timeDataset.size)
+                }
+            }
         }
         for (weekdayButton in weekdayButtons) {
             weekButtonSetOnclickListener(weekdayButton, holder)
