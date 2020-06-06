@@ -26,6 +26,31 @@ class ActionsCreator(private val dispatcher: Dispatcher) {
         )
     }
 
+    fun edit(id: Int, hour: Int, minute: Int) {
+        dispatcher.dispatch(
+            AlarmActions.ALARM_EDIT,
+            AlarmActions.KEY_ID, id,
+            AlarmActions.KEY_HOUR, hour,
+            AlarmActions.KEY_MINUTE, minute
+        )
+    }
+
+    fun switchVibration(id: Int, isVibration: Boolean) {
+        dispatcher.dispatch(
+            AlarmActions.ALARM_IS_VIBRATION_SWITCH,
+            AlarmActions.KEY_ID, id,
+            AlarmActions.KEY_IS_VIBRATION, isVibration
+        )
+    }
+
+    fun switchRepeatable(id: Int, isReadable: Boolean) {
+        dispatcher.dispatch(
+            AlarmActions.ALARM_IS_REPEATABLE_SWITCH,
+            AlarmActions.KEY_ID, id,
+            AlarmActions.KEY_IS_REPEATABLE, isReadable
+        )
+    }
+
 //    fun toggleComplete(todo: Todo) {
 //        val id: Long = todo.getId()
 //        val actionType: String =

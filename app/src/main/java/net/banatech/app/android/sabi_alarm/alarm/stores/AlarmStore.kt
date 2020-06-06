@@ -5,7 +5,6 @@ import net.banatech.app.android.sabi_alarm.alarm.actions.AlarmActions
 import net.banatech.app.android.sabi_alarm.alarm.dispatcher.Dispatcher
 import net.banatech.app.android.sabi_alarm.database.Alarm
 import org.greenrobot.eventbus.Subscribe
-import kotlin.collections.ArrayList
 
 class AlarmStore (dispatcher: Dispatcher): Store(dispatcher){
     val alarms: ArrayList<Alarm> = ArrayList()
@@ -33,12 +32,39 @@ class AlarmStore (dispatcher: Dispatcher): Store(dispatcher){
                 undoDestroy()
                 emitStoreChange()
             }
+            AlarmActions.ALARM_EDIT -> {
+                val id = action.data[AlarmActions.KEY_ID]
+                val hour = action.data[AlarmActions.KEY_HOUR]
+                val minute = action.data[AlarmActions.KEY_MINUTE]
+                check(id is Int){"Id value must be Int"}
+                check(hour is Int && minute is Int){"Hour and minute value must be Int"}
+                edit(id, hour, minute)
+                emitStoreChange()
+            }
+            AlarmActions.ALARM_IS_VIBRATION_SWITCH -> {
+                val id = action.data[AlarmActions.KEY_ID]
+                val isVibration = action.data[AlarmActions.KEY_IS_VIBRATION]
+                check(id is Int){"Id value must be Int"}
+                check(isVibration is Boolean){"IsVibration value must be Int"}
+                switchVibration(id, isVibration)
+                emitStoreChange()
+            }
+            AlarmActions.ALARM_IS_REPEATABLE_SWITCH -> {
+                val id = action.data[AlarmActions.KEY_ID]
+                val isReadable = action.data[AlarmActions.KEY_IS_REPEATABLE]
+                check(id is Int){"Id value must be Int"}
+                check(isReadable is Boolean){"IsRepeatable value must be Int"}
+                switchRepeatable(id, isReadable)
+                emitStoreChange()
+            }
         }
     }
 
     private fun create(hour: Int, minute: Int) {
+        val id = System.currentTimeMillis().toInt() //TODO unnecessary when using database
         val timeText = String.format("%02d:%02d", hour, minute)
         val alarm = Alarm(
+            id = id,
             hour = hour,
             minute = minute,
             timeText = timeText,
@@ -89,9 +115,45 @@ class AlarmStore (dispatcher: Dispatcher): Store(dispatcher){
         }
     }
 
+    private fun edit(id: Int, hour: Int, minute: Int) {
+        val iter = alarms.iterator()
+        val timeText = String.format("%02d:%02d", hour, minute)
+        while (iter.hasNext()) {
+            val alarm = iter.next()
+            if(alarm.id == id) {
+                alarm.hour = hour
+                alarm.minute = minute
+                alarm.timeText = timeText
+                break
+            }
+        }
+    }
+
+    private fun switchVibration(id: Int, isVibration: Boolean) {
+        val iter = alarms.iterator()
+        while (iter.hasNext()) {
+            val alarm = iter.next()
+            if(alarm.id == id) {
+                alarm.isVibration = isVibration
+                break
+            }
+        }
+    }
+
+    private fun switchRepeatable(id: Int, isReadable: Boolean) {
+        val iter = alarms.iterator()
+        while (iter.hasNext()) {
+            val alarm = iter.next()
+            if(alarm.id == id) {
+                alarm.isRepeatable = isReadable
+                break
+            }
+        }
+    }
+
     private fun addElement(clone: Alarm) {
         alarms.add(clone)
-        alarms.sortWith(compareBy({it.hour}, {it.minute}))
+        //alarms.sortWith(compareBy({it.hour}, {it.minute}))
     }
 
     override fun changeEvent(): StoreChangeEvent {

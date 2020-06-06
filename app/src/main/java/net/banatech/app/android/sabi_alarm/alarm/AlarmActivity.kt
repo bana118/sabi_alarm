@@ -49,16 +49,16 @@ class AlarmActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         initDependencies()
         setupView()
-        db = AlarmDatabase.getInstance(this.applicationContext)
-        val dao = db.alarmDao()
-        CoroutineScope(Dispatchers.Main).launch {
-            withContext(Dispatchers.Main){
-                dao.getAll().forEach{
-                    timeDataset.add(it)
-                }
-                listAdapter.notifyDataSetChanged()
-            }
-        }
+//        db = AlarmDatabase.getInstance(this.applicationContext)
+//        val dao = db.alarmDao()
+//        CoroutineScope(Dispatchers.Main).launch {
+//            withContext(Dispatchers.Main){
+//                dao.getAll().forEach{
+//                    timeDataset.add(it)
+//                }
+//                listAdapter.notifyDataSetChanged()
+//            }
+//        }
 
     }
 
@@ -69,7 +69,6 @@ class AlarmActivity : AppCompatActivity() {
     }
 
     private fun setupView() {
-
         add_alarm_button.setOnClickListener {
             val calendar = Calendar.getInstance()
             val nowHour = calendar.get(Calendar.HOUR_OF_DAY)
@@ -183,6 +182,7 @@ class AlarmActivity : AppCompatActivity() {
 
     @Subscribe
     fun onAlarmStoreChange(event: AlarmStore.AlarmStoreChangeEvent) {
+        Log.d("debug", "subscribe event")
         updateUI()
     }
 }

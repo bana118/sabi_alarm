@@ -2,6 +2,7 @@ package net.banatech.app.android.sabi_alarm.alarm
 
 import android.app.TimePickerDialog
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,34 +55,46 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
             val timePickerDialog = TimePickerDialog(
                 viewHolder.alarmView.context,
                 TimePickerDialog.OnTimeSetListener { _: TimePicker, pickerHour: Int, pickerMinute: Int ->
-                    alarms[position].hour = pickerHour
-                    alarms[position].minute = pickerMinute
-                    alarms[position].timeText = String.format("%02d:%02d", pickerHour, pickerMinute)
+                    actionsCreator.edit(alarms[position].id, pickerHour, pickerMinute)
+//                    alarms[position].hour = pickerHour
+//                    alarms[position].minute = pickerMinute
+//                    alarms[position].timeText = String.format("%02d:%02d", pickerHour, pickerMinute)
 //                    CoroutineScope(Dispatchers.Main).launch {
 //                        withContext(Dispatchers.Default){
 //                            dao.update(alarms[position])
 //                        }
 //                    }
-                    this.notifyDataSetChanged()
+//                    this.notifyDataSetChanged()
                 },
                 hour, minute, true
             )
             timePickerDialog.show()
         }
         val alarmDetail = viewHolder.alarmView.include_alarm_detail
+        alarmDetail.vibration_check_box.isChecked = alarms[position].isVibration
+        alarmDetail.vibration_check_box.setOnClickListener{
+            actionsCreator.switchVibration(alarms[position].id, !alarms[position].isVibration)
+        }
         alarmDetail.repeat_check_box.isChecked = alarms[position].isRepeatable
-        if(alarmDetail.repeat_check_box.isChecked){
+        alarmDetail.repeat_check_box.setOnClickListener{
+            actionsCreator.switchRepeatable(alarms[position].id, !alarms[position].isRepeatable)
+        }
+        if(alarms[position].isRepeatable) {
             alarmDetail.include_alarm_week.visibility = View.VISIBLE
         }
-        alarmDetail.repeat_check_box.setOnClickListener {
-            if (alarmDetail.repeat_check_box.isChecked) {
-                alarmDetail.include_alarm_week.visibility = View.VISIBLE
-                alarms[position].isRepeatable = false
-            } else {
-                alarmDetail.include_alarm_week.visibility = View.GONE
-                alarms[position].isRepeatable = true
-            }
-        }
+//        alarmDetail.repeat_check_box.isChecked = alarms[position].isRepeatable
+//        if(alarmDetail.repeat_check_box.isChecked){
+//            alarmDetail.include_alarm_week.visibility = View.VISIBLE
+//        }
+//        alarmDetail.repeat_check_box.setOnClickListener {
+//            if (alarmDetail.repeat_check_box.isChecked) {
+//                alarmDetail.include_alarm_week.visibility = View.VISIBLE
+//                alarms[position].isRepeatable = false
+//            } else {
+//                alarmDetail.include_alarm_week.visibility = View.GONE
+//                alarms[position].isRepeatable = true
+//            }
+//        }
 
         val weekdayButtons = listOf(
             alarmDetail.include_alarm_week.monday_button,
@@ -178,6 +191,12 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
     override fun getItemCount() = alarms.size
 
     fun setItems(alarms: ArrayList<Alarm>){
+        for(alarm in alarms) {
+            Log.d("id", alarm.id.toString())
+            Log.d("isVibration", alarm.isVibration.toString())
+            Log.d("isRepeatable", alarm.isRepeatable.toString())
+        }
+        alarms.sortWith(compareBy({it.hour}, {it.minute}))
         this.alarms = alarms
         notifyDataSetChanged()
     }
