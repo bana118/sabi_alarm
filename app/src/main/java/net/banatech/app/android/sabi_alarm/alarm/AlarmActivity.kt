@@ -6,10 +6,12 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TimePicker
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.alarm_view.view.*
 import kotlinx.coroutines.CoroutineScope
@@ -17,25 +19,56 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.banatech.app.android.sabi_alarm.R
+import net.banatech.app.android.sabi_alarm.alarm.actions.ActionsCreator
+import net.banatech.app.android.sabi_alarm.alarm.dispatcher.Dispatcher
+import net.banatech.app.android.sabi_alarm.alarm.stores.AlarmStore
 import net.banatech.app.android.sabi_alarm.database.Alarm
 import net.banatech.app.android.sabi_alarm.database.AlarmDatabase
-import java.text.SimpleDateFormat
+import org.greenrobot.eventbus.Subscribe
 import java.util.*
+import kotlin.math.min
 
 
-class MainActivity : AppCompatActivity() {
+class AlarmActivity : AppCompatActivity() {
+
+    private lateinit var dispatcher: Dispatcher
+    private lateinit var actionCreator: ActionsCreator
+    private lateinit var alarmStore: AlarmStore
+    private lateinit var listAdapter: AlarmRecyclerAdapter
+
+
     companion object {
         lateinit var db: AlarmDatabase
     }
     private var timeDataset: ArrayList<Alarm> = arrayListOf()
     private var viewManager = LinearLayoutManager(this)
-    private var viewAdapter =
-        AlarmAdapter(timeDataset)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+        initDependencies()
+        setupView()
+        db = AlarmDatabase.getInstance(this.applicationContext)
+        val dao = db.alarmDao()
+        CoroutineScope(Dispatchers.Main).launch {
+            withContext(Dispatchers.Main){
+                dao.getAll().forEach{
+                    timeDataset.add(it)
+                }
+                listAdapter.notifyDataSetChanged()
+            }
+        }
+
+    }
+
+    private fun initDependencies() {
+        dispatcher = Dispatcher
+        actionCreator = ActionsCreator(dispatcher)
+        alarmStore = AlarmStore(dispatcher)
+    }
+
+    private fun setupView() {
 
         add_alarm_button.setOnClickListener {
             val calendar = Calendar.getInstance()
@@ -44,7 +77,7 @@ class MainActivity : AppCompatActivity() {
             val timePickerDialog = TimePickerDialog(
                 this,
                 TimePickerDialog.OnTimeSetListener { _: TimePicker, pickerHour: Int, pickerMinute: Int ->
-                    setAlarm(pickerHour, pickerMinute)
+                    addAlarm(pickerHour, pickerMinute)
                 },
                 nowHour, nowMinute, true
             )
@@ -52,11 +85,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         alarm_list.layoutManager = viewManager
-        alarm_list.adapter = viewAdapter
+        listAdapter = AlarmRecyclerAdapter(actionCreator)
+        alarm_list.adapter = listAdapter
         val dividerItemDecoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         alarm_list.addItemDecoration(dividerItemDecoration)
         alarm_list.setHasFixedSize(true)
-        viewAdapter.setOnItemClickListener(object : AlarmAdapter.OnItemClickListener {
+        listAdapter.setOnItemClickListener(object : AlarmRecyclerAdapter.OnItemClickListener {
             override fun onItemClickListener(view: View, position: Int, clickedText: String) {
                 val alarmDetail = view.include_alarm_detail
                 val downArrow = view.alarm_down_arrow
@@ -73,17 +107,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
-        db = AlarmDatabase.getInstance(this.applicationContext)
-        val dao = db.alarmDao()
-        CoroutineScope(Dispatchers.Main).launch {
-            withContext(Dispatchers.Main){
-                dao.getAll().forEach{
-                    timeDataset.add(it)
-                }
-                viewAdapter.notifyDataSetChanged()
-            }
-        }
-
     }
 
     private fun setAlarm(hour: Int, minute: Int) {
@@ -113,7 +136,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         timeDataset.add(alarmData)
-        viewAdapter.notifyItemInserted(timeDataset.size - 1)
+        listAdapter.notifyItemInserted(timeDataset.size - 1)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -130,5 +153,36 @@ class MainActivity : AppCompatActivity() {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun updateUI() {
+        listAdapter.setItems(alarmStore.alarms)
+
+        if(alarmStore.canUndo) {
+            val snackbar = Snackbar.make(main_layout, "削除しました", Snackbar.LENGTH_LONG)
+            snackbar.setAction("Undo") {actionCreator.undoDestroy()}
+            snackbar.show()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        dispatcher.register(this)
+        dispatcher.register(alarmStore)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        dispatcher.unregister(this)
+        dispatcher.unregister(alarmStore)
+    }
+
+    private fun addAlarm(hour: Int, minute: Int){
+        actionCreator.create(hour, minute)
+    }
+
+    @Subscribe
+    fun onAlarmStoreChange(event: AlarmStore.AlarmStoreChangeEvent) {
+        updateUI()
     }
 }

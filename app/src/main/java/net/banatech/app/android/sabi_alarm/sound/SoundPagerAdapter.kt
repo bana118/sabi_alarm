@@ -9,11 +9,8 @@ import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import kotlinx.android.synthetic.main.alarm_view.view.*
 import kotlinx.android.synthetic.main.default_sound_view.view.*
-import kotlinx.android.synthetic.main.sound_file_view.view.*
 import net.banatech.app.android.sabi_alarm.R
-import net.banatech.app.android.sabi_alarm.alarm.AlarmAdapter
 
 class SoundPagerAdapter(fragmentActivity: FragmentActivity) :
     FragmentStateAdapter(fragmentActivity) {
