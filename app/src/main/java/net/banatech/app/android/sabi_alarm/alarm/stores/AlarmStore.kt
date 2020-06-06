@@ -41,6 +41,22 @@ class AlarmStore (dispatcher: Dispatcher): Store(dispatcher){
                 edit(id, hour, minute)
                 emitStoreChange()
             }
+            AlarmActions.ALARM_ENABLE_SWITCH -> {
+                val id = action.data[AlarmActions.KEY_ID]
+                val enable = action.data[AlarmActions.KEY_ENABLE]
+                check(id is Int){"Id value must be Int"}
+                check(enable is Boolean){"Enable value must be Int"}
+                switchEnable(id, enable)
+                emitStoreChange()
+            }
+            AlarmActions.ALARM_IS_SHOW_DETAIL_SWITCH -> {
+                val id = action.data[AlarmActions.KEY_ID]
+                val isShowDetail = action.data[AlarmActions.KEY_IS_SHOW_DETAIL_SWITCH]
+                check(id is Int){"Id value must be Int"}
+                check(isShowDetail is Boolean){"IsShowDetail value must be Int"}
+                showDetail(id, isShowDetail)
+                emitStoreChange()
+            }
             AlarmActions.ALARM_IS_VIBRATION_SWITCH -> {
                 val id = action.data[AlarmActions.KEY_ID]
                 val isVibration = action.data[AlarmActions.KEY_IS_VIBRATION]
@@ -68,6 +84,8 @@ class AlarmStore (dispatcher: Dispatcher): Store(dispatcher){
             hour = hour,
             minute = minute,
             timeText = timeText,
+            enable = true,
+            isShowDetail = false,
             isVibration = false,
             isRepeatable = false,
             isSundayAlarm = false,
@@ -124,6 +142,28 @@ class AlarmStore (dispatcher: Dispatcher): Store(dispatcher){
                 alarm.hour = hour
                 alarm.minute = minute
                 alarm.timeText = timeText
+                break
+            }
+        }
+    }
+
+    private fun switchEnable(id: Int, enable: Boolean) {
+        val iter = alarms.iterator()
+        while (iter.hasNext()) {
+            val alarm = iter.next()
+            if(alarm.id == id) {
+                alarm.enable = enable
+                break
+            }
+        }
+    }
+
+    private fun showDetail(id: Int, isShowDetail: Boolean) {
+        val iter = alarms.iterator()
+        while (iter.hasNext()) {
+            val alarm = iter.next()
+            if(alarm.id == id) {
+                alarm.isShowDetail = isShowDetail
                 break
             }
         }

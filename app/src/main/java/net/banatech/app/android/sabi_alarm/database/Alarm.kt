@@ -10,6 +10,8 @@ data class Alarm(
     @ColumnInfo(name = "hour") var hour: Int,
     @ColumnInfo(name = "minute") var minute: Int,
     @ColumnInfo(name = "time_text") var timeText: String,
+    @ColumnInfo(name = "enable") var enable: Boolean,
+    @ColumnInfo(name = "is_show_detail") var isShowDetail: Boolean,
     @ColumnInfo(name = "is_boolean") var isVibration: Boolean,
     @ColumnInfo(name = "is_repeatable") var isRepeatable: Boolean,
     @ColumnInfo(name = "is_sunday_alarm") var isSundayAlarm: Boolean,

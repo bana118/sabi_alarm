@@ -90,20 +90,22 @@ class AlarmActivity : AppCompatActivity() {
         alarm_list.addItemDecoration(dividerItemDecoration)
         alarm_list.setHasFixedSize(true)
         listAdapter.setOnItemClickListener(object : AlarmRecyclerAdapter.OnItemClickListener {
-            override fun onItemClickListener(view: View, position: Int, clickedText: String) {
-                val alarmDetail = view.include_alarm_detail
-                val downArrow = view.alarm_down_arrow
-                check(alarmDetail.visibility == View.GONE || alarmDetail.visibility == View.VISIBLE)
-                {
-                    "Alarm detail layout visibility is invalid"
-                }
-                if (alarmDetail.visibility == View.GONE) {
-                    alarmDetail.visibility = View.VISIBLE
-                    downArrow.visibility = View.GONE
-                } else {
-                    alarmDetail.visibility = View.GONE
-                    downArrow.visibility = View.VISIBLE
-                }
+            override fun onItemClickListener(view: View, position: Int, alarm: Alarm) {
+                actionCreator.showDetail(alarm.id, !alarm.isShowDetail)
+                listAdapter.notifyItemChanged(position)
+//                val alarmDetail = view.include_alarm_detail
+//                val downArrow = view.alarm_down_arrow
+//                check(alarmDetail.visibility == View.GONE || alarmDetail.visibility == View.VISIBLE)
+//                {
+//                    "Alarm detail layout visibility is invalid"
+//                }
+//                if (alarmDetail.visibility == View.GONE) {
+//                    alarmDetail.visibility = View.VISIBLE
+//                    downArrow.visibility = View.GONE
+//                } else {
+//                    alarmDetail.visibility = View.GONE
+//                    downArrow.visibility = View.VISIBLE
+//                }
             }
         })
     }
@@ -114,6 +116,8 @@ class AlarmActivity : AppCompatActivity() {
             hour = hour,
             minute = minute,
             timeText = setTimeText,
+            enable = true,
+            isShowDetail = false,
             isVibration = false,
             isRepeatable = false,
             isSundayAlarm = false,
@@ -178,6 +182,8 @@ class AlarmActivity : AppCompatActivity() {
 
     private fun addAlarm(hour: Int, minute: Int){
         actionCreator.create(hour, minute)
+        //listAdapter.notifyItemInserted(timeDataset.size - 1)
+        listAdapter.notifyDataSetChanged()
     }
 
     @Subscribe

@@ -35,6 +35,22 @@ class ActionsCreator(private val dispatcher: Dispatcher) {
         )
     }
 
+    fun switchEnable(id: Int, enable: Boolean) {
+        dispatcher.dispatch(
+            AlarmActions.ALARM_ENABLE_SWITCH,
+            AlarmActions.KEY_ID, id,
+            AlarmActions.KEY_ENABLE, enable
+        )
+    }
+
+    fun showDetail(id: Int, isShowDetail: Boolean) {
+        dispatcher.dispatch(
+            AlarmActions.ALARM_IS_SHOW_DETAIL_SWITCH,
+            AlarmActions.KEY_ID, id,
+            AlarmActions.KEY_IS_SHOW_DETAIL_SWITCH, isShowDetail
+        )
+    }
+
     fun switchVibration(id: Int, isVibration: Boolean) {
         dispatcher.dispatch(
             AlarmActions.ALARM_IS_VIBRATION_SWITCH,

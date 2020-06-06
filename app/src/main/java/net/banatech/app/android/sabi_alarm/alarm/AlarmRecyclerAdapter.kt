@@ -47,8 +47,10 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
 
         viewHolder.alarmView.alarm_time.text = alarms[position].timeText
         viewHolder.alarmView.setOnClickListener {
-            listener.onItemClickListener(it, position, alarms[position].timeText)
+            listener.onItemClickListener(it, position, alarms[position])
         }
+
+        //Edit alarm time
         viewHolder.alarmView.alarm_time.setOnClickListener {
             val hour = alarms[position].hour
             val minute = alarms[position].minute
@@ -56,32 +58,50 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
                 viewHolder.alarmView.context,
                 TimePickerDialog.OnTimeSetListener { _: TimePicker, pickerHour: Int, pickerMinute: Int ->
                     actionsCreator.edit(alarms[position].id, pickerHour, pickerMinute)
-//                    alarms[position].hour = pickerHour
-//                    alarms[position].minute = pickerMinute
-//                    alarms[position].timeText = String.format("%02d:%02d", pickerHour, pickerMinute)
-//                    CoroutineScope(Dispatchers.Main).launch {
-//                        withContext(Dispatchers.Default){
-//                            dao.update(alarms[position])
-//                        }
-//                    }
-//                    this.notifyDataSetChanged()
+                    notifyItemChanged(position)
                 },
                 hour, minute, true
             )
             timePickerDialog.show()
         }
+
+        val alarmSwitch = viewHolder.alarmView.alarm_switch
+
+        //Switch alarm on/off
+        alarmSwitch.isChecked = alarms[position].enable
+        alarmSwitch.setOnClickListener{
+            actionsCreator.switchEnable(alarms[position].id, !alarms[position].enable)
+            notifyItemChanged(position)
+        }
+
         val alarmDetail = viewHolder.alarmView.include_alarm_detail
+        if(alarms[position].isShowDetail){
+            alarmDetail.visibility = View.VISIBLE
+            viewHolder.alarmView.alarm_down_arrow.visibility = View.GONE
+        }else{
+            alarmDetail.visibility = View.GONE
+            viewHolder.alarmView.alarm_down_arrow.visibility = View.VISIBLE
+        }
+
+        //Switch alarm vibration
         alarmDetail.vibration_check_box.isChecked = alarms[position].isVibration
         alarmDetail.vibration_check_box.setOnClickListener{
             actionsCreator.switchVibration(alarms[position].id, !alarms[position].isVibration)
+            notifyItemChanged(position)
         }
+
+        //Switch alarm repeatable
         alarmDetail.repeat_check_box.isChecked = alarms[position].isRepeatable
         alarmDetail.repeat_check_box.setOnClickListener{
             actionsCreator.switchRepeatable(alarms[position].id, !alarms[position].isRepeatable)
+            notifyItemChanged(position)
         }
         if(alarms[position].isRepeatable) {
             alarmDetail.include_alarm_week.visibility = View.VISIBLE
+        }else{
+            alarmDetail.include_alarm_week.visibility = View.GONE
         }
+
 //        alarmDetail.repeat_check_box.isChecked = alarms[position].isRepeatable
 //        if(alarmDetail.repeat_check_box.isChecked){
 //            alarmDetail.include_alarm_week.visibility = View.VISIBLE
@@ -107,9 +127,13 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
             alarmDetail.include_alarm_week.sunday_button,
             alarmDetail.include_alarm_week.saturday_button
         )
+
+        //Destroy alarm
         alarmDetail.delete_button.setOnClickListener {
             actionsCreator.destroy(alarms[position].id)
-//            alarmDetail.visibility = View.GONE
+            //alarmDetail.visibility = View.GONE
+            //viewHolder.alarmView.alarm_down_arrow.visibility = View.VISIBLE
+            notifyItemRemoved(position)
 //            alarmDetail.include_alarm_week.visibility = View.GONE
 //            alarmDetail.repeat_check_box.isChecked = false
 //            alarmDetail.vibration_check_box.isChecked = false
@@ -156,6 +180,7 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
             weekButtonSetOnclickListener(weekendButton, viewHolder)
         }
 
+        //Select alarm sound
         alarmDetail.sound_button.setOnClickListener{
             val intent = Intent(alarmDetail.context, SoundSelectActivity::class.java)
             alarmDetail.context.startActivity(intent)
@@ -196,13 +221,13 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
             Log.d("isVibration", alarm.isVibration.toString())
             Log.d("isRepeatable", alarm.isRepeatable.toString())
         }
-        alarms.sortWith(compareBy({it.hour}, {it.minute}))
+        //alarms.sortWith(compareBy({it.hour}, {it.minute}))
         this.alarms = alarms
-        notifyDataSetChanged()
+        //notifyDataSetChanged()
     }
 
     interface OnItemClickListener {
-        fun onItemClickListener(view: View, position: Int, clickedText: String)
+        fun onItemClickListener(view: View, position: Int, alarm: Alarm)
     }
 
 
