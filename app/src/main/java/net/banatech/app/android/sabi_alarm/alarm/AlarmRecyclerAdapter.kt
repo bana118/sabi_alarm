@@ -83,13 +83,13 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
         }
 
         val alarmDetail = viewHolder.alarmView.include_alarm_detail
-//        if(alarms[position].isShowDetail){
-//            alarmDetail.visibility = View.VISIBLE
-//            viewHolder.alarmView.alarm_down_arrow.visibility = View.GONE
-//        }else{
-//            alarmDetail.visibility = View.GONE
-//            viewHolder.alarmView.alarm_down_arrow.visibility = View.VISIBLE
-//        }
+        if(alarms[position].isShowDetail){
+            alarmDetail.visibility = View.VISIBLE
+            viewHolder.alarmView.alarm_down_arrow.visibility = View.GONE
+        }else{
+            alarmDetail.visibility = View.GONE
+            viewHolder.alarmView.alarm_down_arrow.visibility = View.VISIBLE
+        }
 
         //Switch alarm vibration
         //alarmDetail.vibration_check_box.isChecked = alarms[position].isVibration
