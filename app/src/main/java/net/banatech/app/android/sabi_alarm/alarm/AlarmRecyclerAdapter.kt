@@ -97,6 +97,7 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
             actionsCreator.switchVibration(alarms[position].id, alarmDetail.vibration_check_box.isChecked)
             //notifyItemChanged(position)
         }
+        alarmDetail.vibration_check_box.isChecked = alarms[position].isVibration
 
         //Switch alarm repeatable
         //alarmDetail.repeat_check_box.isChecked = alarms[position].isRepeatable
@@ -109,11 +110,12 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
             }
             //notifyItemChanged(position)
         }
-//        if(alarms[position].isRepeatable) {
-//            alarmDetail.include_alarm_week.visibility = View.VISIBLE
-//        }else{
-//            alarmDetail.include_alarm_week.visibility = View.GONE
-//        }
+        alarmDetail.repeat_check_box.isChecked = alarms[position].isRepeatable
+        if(alarms[position].isRepeatable) {
+            alarmDetail.include_alarm_week.visibility = View.VISIBLE
+        }else{
+            alarmDetail.include_alarm_week.visibility = View.GONE
+        }
 
         val weekdayButtons = listOf(
             alarmDetail.include_alarm_week.monday_button,
@@ -131,6 +133,10 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
         alarmDetail.delete_button.setOnClickListener {
             alarmDetail.visibility = View.GONE
             viewHolder.alarmView.alarm_down_arrow.visibility = View.VISIBLE
+            alarmDetail.repeat_check_box.isChecked = false
+            alarmDetail.include_alarm_week.visibility = View.GONE
+            alarmDetail.vibration_check_box.isChecked = false
+            alarmSwitch.isChecked = true
             actionsCreator.destroy(alarms[position].id)
             notifyItemRemoved(position)
             notifyItemRangeChanged(position, alarms.size)
