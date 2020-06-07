@@ -30,6 +30,13 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
         AlarmRecyclerAdapter.actionsCreator = actionsCreator
     }
 
+    class AlarmViewHolder(val alarmView: View) : RecyclerView.ViewHolder(alarmView)
+
+    override fun getItemId(position: Int): Long {
+        setHasStableIds(true)
+        return alarms[position].id.toLong()
+    }
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -58,7 +65,7 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
                 viewHolder.alarmView.context,
                 TimePickerDialog.OnTimeSetListener { _: TimePicker, pickerHour: Int, pickerMinute: Int ->
                     actionsCreator.edit(alarms[position].id, pickerHour, pickerMinute)
-                    notifyItemChanged(position)
+                    notifyDataSetChanged()
                 },
                 hour, minute, true
             )
@@ -102,20 +109,6 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
             alarmDetail.include_alarm_week.visibility = View.GONE
         }
 
-//        alarmDetail.repeat_check_box.isChecked = alarms[position].isRepeatable
-//        if(alarmDetail.repeat_check_box.isChecked){
-//            alarmDetail.include_alarm_week.visibility = View.VISIBLE
-//        }
-//        alarmDetail.repeat_check_box.setOnClickListener {
-//            if (alarmDetail.repeat_check_box.isChecked) {
-//                alarmDetail.include_alarm_week.visibility = View.VISIBLE
-//                alarms[position].isRepeatable = false
-//            } else {
-//                alarmDetail.include_alarm_week.visibility = View.GONE
-//                alarms[position].isRepeatable = true
-//            }
-//        }
-
         val weekdayButtons = listOf(
             alarmDetail.include_alarm_week.monday_button,
             alarmDetail.include_alarm_week.tuesday_button,
@@ -131,9 +124,9 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
         //Destroy alarm
         alarmDetail.delete_button.setOnClickListener {
             actionsCreator.destroy(alarms[position].id)
+            notifyItemRemoved(position)
             //alarmDetail.visibility = View.GONE
             //viewHolder.alarmView.alarm_down_arrow.visibility = View.VISIBLE
-            notifyItemRemoved(position)
 //            alarmDetail.include_alarm_week.visibility = View.GONE
 //            alarmDetail.repeat_check_box.isChecked = false
 //            alarmDetail.vibration_check_box.isChecked = false
@@ -216,12 +209,15 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
     override fun getItemCount() = alarms.size
 
     fun setItems(alarms: ArrayList<Alarm>){
-        for(alarm in alarms) {
-            Log.d("id", alarm.id.toString())
-            Log.d("isVibration", alarm.isVibration.toString())
-            Log.d("isRepeatable", alarm.isRepeatable.toString())
-        }
-        //alarms.sortWith(compareBy({it.hour}, {it.minute}))
+//        Log.d("size", alarms.size.toString())
+//        for(alarm in alarms) {
+//            Log.d("id", alarm.id.toString())
+//            Log.d("isVibration", alarm.isVibration.toString())
+//            Log.d("isRepeatable", alarm.isRepeatable.toString())
+//        }
+        alarms.sortWith(compareBy({it.hour}, {it.minute}))
+        Log.d("current", this.alarms.toString())
+        Log.d("next", this.alarms.toString())
         this.alarms = alarms
         //notifyDataSetChanged()
     }
@@ -233,147 +229,5 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
 
     fun setOnItemClickListener(listener: OnItemClickListener) {
         this.listener = listener
-    }
-
-    class AlarmViewHolder(val alarmView: View) : RecyclerView.ViewHolder(alarmView) {
-//        lateinit var listener: OnItemClickListener
-//
-//        fun bindView(alarm: Alarm){
-//            //val dao = AlarmActivity.db.alarmDao()
-//
-//            alarmView.alarm_time.text = alarm.timeText
-//            alarmView.setOnClickListener {
-//                listener.onItemClickListener(it)
-//            }
-//            alarmView.alarm_time.setOnClickListener {
-//                val hour = alarm.hour
-//                val minute = alarm.minute
-//                val timePickerDialog = TimePickerDialog(
-//                    this.alarmView.context,
-//                    TimePickerDialog.OnTimeSetListener { _: TimePicker, pickerHour: Int, pickerMinute: Int ->
-//                        alarm.hour = pickerHour
-//                        alarm.minute = pickerMinute
-//                        alarm.timeText = String.format("%02d:%02d", pickerHour, pickerMinute)
-////                    CoroutineScope(Dispatchers.Main).launch {
-////                        withContext(Dispatchers.Default){
-////                            dao.update(alarms[position])
-////                        }
-////                    }
-//                    },
-//                    hour, minute, true
-//                )
-//                timePickerDialog.show()
-//            }
-//            val alarmDetail = this.alarmView.include_alarm_detail
-//            alarmDetail.repeat_check_box.isChecked = alarm.isRepeatable
-//            if(alarmDetail.repeat_check_box.isChecked){
-//                alarmDetail.include_alarm_week.visibility = View.VISIBLE
-//            }
-//            alarmDetail.repeat_check_box.setOnClickListener {
-//                if (alarmDetail.repeat_check_box.isChecked) {
-//                    alarmDetail.include_alarm_week.visibility = View.VISIBLE
-//                    alarm.isRepeatable = false
-//                } else {
-//                    alarmDetail.include_alarm_week.visibility = View.GONE
-//                    alarm.isRepeatable = true
-//                }
-//            }
-//
-//            val weekdayButtons = listOf(
-//                alarmDetail.include_alarm_week.monday_button,
-//                alarmDetail.include_alarm_week.tuesday_button,
-//                alarmDetail.include_alarm_week.wednesday_button,
-//                alarmDetail.include_alarm_week.thursday_button,
-//                alarmDetail.include_alarm_week.friday_button
-//            )
-//            val weekendButtons = listOf(
-//                alarmDetail.include_alarm_week.sunday_button,
-//                alarmDetail.include_alarm_week.saturday_button
-//            )
-//            alarmDetail.delete_button.setOnClickListener {
-//                alarmDetail.visibility = View.GONE
-//                alarmDetail.include_alarm_week.visibility = View.GONE
-//                alarmDetail.repeat_check_box.isChecked = false
-//                alarmDetail.vibration_check_box.isChecked = false
-//                alarmView.alarm_switch.isChecked = false
-//                for (weekdayButton in weekdayButtons) {
-//                    weekdayButton.setTextColor(
-//                        ContextCompat.getColor(
-//                            alarmView.context,
-//                            R.color.week_text_selected_color
-//                        )
-//                    )
-//                    weekdayButton.setBackgroundResource(R.drawable.selected_round_button)
-//                }
-//                for (weekendButton in weekendButtons) {
-//                    weekendButton.setTextColor(
-//                        ContextCompat.getColor(
-//                            alarmView.context,
-//                            R.color.week_text_unselected_color
-//                        )
-//                    )
-//                    weekendButton.setBackgroundResource(R.drawable.unselected_round_button)
-//                }
-//                alarmDetail.include_alarm_week.sunday_button.setTextColor(
-//                    ContextCompat.getColor(
-//                        alarmView.context,
-//                        R.color.week_text_unselected_color
-//                    )
-//                )
-//                alarmDetail.include_alarm_week.sunday_button.setBackgroundResource(R.drawable.unselected_round_button)
-////            CoroutineScope(Dispatchers.Main).launch {
-////                withContext(Dispatchers.Main){
-////                    dao.delete(alarms[position])
-////                    alarms.removeAt(position)
-////                    adapter.notifyItemRemoved(position)
-////                    adapter.notifyItemRangeChanged(position, alarms.size)
-////                }
-////            }
-//            }
-//            for (weekdayButton in weekdayButtons) {
-//                weekButtonSetOnclickListener(weekdayButton, this)
-//            }
-//            for (weekendButton in weekendButtons) {
-//                weekButtonSetOnclickListener(weekendButton, this)
-//            }
-//
-//            alarmDetail.sound_button.setOnClickListener{
-//                val intent = Intent(alarmDetail.context, SoundSelectActivity::class.java)
-//                alarmDetail.context.startActivity(intent)
-//            }
-//        }
-//        private fun weekButtonSetOnclickListener(weekButton: Button, holder: AlarmViewHolder) {
-//            weekButton.setOnClickListener {
-//                if (weekButton.currentTextColor == ContextCompat.getColor(
-//                        holder.alarmView.context,
-//                        R.color.week_text_unselected_color
-//                    )
-//                ) {
-//                    weekButton.setTextColor(
-//                        ContextCompat.getColor(
-//                            holder.alarmView.context,
-//                            R.color.week_text_selected_color
-//                        )
-//                    )
-//                    weekButton.setBackgroundResource(R.drawable.selected_round_button)
-//                } else {
-//                    weekButton.setTextColor(
-//                        ContextCompat.getColor(
-//                            holder.alarmView.context,
-//                            R.color.week_text_unselected_color
-//                        )
-//                    )
-//                    weekButton.setBackgroundResource(R.drawable.unselected_round_button)
-//                }
-//            }
-//        }
-//        interface OnItemClickListener {
-//            fun onItemClickListener(view: View)
-//        }
-//
-//
-//        fun setOnItemClickListener(listener: OnItemClickListener) {
-//            this.listener = listener
-//        }
     }
 }

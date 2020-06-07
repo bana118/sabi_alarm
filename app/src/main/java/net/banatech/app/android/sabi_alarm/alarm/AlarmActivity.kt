@@ -93,19 +93,6 @@ class AlarmActivity : AppCompatActivity() {
             override fun onItemClickListener(view: View, position: Int, alarm: Alarm) {
                 actionCreator.showDetail(alarm.id, !alarm.isShowDetail)
                 listAdapter.notifyItemChanged(position)
-//                val alarmDetail = view.include_alarm_detail
-//                val downArrow = view.alarm_down_arrow
-//                check(alarmDetail.visibility == View.GONE || alarmDetail.visibility == View.VISIBLE)
-//                {
-//                    "Alarm detail layout visibility is invalid"
-//                }
-//                if (alarmDetail.visibility == View.GONE) {
-//                    alarmDetail.visibility = View.VISIBLE
-//                    downArrow.visibility = View.GONE
-//                } else {
-//                    alarmDetail.visibility = View.GONE
-//                    downArrow.visibility = View.VISIBLE
-//                }
             }
         })
     }
@@ -159,11 +146,16 @@ class AlarmActivity : AppCompatActivity() {
     }
 
     private fun updateUI() {
-        listAdapter.setItems(alarmStore.alarms)
+        listAdapter.setItems(AlarmStore.alarms)
+    }
 
-        if(alarmStore.canUndo) {
+    private fun notifyDestroy() {
+        if(AlarmStore.canUndo) {
             val snackbar = Snackbar.make(main_layout, "削除しました", Snackbar.LENGTH_LONG)
-            snackbar.setAction("Undo") {actionCreator.undoDestroy()}
+            snackbar.setAction("元に戻す") {
+                actionCreator.undoDestroy()
+                listAdapter.notifyDataSetChanged()
+            }
             snackbar.show()
         }
     }
@@ -187,8 +179,27 @@ class AlarmActivity : AppCompatActivity() {
     }
 
     @Subscribe
-    fun onAlarmStoreChange(event: AlarmStore.AlarmStoreChangeEvent) {
-        Log.d("debug", "subscribe event")
+    fun onAlarmStoreCreate(event: AlarmStore.AlarmStoreCreateEvent) {
+        Log.d("event", "alarm create event")
         updateUI()
+    }
+
+    @Subscribe
+    fun onAlarmStoreTimeChange(event: AlarmStore.AlarmStoreTimeChangeEvent) {
+        Log.d("event", "alarm time change event")
+        updateUI()
+    }
+
+    @Subscribe
+    fun onAlarmStoreChange(event: AlarmStore.AlarmStoreChangeEvent) {
+        Log.d("event", "alarm change event")
+        updateUI()
+    }
+
+    @Subscribe
+    fun onAlarmStoreDestroyEvent(event: AlarmStore.AlarmStoreDestroyEvent) {
+        Log.d("event", "alarm destroy event")
+        updateUI()
+        notifyDestroy()
     }
 }

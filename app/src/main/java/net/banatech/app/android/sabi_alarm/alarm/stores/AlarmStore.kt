@@ -1,5 +1,6 @@
 package net.banatech.app.android.sabi_alarm.alarm.stores
 
+import android.util.Log
 import net.banatech.app.android.sabi_alarm.alarm.actions.Action
 import net.banatech.app.android.sabi_alarm.alarm.actions.AlarmActions
 import net.banatech.app.android.sabi_alarm.alarm.dispatcher.Dispatcher
@@ -7,9 +8,11 @@ import net.banatech.app.android.sabi_alarm.database.Alarm
 import org.greenrobot.eventbus.Subscribe
 
 class AlarmStore (dispatcher: Dispatcher): Store(dispatcher){
-    val alarms: ArrayList<Alarm> = ArrayList()
-    private lateinit var lastDeleted: Alarm
-    var canUndo = false
+    companion object{
+        val alarms: ArrayList<Alarm> = ArrayList()
+        private lateinit var lastDeleted: Alarm
+        var canUndo = false
+    }
 
     @Subscribe
     @SuppressWarnings("unchecked")
@@ -20,13 +23,13 @@ class AlarmStore (dispatcher: Dispatcher): Store(dispatcher){
                 val minute = action.data[AlarmActions.KEY_MINUTE]
                 check(hour is Int && minute is Int){"Hour and minute value must be Int"}
                 create(hour, minute)
-                emitStoreChange()
+                emitStoreCreate()
             }
             AlarmActions.ALARM_DESTROY -> {
                 val id = action.data[AlarmActions.KEY_ID]
                 check(id is Int){"Id value must be Int"}
                 destroy(id)
-                emitStoreChange()
+                emitStoreDestroy()
             }
             AlarmActions.ALARM_UNDO_DESTROY -> {
                 undoDestroy()
@@ -39,7 +42,7 @@ class AlarmStore (dispatcher: Dispatcher): Store(dispatcher){
                 check(id is Int){"Id value must be Int"}
                 check(hour is Int && minute is Int){"Hour and minute value must be Int"}
                 edit(id, hour, minute)
-                emitStoreChange()
+                emitStoreTimeChange()
             }
             AlarmActions.ALARM_ENABLE_SWITCH -> {
                 val id = action.data[AlarmActions.KEY_ID]
@@ -196,10 +199,24 @@ class AlarmStore (dispatcher: Dispatcher): Store(dispatcher){
         //alarms.sortWith(compareBy({it.hour}, {it.minute}))
     }
 
+    override fun createEvent(): StoreCreateEvent {
+        return AlarmStoreCreateEvent()
+    }
+
+    override fun timeChangeEvent(): StoreTimeChangeEvent {
+        return AlarmStoreTimeChangeEvent()
+    }
+
     override fun changeEvent(): StoreChangeEvent {
         return AlarmStoreChangeEvent()
     }
 
-    class AlarmStoreChangeEvent: StoreChangeEvent
+    override fun destroyEvent(): StoreDestroyEvent {
+        return AlarmStoreDestroyEvent()
+    }
 
+    class AlarmStoreCreateEvent: StoreCreateEvent
+    class AlarmStoreTimeChangeEvent: StoreTimeChangeEvent
+    class AlarmStoreChangeEvent: StoreChangeEvent
+    class AlarmStoreDestroyEvent: StoreDestroyEvent
 }

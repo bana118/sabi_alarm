@@ -15,7 +15,7 @@ object Dispatcher {
         bus.unregister(cls)
     }
 
-    fun emitChange(o: Store.StoreChangeEvent) {
+    fun emitEvent(o: Store.StoreEvent) {
         post(o)
     }
 
