@@ -130,7 +130,6 @@ class AlarmStore (dispatcher: Dispatcher): Store(dispatcher){
 
     private fun undoDestroy() {
         if(canUndo){
-            lastDeleted.isShowDetail = false
             addElement(lastDeleted.copy())
             canUndo = false
         }
