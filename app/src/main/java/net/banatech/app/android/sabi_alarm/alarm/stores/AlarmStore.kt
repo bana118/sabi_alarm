@@ -1,6 +1,5 @@
 package net.banatech.app.android.sabi_alarm.alarm.stores
 
-import android.util.Log
 import net.banatech.app.android.sabi_alarm.alarm.actions.Action
 import net.banatech.app.android.sabi_alarm.alarm.actions.AlarmActions
 import net.banatech.app.android.sabi_alarm.alarm.dispatcher.Dispatcher
@@ -57,7 +56,7 @@ class AlarmStore (dispatcher: Dispatcher): Store(dispatcher){
                 val isShowDetail = action.data[AlarmActions.KEY_IS_SHOW_DETAIL_SWITCH]
                 check(id is Int){"Id value must be Int"}
                 check(isShowDetail is Boolean){"IsShowDetail value must be Int"}
-                showDetail(id, isShowDetail)
+                switchDetail(id, isShowDetail)
                 emitStoreChange()
             }
             AlarmActions.ALARM_IS_VIBRATION_SWITCH -> {
@@ -131,6 +130,7 @@ class AlarmStore (dispatcher: Dispatcher): Store(dispatcher){
 
     private fun undoDestroy() {
         if(canUndo){
+            lastDeleted.isShowDetail = false
             addElement(lastDeleted.copy())
             canUndo = false
         }
@@ -161,7 +161,7 @@ class AlarmStore (dispatcher: Dispatcher): Store(dispatcher){
         }
     }
 
-    private fun showDetail(id: Int, isShowDetail: Boolean) {
+    private fun switchDetail(id: Int, isShowDetail: Boolean) {
         val iter = alarms.iterator()
         while (iter.hasNext()) {
             val alarm = iter.next()

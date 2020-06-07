@@ -43,7 +43,7 @@ class ActionsCreator(private val dispatcher: Dispatcher) {
         )
     }
 
-    fun showDetail(id: Int, isShowDetail: Boolean) {
+    fun switchDetail(id: Int, isShowDetail: Boolean) {
         dispatcher.dispatch(
             AlarmActions.ALARM_IS_SHOW_DETAIL_SWITCH,
             AlarmActions.KEY_ID, id,

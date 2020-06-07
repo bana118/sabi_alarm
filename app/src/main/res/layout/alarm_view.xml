@@ -23,6 +23,7 @@
         android:id="@+id/alarm_switch"
         android:layout_width="50dp"
         android:layout_height="0dp"
+        android:checked="true"
         app:layout_constraintBaseline_toBaselineOf="@+id/alarm_time"
         app:layout_constraintEnd_toEndOf="parent" />
 

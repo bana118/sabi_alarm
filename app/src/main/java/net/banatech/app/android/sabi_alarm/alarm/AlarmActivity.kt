@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.widget.TimePicker
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -26,7 +25,6 @@ import net.banatech.app.android.sabi_alarm.database.Alarm
 import net.banatech.app.android.sabi_alarm.database.AlarmDatabase
 import org.greenrobot.eventbus.Subscribe
 import java.util.*
-import kotlin.math.min
 
 
 class AlarmActivity : AppCompatActivity() {
@@ -91,8 +89,16 @@ class AlarmActivity : AppCompatActivity() {
         alarm_list.setHasFixedSize(true)
         listAdapter.setOnItemClickListener(object : AlarmRecyclerAdapter.OnItemClickListener {
             override fun onItemClickListener(view: View, position: Int, alarm: Alarm) {
-                actionCreator.showDetail(alarm.id, !alarm.isShowDetail)
-                listAdapter.notifyItemChanged(position)
+                actionCreator.switchDetail(alarm.id, !alarm.isShowDetail)
+                val alarmDetail = view.include_alarm_detail
+                if(alarm.isShowDetail){
+                    alarmDetail.visibility = View.VISIBLE
+                    view.alarm_down_arrow.visibility = View.GONE
+                }else{
+                    alarmDetail.visibility = View.GONE
+                    view.alarm_down_arrow.visibility = View.VISIBLE
+                }
+                //listAdapter.notifyItemChanged(position)
             }
         })
     }

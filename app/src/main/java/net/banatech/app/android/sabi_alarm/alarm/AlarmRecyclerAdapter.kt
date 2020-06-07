@@ -2,6 +2,7 @@ package net.banatech.app.android.sabi_alarm.alarm
 
 import android.app.TimePickerDialog
 import android.content.Intent
+import android.opengl.Visibility
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -75,39 +76,44 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
         val alarmSwitch = viewHolder.alarmView.alarm_switch
 
         //Switch alarm on/off
-        alarmSwitch.isChecked = alarms[position].enable
+        //alarmSwitch.isChecked = alarms[position].enable
         alarmSwitch.setOnClickListener{
-            actionsCreator.switchEnable(alarms[position].id, !alarms[position].enable)
-            notifyItemChanged(position)
+            actionsCreator.switchEnable(alarms[position].id, alarmSwitch.isChecked)
+            //notifyItemChanged(position)
         }
 
         val alarmDetail = viewHolder.alarmView.include_alarm_detail
-        if(alarms[position].isShowDetail){
-            alarmDetail.visibility = View.VISIBLE
-            viewHolder.alarmView.alarm_down_arrow.visibility = View.GONE
-        }else{
-            alarmDetail.visibility = View.GONE
-            viewHolder.alarmView.alarm_down_arrow.visibility = View.VISIBLE
-        }
+//        if(alarms[position].isShowDetail){
+//            alarmDetail.visibility = View.VISIBLE
+//            viewHolder.alarmView.alarm_down_arrow.visibility = View.GONE
+//        }else{
+//            alarmDetail.visibility = View.GONE
+//            viewHolder.alarmView.alarm_down_arrow.visibility = View.VISIBLE
+//        }
 
         //Switch alarm vibration
-        alarmDetail.vibration_check_box.isChecked = alarms[position].isVibration
+        //alarmDetail.vibration_check_box.isChecked = alarms[position].isVibration
         alarmDetail.vibration_check_box.setOnClickListener{
-            actionsCreator.switchVibration(alarms[position].id, !alarms[position].isVibration)
-            notifyItemChanged(position)
+            actionsCreator.switchVibration(alarms[position].id, alarmDetail.vibration_check_box.isChecked)
+            //notifyItemChanged(position)
         }
 
         //Switch alarm repeatable
-        alarmDetail.repeat_check_box.isChecked = alarms[position].isRepeatable
+        //alarmDetail.repeat_check_box.isChecked = alarms[position].isRepeatable
         alarmDetail.repeat_check_box.setOnClickListener{
-            actionsCreator.switchRepeatable(alarms[position].id, !alarms[position].isRepeatable)
-            notifyItemChanged(position)
+            actionsCreator.switchRepeatable(alarms[position].id, alarmDetail.repeat_check_box.isChecked)
+            if(alarms[position].isRepeatable) {
+                alarmDetail.include_alarm_week.visibility = View.VISIBLE
+            }else{
+                alarmDetail.include_alarm_week.visibility = View.GONE
+            }
+            //notifyItemChanged(position)
         }
-        if(alarms[position].isRepeatable) {
-            alarmDetail.include_alarm_week.visibility = View.VISIBLE
-        }else{
-            alarmDetail.include_alarm_week.visibility = View.GONE
-        }
+//        if(alarms[position].isRepeatable) {
+//            alarmDetail.include_alarm_week.visibility = View.VISIBLE
+//        }else{
+//            alarmDetail.include_alarm_week.visibility = View.GONE
+//        }
 
         val weekdayButtons = listOf(
             alarmDetail.include_alarm_week.monday_button,
@@ -123,8 +129,11 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
 
         //Destroy alarm
         alarmDetail.delete_button.setOnClickListener {
+            alarmDetail.visibility = View.GONE
+            viewHolder.alarmView.alarm_down_arrow.visibility = View.VISIBLE
             actionsCreator.destroy(alarms[position].id)
             notifyItemRemoved(position)
+            notifyItemRangeChanged(position, alarms.size)
             //alarmDetail.visibility = View.GONE
             //viewHolder.alarmView.alarm_down_arrow.visibility = View.VISIBLE
 //            alarmDetail.include_alarm_week.visibility = View.GONE
@@ -217,7 +226,7 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
 //        }
         alarms.sortWith(compareBy({it.hour}, {it.minute}))
         Log.d("current", this.alarms.toString())
-        Log.d("next", this.alarms.toString())
+        Log.d("next", alarms.toString())
         this.alarms = alarms
         //notifyDataSetChanged()
     }
