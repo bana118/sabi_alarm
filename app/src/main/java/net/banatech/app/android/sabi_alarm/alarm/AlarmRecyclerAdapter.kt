@@ -18,6 +18,7 @@ import net.banatech.app.android.sabi_alarm.R
 import net.banatech.app.android.sabi_alarm.alarm.actions.ActionsCreator
 import net.banatech.app.android.sabi_alarm.database.Alarm
 import net.banatech.app.android.sabi_alarm.sound.SoundSelectActivity
+import java.util.*
 import kotlin.collections.ArrayList
 
 class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
@@ -117,17 +118,63 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
             alarmDetail.include_alarm_week.visibility = View.GONE
         }
 
-        val weekdayButtons = listOf(
-            alarmDetail.include_alarm_week.monday_button,
-            alarmDetail.include_alarm_week.tuesday_button,
-            alarmDetail.include_alarm_week.wednesday_button,
-            alarmDetail.include_alarm_week.thursday_button,
-            alarmDetail.include_alarm_week.friday_button
-        )
-        val weekendButtons = listOf(
-            alarmDetail.include_alarm_week.sunday_button,
-            alarmDetail.include_alarm_week.saturday_button
-        )
+        //Switch day of the day alarm
+        val week = alarmDetail.include_alarm_week
+        week.monday_button.setOnClickListener{
+            actionsCreator.switchDayAlarm(alarms[position].id, Calendar.MONDAY, !alarms[position].isMondayAlarm)
+            if(alarms[position].isMondayAlarm) {
+                week.monday_button.setTextColor(
+                    ContextCompat.getColor(
+                        viewHolder.alarmView.context,
+                        R.color.week_text_selected_color
+                    )
+                )
+                week.monday_button.setBackgroundResource(R.drawable.selected_round_button)
+            }else{
+                week.monday_button.setTextColor(
+                    ContextCompat.getColor(
+                        viewHolder.alarmView.context,
+                        R.color.week_text_unselected_color
+                    )
+                )
+                week.monday_button.setBackgroundResource(R.drawable.unselected_round_button)
+            }
+        }
+        if(alarms[position].isMondayAlarm) {
+            week.monday_button.setTextColor(
+                ContextCompat.getColor(
+                    viewHolder.alarmView.context,
+                    R.color.week_text_selected_color
+                )
+            )
+            week.monday_button.setBackgroundResource(R.drawable.selected_round_button)
+        }else{
+            week.monday_button.setTextColor(
+                ContextCompat.getColor(
+                    viewHolder.alarmView.context,
+                    R.color.week_text_unselected_color
+                )
+            )
+            week.monday_button.setBackgroundResource(R.drawable.unselected_round_button)
+        }
+
+//        val weekdayButtons = listOf(
+//            alarmDetail.include_alarm_week.monday_button,
+//            alarmDetail.include_alarm_week.tuesday_button,
+//            alarmDetail.include_alarm_week.wednesday_button,
+//            alarmDetail.include_alarm_week.thursday_button,
+//            alarmDetail.include_alarm_week.friday_button
+//        )
+//        val weekendButtons = listOf(
+//            alarmDetail.include_alarm_week.sunday_button,
+//            alarmDetail.include_alarm_week.saturday_button
+//        )
+//        for (weekdayButton in weekdayButtons) {
+//            weekButtonSetOnclickListener(weekdayButton, viewHolder)
+//        }
+//        for (weekendButton in weekendButtons) {
+//            weekButtonSetOnclickListener(weekendButton, viewHolder)
+//        }
 
         //Destroy alarm
         alarmDetail.delete_button.setOnClickListener {
@@ -137,6 +184,13 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
             alarmDetail.include_alarm_week.visibility = View.GONE
             alarmDetail.vibration_check_box.isChecked = false
             alarmSwitch.isChecked = true
+            week.monday_button.setTextColor(
+                ContextCompat.getColor(
+                    viewHolder.alarmView.context,
+                    R.color.week_text_selected_color
+                )
+            )
+            week.monday_button.setBackgroundResource(R.drawable.selected_round_button)
             actionsCreator.destroy(alarms[position].id)
             notifyItemRemoved(position)
             notifyItemRangeChanged(position, alarms.size)
@@ -181,12 +235,6 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
 //                }
 //            }
         }
-        for (weekdayButton in weekdayButtons) {
-            weekButtonSetOnclickListener(weekdayButton, viewHolder)
-        }
-        for (weekendButton in weekendButtons) {
-            weekButtonSetOnclickListener(weekendButton, viewHolder)
-        }
 
         //Select alarm sound
         alarmDetail.sound_button.setOnClickListener{
@@ -196,29 +244,29 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
     }
 
     private fun weekButtonSetOnclickListener(weekButton: Button, holder: AlarmViewHolder) {
-        weekButton.setOnClickListener {
-            if (weekButton.currentTextColor == ContextCompat.getColor(
-                    holder.alarmView.context,
-                    R.color.week_text_unselected_color
-                )
-            ) {
-                weekButton.setTextColor(
-                    ContextCompat.getColor(
-                        holder.alarmView.context,
-                        R.color.week_text_selected_color
-                    )
-                )
-                weekButton.setBackgroundResource(R.drawable.selected_round_button)
-            } else {
-                weekButton.setTextColor(
-                    ContextCompat.getColor(
-                        holder.alarmView.context,
-                        R.color.week_text_unselected_color
-                    )
-                )
-                weekButton.setBackgroundResource(R.drawable.unselected_round_button)
-            }
-        }
+//        weekButton.setOnClickListener {
+//            if (weekButton.currentTextColor == ContextCompat.getColor(
+//                    holder.alarmView.context,
+//                    R.color.week_text_unselected_color
+//                )
+//            ) {
+//                weekButton.setTextColor(
+//                    ContextCompat.getColor(
+//                        holder.alarmView.context,
+//                        R.color.week_text_selected_color
+//                    )
+//                )
+//                weekButton.setBackgroundResource(R.drawable.selected_round_button)
+//            } else {
+//                weekButton.setTextColor(
+//                    ContextCompat.getColor(
+//                        holder.alarmView.context,
+//                        R.color.week_text_unselected_color
+//                    )
+//                )
+//                weekButton.setBackgroundResource(R.drawable.unselected_round_button)
+//            }
+//        }
     }
 
     override fun getItemCount() = alarms.size

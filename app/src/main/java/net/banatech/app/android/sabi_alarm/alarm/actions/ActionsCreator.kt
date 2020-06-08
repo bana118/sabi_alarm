@@ -67,6 +67,15 @@ class ActionsCreator(private val dispatcher: Dispatcher) {
         )
     }
 
+    fun switchDayAlarm(id: Int, dayOfWeek: Int, dayEnable: Boolean) {
+        dispatcher.dispatch(
+            AlarmActions.ALARM_DAY_SWITCH,
+            AlarmActions.KEY_ID, id,
+            AlarmActions.KEY_DAY_OF_WEEK, dayOfWeek,
+            AlarmActions.KEY_DAY_ENABLE, dayEnable
+        )
+    }
+
 //    fun toggleComplete(todo: Todo) {
 //        val id: Long = todo.getId()
 //        val actionType: String =

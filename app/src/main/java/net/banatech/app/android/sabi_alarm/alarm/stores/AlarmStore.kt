@@ -5,6 +5,8 @@ import net.banatech.app.android.sabi_alarm.alarm.actions.AlarmActions
 import net.banatech.app.android.sabi_alarm.alarm.dispatcher.Dispatcher
 import net.banatech.app.android.sabi_alarm.database.Alarm
 import org.greenrobot.eventbus.Subscribe
+import java.util.*
+import kotlin.collections.ArrayList
 
 class AlarmStore (dispatcher: Dispatcher): Store(dispatcher){
     companion object{
@@ -73,6 +75,16 @@ class AlarmStore (dispatcher: Dispatcher): Store(dispatcher){
                 check(id is Int){"Id value must be Int"}
                 check(isReadable is Boolean){"IsRepeatable value must be Int"}
                 switchRepeatable(id, isReadable)
+                emitStoreChange()
+            }
+            AlarmActions.ALARM_DAY_SWITCH -> {
+                val id = action.data[AlarmActions.KEY_ID]
+                val dayOfWeek = action.data[AlarmActions.KEY_DAY_OF_WEEK]
+                val dayEnable = action.data[AlarmActions.KEY_DAY_ENABLE]
+                check(id is Int){"Id value must be Int"}
+                check(dayOfWeek is Int){"DayOfWeek value must be Int"}
+                check(dayEnable is Boolean){"DayEnable value must be Boolean"}
+                switchWeekEnable(id, dayOfWeek, dayEnable)
                 emitStoreChange()
             }
         }
@@ -188,6 +200,25 @@ class AlarmStore (dispatcher: Dispatcher): Store(dispatcher){
             val alarm = iter.next()
             if(alarm.id == id) {
                 alarm.isRepeatable = isReadable
+                break
+            }
+        }
+    }
+
+    private fun switchWeekEnable(id: Int, dayOfWeek: Int, dayEnable: Boolean) {
+        val iter = alarms.iterator()
+        while (iter.hasNext()) {
+            val alarm = iter.next()
+            if(alarm.id == id) {
+                when(dayOfWeek){
+                    Calendar.SUNDAY -> { alarm.isSundayAlarm = dayEnable }
+                    Calendar.MONDAY -> { alarm.isMondayAlarm = dayEnable }
+                    Calendar.TUESDAY -> { alarm.isTuesdayAlarm = dayEnable }
+                    Calendar.WEDNESDAY -> { alarm.isWednesdayAlarm = dayEnable }
+                    Calendar.THURSDAY -> { alarm.isThursdayAlarm = dayEnable }
+                    Calendar.FRIDAY -> { alarm.isFridayAlarm = dayEnable }
+                    Calendar.SATURDAY -> { alarm.isSaturdayAlarm = dayEnable }
+                }
                 break
             }
         }
