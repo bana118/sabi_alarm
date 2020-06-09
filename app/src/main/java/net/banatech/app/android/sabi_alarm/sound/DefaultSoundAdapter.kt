@@ -38,9 +38,9 @@ class DefaultSoundAdapter(private val defaultAlarmSoundList: Array<String>) :
             {
                 "Sound file check box visibility is invalid"
             }
-            if(checkBox.visibility == View.INVISIBLE){
+            if (checkBox.visibility == View.INVISIBLE) {
                 checkBox.visibility = View.VISIBLE
-            }else{
+            } else {
                 checkBox.visibility = View.INVISIBLE
             }
         }

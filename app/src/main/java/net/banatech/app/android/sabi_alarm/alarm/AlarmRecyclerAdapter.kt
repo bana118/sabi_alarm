@@ -55,9 +55,6 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
     }
 
     override fun onBindViewHolder(viewHolder: AlarmViewHolder, position: Int) {
-        //viewHolder.bindView(alarms[position])
-        //val dao = AlarmActivity.db.alarmDao()
-
         viewHolder.alarmView.alarm_time.text = alarms[position].timeText
         viewHolder.alarmView.setOnClickListener {
             listener.onItemClickListener(it, position, alarms[position])
@@ -81,10 +78,8 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
         val alarmSwitch = viewHolder.alarmView.alarm_switch
 
         //Switch alarm on/off
-        //alarmSwitch.isChecked = alarms[position].enable
         alarmSwitch.setOnClickListener {
             actionsCreator.switchEnable(alarms[position].id, alarmSwitch.isChecked)
-            //notifyItemChanged(position)
         }
 
         val alarmDetail = viewHolder.alarmView.include_alarm_detail
@@ -97,18 +92,15 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
         }
 
         //Switch alarm vibration
-        //alarmDetail.vibration_check_box.isChecked = alarms[position].isVibration
         alarmDetail.vibration_check_box.setOnClickListener {
             actionsCreator.switchVibration(
                 alarms[position].id,
                 alarmDetail.vibration_check_box.isChecked
             )
-            //notifyItemChanged(position)
         }
         alarmDetail.vibration_check_box.isChecked = alarms[position].isVibration
 
         //Switch alarm repeatable
-        //alarmDetail.repeat_check_box.isChecked = alarms[position].isRepeatable
         alarmDetail.repeat_check_box.setOnClickListener {
             actionsCreator.switchRepeatable(
                 alarms[position].id,
@@ -119,7 +111,6 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
             } else {
                 alarmDetail.include_alarm_week.visibility = View.GONE
             }
-            //notifyItemChanged(position)
         }
         alarmDetail.repeat_check_box.isChecked = alarms[position].isRepeatable
         if (alarms[position].isRepeatable) {
@@ -157,23 +148,23 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
             week.friday_button,
             week.saturday_button
         )
-        for(i in 0 until 7){
-            weekButtonList[i].setOnClickListener{
+        for (i in 0 until 7) {
+            weekButtonList[i].setOnClickListener {
                 actionsCreator.switchDayAlarm(
                     alarms[position].id,
                     weekList[i],
                     !weekAlarmArray[i]
                 )
                 weekAlarmArray[i] = !weekAlarmArray[i]
-                if(weekAlarmArray[i]) {
+                if (weekAlarmArray[i]) {
                     selectWeekButton(weekButtonList[i], viewHolder)
-                }else{
+                } else {
                     unselectWeekButton(weekButtonList[i], viewHolder)
                 }
             }
-            if(weekAlarmArray[i]) {
+            if (weekAlarmArray[i]) {
                 selectWeekButton(weekButtonList[i], viewHolder)
-            }else{
+            } else {
                 unselectWeekButton(weekButtonList[i], viewHolder)
             }
         }
@@ -186,10 +177,10 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
             alarmDetail.include_alarm_week.visibility = View.GONE
             alarmDetail.vibration_check_box.isChecked = false
             alarmSwitch.isChecked = true
-            for(i in 0 until 7){
-                if(i == 0 || i == 6){
+            for (i in 0 until 7) {
+                if (i == 0 || i == 6) {
                     unselectWeekButton(weekButtonList[i], viewHolder)
-                }else{
+                } else {
                     selectWeekButton(weekButtonList[i], viewHolder)
                 }
             }
@@ -239,7 +230,6 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
         Log.d("current", this.alarms.toString())
         Log.d("next", alarms.toString())
         this.alarms = alarms
-        //notifyDataSetChanged()
     }
 
     interface OnItemClickListener {

@@ -14,7 +14,7 @@ abstract class AlarmDatabase : RoomDatabase() {
         private var instance: AlarmDatabase? = null
 
         fun getInstance(context: Context): AlarmDatabase {
-            if(instance == null){
+            if (instance == null) {
                 instance = Room.databaseBuilder(context, AlarmDatabase::class.java, dbName)
                     .fallbackToDestructiveMigration()
                     .build()

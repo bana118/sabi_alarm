@@ -1,7 +1,7 @@
 package net.banatech.app.android.sabi_alarm.alarm.actions
 
 class Action(val type: String, val data: HashMap<String, Any>) {
-    companion object{
+    companion object {
         fun type(type: String): Builder {
             return Builder.with(type)
         }
@@ -11,7 +11,7 @@ class Action(val type: String, val data: HashMap<String, Any>) {
         private lateinit var type: String
         private lateinit var data: HashMap<String, Any>
 
-        fun with(type: String):Builder {
+        fun with(type: String): Builder {
             this.type = type
             this.data = HashMap()
             return this
@@ -23,7 +23,7 @@ class Action(val type: String, val data: HashMap<String, Any>) {
         }
 
         fun build(): Action {
-            check(type.isNotEmpty()){
+            check(type.isNotEmpty()) {
                 "At least one key is required."
             }
             return Action(type, data)

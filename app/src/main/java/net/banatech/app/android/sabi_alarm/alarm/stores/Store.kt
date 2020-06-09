@@ -28,8 +28,8 @@ abstract class Store(private val dispatcher: Dispatcher) {
     abstract fun onAction(action: Action)
 
     interface StoreEvent
-    interface StoreCreateEvent: StoreEvent
-    interface StoreTimeChangeEvent: StoreEvent
-    interface StoreChangeEvent: StoreEvent
-    interface StoreDestroyEvent: StoreEvent
+    interface StoreCreateEvent : StoreEvent
+    interface StoreTimeChangeEvent : StoreEvent
+    interface StoreChangeEvent : StoreEvent
+    interface StoreDestroyEvent : StoreEvent
 }

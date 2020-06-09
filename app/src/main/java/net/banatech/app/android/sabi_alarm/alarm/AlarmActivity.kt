@@ -38,6 +38,7 @@ class AlarmActivity : AppCompatActivity() {
     companion object {
         lateinit var db: AlarmDatabase
     }
+
     private var timeDataset: ArrayList<Alarm> = arrayListOf()
     private var viewManager = LinearLayoutManager(this)
 
@@ -91,14 +92,13 @@ class AlarmActivity : AppCompatActivity() {
             override fun onItemClickListener(view: View, position: Int, alarm: Alarm) {
                 actionCreator.switchDetail(alarm.id, !alarm.isShowDetail)
                 val alarmDetail = view.include_alarm_detail
-                if(alarm.isShowDetail){
+                if (alarm.isShowDetail) {
                     alarmDetail.visibility = View.VISIBLE
                     view.alarm_down_arrow.visibility = View.GONE
-                }else{
+                } else {
                     alarmDetail.visibility = View.GONE
                     view.alarm_down_arrow.visibility = View.VISIBLE
                 }
-                //listAdapter.notifyItemChanged(position)
             }
         })
     }
@@ -126,7 +126,7 @@ class AlarmActivity : AppCompatActivity() {
         )
         val dao = db.alarmDao()
         CoroutineScope(Dispatchers.Main).launch {
-            withContext(Dispatchers.Default){
+            withContext(Dispatchers.Default) {
                 dao.insertAll(alarmData)
                 Log.d("debug", dao.getAll().toString())
             }
@@ -136,15 +136,11 @@ class AlarmActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
@@ -156,7 +152,7 @@ class AlarmActivity : AppCompatActivity() {
     }
 
     private fun notifyDestroy() {
-        if(AlarmStore.canUndo) {
+        if (AlarmStore.canUndo) {
             val snackbar = Snackbar.make(main_layout, "削除しました", Snackbar.LENGTH_LONG)
             snackbar.setAction("元に戻す") {
                 actionCreator.undoDestroy()
@@ -178,9 +174,8 @@ class AlarmActivity : AppCompatActivity() {
         dispatcher.unregister(alarmStore)
     }
 
-    private fun addAlarm(hour: Int, minute: Int){
+    private fun addAlarm(hour: Int, minute: Int) {
         actionCreator.create(hour, minute)
-        //listAdapter.notifyItemInserted(timeDataset.size - 1)
         listAdapter.notifyDataSetChanged()
     }
 

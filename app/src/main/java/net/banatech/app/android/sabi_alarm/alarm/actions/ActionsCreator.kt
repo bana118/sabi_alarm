@@ -76,24 +76,6 @@ class ActionsCreator(private val dispatcher: Dispatcher) {
         )
     }
 
-//    fun toggleComplete(todo: Todo) {
-//        val id: Long = todo.getId()
-//        val actionType: String =
-//            if (todo.isComplete()) TodoActions.TODO_UNDO_COMPLETE else TodoActions.TODO_COMPLETE
-//        dispatcher.dispatch(
-//            actionType,
-//            TodoActions.KEY_ID, id
-//        )
-//    }
-//
-//    fun toggleCompleteAll() {
-//        dispatcher.dispatch(TodoActions.TODO_TOGGLE_COMPLETE_ALL)
-//    }
-//
-//    fun destroyCompleted() {
-//        dispatcher.dispatch(TodoActions.TODO_DESTROY_COMPLETED)
-//    }
-
     companion object {
         private var instance: ActionsCreator? = null
         operator fun get(dispatcher: Dispatcher): ActionsCreator? {

@@ -20,4 +20,4 @@ object AlarmActions {
     const val KEY_IS_REPEATABLE = "key-is-repeatable"
     const val KEY_DAY_ENABLE = "key-day-enable"
     const val KEY_DAY_OF_WEEK = "key-week-day-of-week"
- }
+}

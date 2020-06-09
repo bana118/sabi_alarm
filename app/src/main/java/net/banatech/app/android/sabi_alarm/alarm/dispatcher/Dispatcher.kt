@@ -20,19 +20,19 @@ object Dispatcher {
     }
 
     fun dispatch(type: String, vararg data: Any) {
-        require(type.isNotEmpty()){ "Type must not be empty" }
-        require(data.size % 2 == 0){"Data must be a valid list of key,value pairs"}
+        require(type.isNotEmpty()) { "Type must not be empty" }
+        require(data.size % 2 == 0) { "Data must be a valid list of key,value pairs" }
 
         val actionBuilder = Action.type(type)
-        for(i in data.indices step 2){
+        for (i in data.indices step 2) {
             val key = data[i].toString()
-            val value = data[i+1]
+            val value = data[i + 1]
             actionBuilder.bundle(key, value)
         }
         post(actionBuilder.build())
     }
 
-    private fun post(event: Any){
+    private fun post(event: Any) {
         bus.post(event)
     }
 

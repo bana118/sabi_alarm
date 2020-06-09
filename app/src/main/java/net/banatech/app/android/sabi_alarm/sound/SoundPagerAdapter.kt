@@ -39,11 +39,12 @@ class SoundPagerAdapter(fragmentActivity: FragmentActivity) :
             val soundList = view.default_sound_list
             val assetManager = this.resources.assets
             val defaultSoundDir = assetManager.list("default")
-            check(defaultSoundDir != null){"default sound list must not be null"}
-            soundList.layoutManager =  LinearLayoutManager(this.context)
+            check(defaultSoundDir != null) { "default sound list must not be null" }
+            soundList.layoutManager = LinearLayoutManager(this.context)
             val defaultSoundAdapter = DefaultSoundAdapter(defaultSoundDir)
             soundList.adapter = defaultSoundAdapter
-            val dividerItemDecoration = DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL)
+            val dividerItemDecoration =
+                DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL)
             soundList.addItemDecoration(dividerItemDecoration)
         }
     }

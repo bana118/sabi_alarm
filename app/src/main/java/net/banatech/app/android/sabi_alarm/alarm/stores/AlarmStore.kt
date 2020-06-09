@@ -8,8 +8,8 @@ import org.greenrobot.eventbus.Subscribe
 import java.util.*
 import kotlin.collections.ArrayList
 
-class AlarmStore (dispatcher: Dispatcher): Store(dispatcher){
-    companion object{
+class AlarmStore(dispatcher: Dispatcher) : Store(dispatcher) {
+    companion object {
         val alarms: ArrayList<Alarm> = ArrayList()
         private lateinit var lastDeleted: Alarm
         var canUndo = false
@@ -17,18 +17,18 @@ class AlarmStore (dispatcher: Dispatcher): Store(dispatcher){
 
     @Subscribe
     @SuppressWarnings("unchecked")
-    override fun onAction(action: Action){
-        when(action.type){
+    override fun onAction(action: Action) {
+        when (action.type) {
             AlarmActions.ALARM_CREATE -> {
                 val hour = action.data[AlarmActions.KEY_HOUR]
                 val minute = action.data[AlarmActions.KEY_MINUTE]
-                check(hour is Int && minute is Int){"Hour and minute value must be Int"}
+                check(hour is Int && minute is Int) { "Hour and minute value must be Int" }
                 create(hour, minute)
                 emitStoreCreate()
             }
             AlarmActions.ALARM_DESTROY -> {
                 val id = action.data[AlarmActions.KEY_ID]
-                check(id is Int){"Id value must be Int"}
+                check(id is Int) { "Id value must be Int" }
                 destroy(id)
                 emitStoreDestroy()
             }
@@ -40,40 +40,40 @@ class AlarmStore (dispatcher: Dispatcher): Store(dispatcher){
                 val id = action.data[AlarmActions.KEY_ID]
                 val hour = action.data[AlarmActions.KEY_HOUR]
                 val minute = action.data[AlarmActions.KEY_MINUTE]
-                check(id is Int){"Id value must be Int"}
-                check(hour is Int && minute is Int){"Hour and minute value must be Int"}
+                check(id is Int) { "Id value must be Int" }
+                check(hour is Int && minute is Int) { "Hour and minute value must be Int" }
                 edit(id, hour, minute)
                 emitStoreTimeChange()
             }
             AlarmActions.ALARM_ENABLE_SWITCH -> {
                 val id = action.data[AlarmActions.KEY_ID]
                 val enable = action.data[AlarmActions.KEY_ENABLE]
-                check(id is Int){"Id value must be Int"}
-                check(enable is Boolean){"Enable value must be Int"}
+                check(id is Int) { "Id value must be Int" }
+                check(enable is Boolean) { "Enable value must be Int" }
                 switchEnable(id, enable)
                 emitStoreChange()
             }
             AlarmActions.ALARM_IS_SHOW_DETAIL_SWITCH -> {
                 val id = action.data[AlarmActions.KEY_ID]
                 val isShowDetail = action.data[AlarmActions.KEY_IS_SHOW_DETAIL_SWITCH]
-                check(id is Int){"Id value must be Int"}
-                check(isShowDetail is Boolean){"IsShowDetail value must be Int"}
+                check(id is Int) { "Id value must be Int" }
+                check(isShowDetail is Boolean) { "IsShowDetail value must be Int" }
                 switchDetail(id, isShowDetail)
                 emitStoreChange()
             }
             AlarmActions.ALARM_IS_VIBRATION_SWITCH -> {
                 val id = action.data[AlarmActions.KEY_ID]
                 val isVibration = action.data[AlarmActions.KEY_IS_VIBRATION]
-                check(id is Int){"Id value must be Int"}
-                check(isVibration is Boolean){"IsVibration value must be Int"}
+                check(id is Int) { "Id value must be Int" }
+                check(isVibration is Boolean) { "IsVibration value must be Int" }
                 switchVibration(id, isVibration)
                 emitStoreChange()
             }
             AlarmActions.ALARM_IS_REPEATABLE_SWITCH -> {
                 val id = action.data[AlarmActions.KEY_ID]
                 val isReadable = action.data[AlarmActions.KEY_IS_REPEATABLE]
-                check(id is Int){"Id value must be Int"}
-                check(isReadable is Boolean){"IsRepeatable value must be Int"}
+                check(id is Int) { "Id value must be Int" }
+                check(isReadable is Boolean) { "IsRepeatable value must be Int" }
                 switchRepeatable(id, isReadable)
                 emitStoreChange()
             }
@@ -81,9 +81,9 @@ class AlarmStore (dispatcher: Dispatcher): Store(dispatcher){
                 val id = action.data[AlarmActions.KEY_ID]
                 val dayOfWeek = action.data[AlarmActions.KEY_DAY_OF_WEEK]
                 val dayEnable = action.data[AlarmActions.KEY_DAY_ENABLE]
-                check(id is Int){"Id value must be Int"}
-                check(dayOfWeek is Int){"DayOfWeek value must be Int"}
-                check(dayEnable is Boolean){"DayEnable value must be Boolean"}
+                check(id is Int) { "Id value must be Int" }
+                check(dayOfWeek is Int) { "DayOfWeek value must be Int" }
+                check(dayEnable is Boolean) { "DayEnable value must be Boolean" }
                 switchWeekEnable(id, dayOfWeek, dayEnable)
                 emitStoreChange()
             }
@@ -120,7 +120,7 @@ class AlarmStore (dispatcher: Dispatcher): Store(dispatcher){
         val iter = alarms.iterator()
         while (iter.hasNext()) {
             val alarm = iter.next()
-            if(alarm.id == id) {
+            if (alarm.id == id) {
                 lastDeleted = alarm.copy()
                 canUndo = true
                 iter.remove()
@@ -133,7 +133,7 @@ class AlarmStore (dispatcher: Dispatcher): Store(dispatcher){
         val iter = alarms.iterator()
         while (iter.hasNext()) {
             val alarm = iter.next()
-            if(alarm.id == id) {
+            if (alarm.id == id) {
                 return alarm
             }
         }
@@ -141,7 +141,7 @@ class AlarmStore (dispatcher: Dispatcher): Store(dispatcher){
     }
 
     private fun undoDestroy() {
-        if(canUndo){
+        if (canUndo) {
             addElement(lastDeleted.copy())
             canUndo = false
         }
@@ -152,7 +152,7 @@ class AlarmStore (dispatcher: Dispatcher): Store(dispatcher){
         val timeText = String.format("%02d:%02d", hour, minute)
         while (iter.hasNext()) {
             val alarm = iter.next()
-            if(alarm.id == id) {
+            if (alarm.id == id) {
                 alarm.hour = hour
                 alarm.minute = minute
                 alarm.timeText = timeText
@@ -165,7 +165,7 @@ class AlarmStore (dispatcher: Dispatcher): Store(dispatcher){
         val iter = alarms.iterator()
         while (iter.hasNext()) {
             val alarm = iter.next()
-            if(alarm.id == id) {
+            if (alarm.id == id) {
                 alarm.enable = enable
                 break
             }
@@ -176,7 +176,7 @@ class AlarmStore (dispatcher: Dispatcher): Store(dispatcher){
         val iter = alarms.iterator()
         while (iter.hasNext()) {
             val alarm = iter.next()
-            if(alarm.id == id) {
+            if (alarm.id == id) {
                 alarm.isShowDetail = isShowDetail
                 break
             }
@@ -187,7 +187,7 @@ class AlarmStore (dispatcher: Dispatcher): Store(dispatcher){
         val iter = alarms.iterator()
         while (iter.hasNext()) {
             val alarm = iter.next()
-            if(alarm.id == id) {
+            if (alarm.id == id) {
                 alarm.isVibration = isVibration
                 break
             }
@@ -198,7 +198,7 @@ class AlarmStore (dispatcher: Dispatcher): Store(dispatcher){
         val iter = alarms.iterator()
         while (iter.hasNext()) {
             val alarm = iter.next()
-            if(alarm.id == id) {
+            if (alarm.id == id) {
                 alarm.isRepeatable = isReadable
                 break
             }
@@ -209,15 +209,29 @@ class AlarmStore (dispatcher: Dispatcher): Store(dispatcher){
         val iter = alarms.iterator()
         while (iter.hasNext()) {
             val alarm = iter.next()
-            if(alarm.id == id) {
-                when(dayOfWeek){
-                    Calendar.SUNDAY -> { alarm.isSundayAlarm = dayEnable }
-                    Calendar.MONDAY -> { alarm.isMondayAlarm = dayEnable }
-                    Calendar.TUESDAY -> { alarm.isTuesdayAlarm = dayEnable }
-                    Calendar.WEDNESDAY -> { alarm.isWednesdayAlarm = dayEnable }
-                    Calendar.THURSDAY -> { alarm.isThursdayAlarm = dayEnable }
-                    Calendar.FRIDAY -> { alarm.isFridayAlarm = dayEnable }
-                    Calendar.SATURDAY -> { alarm.isSaturdayAlarm = dayEnable }
+            if (alarm.id == id) {
+                when (dayOfWeek) {
+                    Calendar.SUNDAY -> {
+                        alarm.isSundayAlarm = dayEnable
+                    }
+                    Calendar.MONDAY -> {
+                        alarm.isMondayAlarm = dayEnable
+                    }
+                    Calendar.TUESDAY -> {
+                        alarm.isTuesdayAlarm = dayEnable
+                    }
+                    Calendar.WEDNESDAY -> {
+                        alarm.isWednesdayAlarm = dayEnable
+                    }
+                    Calendar.THURSDAY -> {
+                        alarm.isThursdayAlarm = dayEnable
+                    }
+                    Calendar.FRIDAY -> {
+                        alarm.isFridayAlarm = dayEnable
+                    }
+                    Calendar.SATURDAY -> {
+                        alarm.isSaturdayAlarm = dayEnable
+                    }
                 }
                 break
             }
@@ -226,7 +240,6 @@ class AlarmStore (dispatcher: Dispatcher): Store(dispatcher){
 
     private fun addElement(clone: Alarm) {
         alarms.add(clone)
-        //alarms.sortWith(compareBy({it.hour}, {it.minute}))
     }
 
     override fun createEvent(): StoreCreateEvent {
@@ -245,8 +258,8 @@ class AlarmStore (dispatcher: Dispatcher): Store(dispatcher){
         return AlarmStoreDestroyEvent()
     }
 
-    class AlarmStoreCreateEvent: StoreCreateEvent
-    class AlarmStoreTimeChangeEvent: StoreTimeChangeEvent
-    class AlarmStoreChangeEvent: StoreChangeEvent
-    class AlarmStoreDestroyEvent: StoreDestroyEvent
+    class AlarmStoreCreateEvent : StoreCreateEvent
+    class AlarmStoreTimeChangeEvent : StoreTimeChangeEvent
+    class AlarmStoreChangeEvent : StoreChangeEvent
+    class AlarmStoreDestroyEvent : StoreDestroyEvent
 }
