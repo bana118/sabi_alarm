@@ -11,14 +11,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import kotlinx.android.synthetic.main.default_sound_view.view.*
 import net.banatech.app.android.sabi_alarm.R
+import net.banatech.app.android.sabi_alarm.database.Alarm
 
 class SoundPagerAdapter(fragmentActivity: FragmentActivity) :
     FragmentStateAdapter(fragmentActivity) {
-
     override fun getItemCount(): Int = 2
 
     override fun createFragment(position: Int): Fragment {
-        // Return a NEW fragment instance in createFragment(int)
         return if (position == 0) {
             DefaultSoundPageFragment()
         } else {
@@ -41,7 +40,7 @@ class SoundPagerAdapter(fragmentActivity: FragmentActivity) :
             val defaultSoundDir = assetManager.list("default")
             check(defaultSoundDir != null) { "default sound list must not be null" }
             soundList.layoutManager = LinearLayoutManager(this.context)
-            val defaultSoundAdapter = DefaultSoundAdapter(defaultSoundDir)
+            val defaultSoundAdapter = DefaultSoundRecyclerAdapter(defaultSoundDir)
             soundList.adapter = defaultSoundAdapter
             val dividerItemDecoration =
                 DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL)

@@ -15,12 +15,24 @@ import kotlinx.android.synthetic.main.default_sound_view.view.*
 import kotlinx.android.synthetic.main.sound_pager_view.*
 import kotlinx.android.synthetic.main.sound_select.*
 import net.banatech.app.android.sabi_alarm.R
+import net.banatech.app.android.sabi_alarm.alarm.stores.AlarmStore
+import net.banatech.app.android.sabi_alarm.database.Alarm
 
 class SoundSelectActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.sound_select)
         setSupportActionBar(toolbar)
+        val selectedAlarmId = intent.getIntExtra("ALARM_ID", 0)
+        var selectedAlarm: Alarm? = null
+        for(alarm in AlarmStore.alarms) {
+            if(alarm.id == selectedAlarmId){
+                selectedAlarm = alarm
+            }
+        }
+        check(selectedAlarm != null){ "SelectedAlarm must not be null" }
+        AlarmStore.selectedAlarm = selectedAlarm
         sound_pager.adapter = SoundPagerAdapter(this)
         sound_pager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         TabLayoutMediator(tab_layout, sound_pager) { tab, position ->

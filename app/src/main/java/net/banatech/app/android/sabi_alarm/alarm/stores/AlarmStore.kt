@@ -12,6 +12,7 @@ class AlarmStore(dispatcher: Dispatcher) : Store(dispatcher) {
     companion object {
         val alarms: ArrayList<Alarm> = ArrayList()
         private lateinit var lastDeleted: Alarm
+        lateinit var selectedAlarm: Alarm
         var canUndo = false
     }
 
@@ -85,6 +86,14 @@ class AlarmStore(dispatcher: Dispatcher) : Store(dispatcher) {
                 check(dayOfWeek is Int) { "DayOfWeek value must be Int" }
                 check(dayEnable is Boolean) { "DayEnable value must be Boolean" }
                 switchWeekEnable(id, dayOfWeek, dayEnable)
+                emitStoreChange()
+            }
+            AlarmActions.ALARM_SOUND_SELECT -> {
+                val id = action.data[AlarmActions.KEY_ID]
+                val soundFileName = action.data[AlarmActions.KEY_SOUND_FILE_NAME]
+                check(id is Int) { "Id value must be Int" }
+                check(soundFileName is String) { "SoundFileName value must be String" }
+                selectSound(id, soundFileName)
                 emitStoreChange()
             }
         }
@@ -233,6 +242,17 @@ class AlarmStore(dispatcher: Dispatcher) : Store(dispatcher) {
                         alarm.isSaturdayAlarm = dayEnable
                     }
                 }
+                break
+            }
+        }
+    }
+
+    private fun selectSound(id: Int, soundFileName: String){
+        val iter = alarms.iterator()
+        while (iter.hasNext()) {
+            val alarm = iter.next()
+            if (alarm.id == id) {
+                alarm.soundFileName = soundFileName
                 break
             }
         }

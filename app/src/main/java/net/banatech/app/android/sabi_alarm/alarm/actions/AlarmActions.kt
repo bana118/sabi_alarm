@@ -10,6 +10,7 @@ object AlarmActions {
     const val ALARM_IS_VIBRATION_SWITCH = "alarm-is-vibration-switch"
     const val ALARM_IS_REPEATABLE_SWITCH = "alarm-is-repeatable-switch"
     const val ALARM_DAY_SWITCH = "alarm-day-switch"
+    const val ALARM_SOUND_SELECT = "alarm-sound-select"
 
     const val KEY_ID = "key-id"
     const val KEY_HOUR = "key-hour"
@@ -20,4 +21,5 @@ object AlarmActions {
     const val KEY_IS_REPEATABLE = "key-is-repeatable"
     const val KEY_DAY_ENABLE = "key-day-enable"
     const val KEY_DAY_OF_WEEK = "key-week-day-of-week"
+    const val KEY_SOUND_FILE_NAME = "key-sound-file-name"
 }

@@ -76,6 +76,14 @@ class ActionsCreator(private val dispatcher: Dispatcher) {
         )
     }
 
+    fun seletSound(id: Int, soundFileName: String) {
+        dispatcher.dispatch(
+            AlarmActions.ALARM_SOUND_SELECT,
+            AlarmActions.KEY_ID,  id,
+            AlarmActions.KEY_SOUND_FILE_NAME, soundFileName
+        )
+    }
+
     companion object {
         private var instance: ActionsCreator? = null
         operator fun get(dispatcher: Dispatcher): ActionsCreator? {

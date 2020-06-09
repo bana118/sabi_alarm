@@ -191,7 +191,9 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
 
         //Select alarm sound
         alarmDetail.sound_button.setOnClickListener {
-            val intent = Intent(alarmDetail.context, SoundSelectActivity::class.java)
+            val intent = Intent(alarmDetail.context, SoundSelectActivity::class.java).apply {
+                putExtra("ALARM_ID", alarms[position].id)
+            }
             alarmDetail.context.startActivity(intent)
         }
     }
@@ -227,8 +229,8 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
 //            Log.d("isRepeatable", alarm.isRepeatable.toString())
 //        }
         alarms.sortWith(compareBy({ it.hour }, { it.minute }))
-        Log.d("current", this.alarms.toString())
-        Log.d("next", alarms.toString())
+//        Log.d("current", this.alarms.toString())
+//        Log.d("next", alarms.toString())
         this.alarms = alarms
     }
 
