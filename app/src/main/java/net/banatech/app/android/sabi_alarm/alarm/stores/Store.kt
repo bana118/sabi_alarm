@@ -3,22 +3,23 @@ package net.banatech.app.android.sabi_alarm.alarm.stores
 import net.banatech.app.android.sabi_alarm.alarm.actions.Action
 import net.banatech.app.android.sabi_alarm.alarm.dispatcher.Dispatcher
 
-abstract class Store(private val dispatcher: Dispatcher) {
+
+abstract class Store {
 
     fun emitStoreCreate() {
-        dispatcher.emitEvent(createEvent())
+        Dispatcher.emitEvent(createEvent())
     }
 
     fun emitStoreTimeChange() {
-        dispatcher.emitEvent(timeChangeEvent())
+        Dispatcher.emitEvent(timeChangeEvent())
     }
 
     fun emitStoreChange() {
-        dispatcher.emitEvent(changeEvent())
+        Dispatcher.emitEvent(changeEvent())
     }
 
     fun emitStoreDestroy() {
-        dispatcher.emitEvent(destroyEvent())
+        Dispatcher.emitEvent(destroyEvent())
     }
 
     abstract fun createEvent(): StoreCreateEvent

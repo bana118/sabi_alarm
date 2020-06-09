@@ -63,8 +63,8 @@ class AlarmActivity : AppCompatActivity() {
 
     private fun initDependencies() {
         dispatcher = Dispatcher
-        actionCreator = ActionsCreator(dispatcher)
-        alarmStore = AlarmStore(dispatcher)
+        actionCreator = ActionsCreator
+        alarmStore = AlarmStore
     }
 
     private fun setupView() {

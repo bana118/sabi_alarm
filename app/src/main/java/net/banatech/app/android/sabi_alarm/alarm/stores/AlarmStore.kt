@@ -2,19 +2,16 @@ package net.banatech.app.android.sabi_alarm.alarm.stores
 
 import net.banatech.app.android.sabi_alarm.alarm.actions.Action
 import net.banatech.app.android.sabi_alarm.alarm.actions.AlarmActions
-import net.banatech.app.android.sabi_alarm.alarm.dispatcher.Dispatcher
 import net.banatech.app.android.sabi_alarm.database.Alarm
 import org.greenrobot.eventbus.Subscribe
 import java.util.*
 import kotlin.collections.ArrayList
 
-class AlarmStore(dispatcher: Dispatcher) : Store(dispatcher) {
-    companion object {
-        val alarms: ArrayList<Alarm> = ArrayList()
-        private lateinit var lastDeleted: Alarm
-        lateinit var selectedAlarm: Alarm
-        var canUndo = false
-    }
+object AlarmStore : Store() {
+    val alarms: ArrayList<Alarm> = ArrayList()
+    private lateinit var lastDeleted: Alarm
+    lateinit var selectedAlarm: Alarm
+    var canUndo = false
 
     @Subscribe
     @SuppressWarnings("unchecked")
