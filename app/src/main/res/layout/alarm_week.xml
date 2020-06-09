@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/alarm_week_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/sunday_button"
+        android:layout_width="@dimen/week_button_size"
+        android:layout_height="@dimen/week_button_size"
+        android:background="@drawable/unselected_round_button"
+        android:text="@string/sunday"
+        android:textColor="@color/week_text_unselected_color"
+        app:layout_constraintEnd_toStartOf="@+id/monday_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/monday_button"
+        android:layout_width="@dimen/week_button_size"
+        android:layout_height="@dimen/week_button_size"
+        android:background="@drawable/selected_round_button"
+        android:text="@string/monday"
+        android:textColor="@color/week_text_selected_color"
+        app:layout_constraintEnd_toStartOf="@+id/tuesday_button"
+        app:layout_constraintStart_toEndOf="@+id/sunday_button"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/tuesday_button"
+        android:layout_width="@dimen/week_button_size"
+        android:layout_height="@dimen/week_button_size"
+        android:background="@drawable/selected_round_button"
+        android:text="@string/tuesday"
+        android:textColor="@color/week_text_selected_color"
+        app:layout_constraintEnd_toStartOf="@+id/wednesday_button"
+        app:layout_constraintStart_toEndOf="@+id/monday_button"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/wednesday_button"
+        android:layout_width="@dimen/week_button_size"
+        android:layout_height="@dimen/week_button_size"
+        android:background="@drawable/selected_round_button"
+        android:text="@string/wednesday"
+        android:textColor="@color/week_text_selected_color"
+        app:layout_constraintEnd_toStartOf="@+id/thursday_button"
+        app:layout_constraintStart_toEndOf="@+id/tuesday_button"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/thursday_button"
+        android:layout_width="@dimen/week_button_size"
+        android:layout_height="@dimen/week_button_size"
+        android:background="@drawable/selected_round_button"
+        android:text="@string/thursday"
+        android:textColor="@color/week_text_selected_color"
+        app:layout_constraintEnd_toStartOf="@+id/friday_button"
+        app:layout_constraintStart_toEndOf="@+id/wednesday_button"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/friday_button"
+        android:layout_width="@dimen/week_button_size"
+        android:layout_height="@dimen/week_button_size"
+        android:background="@drawable/selected_round_button"
+        android:text="@string/friday"
+        android:textColor="@color/week_text_selected_color"
+        app:layout_constraintEnd_toStartOf="@+id/saturday_button"
+        app:layout_constraintStart_toEndOf="@+id/thursday_button"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/saturday_button"
+        android:layout_width="@dimen/week_button_size"
+        android:layout_height="@dimen/week_button_size"
+        android:background="@drawable/unselected_round_button"
+        android:text="@string/saturday"
+        android:textColor="@color/week_text_unselected_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/friday_button"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
