@@ -196,6 +196,7 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
             }
             alarmDetail.context.startActivity(intent)
         }
+        alarmDetail.sound_button.text = alarms[position].soundFileName
     }
 
     private fun selectWeekButton(weekButton: Button, viewHolder: AlarmViewHolder) {

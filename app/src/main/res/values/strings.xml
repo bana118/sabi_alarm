@@ -14,4 +14,5 @@
     <string name="friday">金</string>
     <string name="saturday">土</string>
     <string name="sound_file_check_description">チェック</string>
+    <string name="default_sound_file_name">beethoven_no5_1st.mp3</string>
 </resources>

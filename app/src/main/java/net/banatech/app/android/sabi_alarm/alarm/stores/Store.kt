@@ -22,15 +22,22 @@ abstract class Store {
         Dispatcher.emitEvent(destroyEvent())
     }
 
+    fun emitStoreSoundSelect() {
+        Dispatcher.emitEvent(soundSelectEvent())
+    }
+
+    abstract fun onAction(action: Action)
     abstract fun createEvent(): StoreCreateEvent
     abstract fun timeChangeEvent(): StoreTimeChangeEvent
     abstract fun changeEvent(): StoreChangeEvent
     abstract fun destroyEvent(): StoreDestroyEvent
-    abstract fun onAction(action: Action)
+    abstract fun soundSelectEvent(): StoreSoundSelectEvent
+
 
     interface StoreEvent
     interface StoreCreateEvent : StoreEvent
     interface StoreTimeChangeEvent : StoreEvent
     interface StoreChangeEvent : StoreEvent
     interface StoreDestroyEvent : StoreEvent
+    interface StoreSoundSelectEvent: StoreEvent
 }

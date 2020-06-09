@@ -76,7 +76,7 @@ object ActionsCreator {
         )
     }
 
-    fun seletSound(id: Int, soundFileName: String) {
+    fun selectSound(id: Int, soundFileName: String) {
         Dispatcher.dispatch(
             AlarmActions.ALARM_SOUND_SELECT,
             AlarmActions.KEY_ID,  id,

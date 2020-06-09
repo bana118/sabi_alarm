@@ -7,17 +7,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <Button
-        android:id="@+id/delete_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:drawableLeft="@android:drawable/ic_menu_delete"
-        android:text="@string/delete_alarm"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/sound_button"
-        app:layout_constraintTop_toBottomOf="@+id/vibration_check_box" />
-
     <CheckBox
         android:id="@+id/repeat_check_box"
         android:layout_width="wrap_content"
@@ -53,14 +42,30 @@
 
     <Button
         android:id="@+id/sound_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:drawableLeft="@drawable/ic_audiotrack_black_24dp"
+        android:text="@string/default_sound_file_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vibration_check_box" />
+
+    <Button
+        android:id="@+id/delete_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
-        android:drawableLeft="@drawable/ic_audiotrack_black_24dp"
+        android:drawableLeft="@android:drawable/ic_menu_delete"
+        android:text="@string/delete_alarm"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/vibration_check_box" />
+        app:layout_constraintTop_toBottomOf="@+id/sound_button" />
 
     <ImageView
         android:id="@+id/alarm_up_arrow"

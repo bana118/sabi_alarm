@@ -91,7 +91,7 @@ object AlarmStore : Store() {
                 check(id is Int) { "Id value must be Int" }
                 check(soundFileName is String) { "SoundFileName value must be String" }
                 selectSound(id, soundFileName)
-                emitStoreChange()
+                emitStoreSoundSelect()
             }
         }
     }
@@ -275,8 +275,13 @@ object AlarmStore : Store() {
         return AlarmStoreDestroyEvent()
     }
 
+    override fun soundSelectEvent(): StoreSoundSelectEvent {
+        return AlarmSoundSelectEvent()
+    }
+
     class AlarmStoreCreateEvent : StoreCreateEvent
     class AlarmStoreTimeChangeEvent : StoreTimeChangeEvent
     class AlarmStoreChangeEvent : StoreChangeEvent
     class AlarmStoreDestroyEvent : StoreDestroyEvent
+    class AlarmSoundSelectEvent : StoreSoundSelectEvent
 }

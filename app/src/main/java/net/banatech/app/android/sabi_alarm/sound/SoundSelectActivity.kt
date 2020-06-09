@@ -1,6 +1,8 @@
 package net.banatech.app.android.sabi_alarm.sound
 
 import android.os.Bundle
+import android.util.Log
+import android.view.Display
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -15,8 +17,10 @@ import kotlinx.android.synthetic.main.default_sound_view.view.*
 import kotlinx.android.synthetic.main.sound_pager_view.*
 import kotlinx.android.synthetic.main.sound_select.*
 import net.banatech.app.android.sabi_alarm.R
+import net.banatech.app.android.sabi_alarm.alarm.dispatcher.Dispatcher
 import net.banatech.app.android.sabi_alarm.alarm.stores.AlarmStore
 import net.banatech.app.android.sabi_alarm.database.Alarm
+import org.greenrobot.eventbus.Subscribe
 
 class SoundSelectActivity : AppCompatActivity() {
 
@@ -46,6 +50,18 @@ class SoundSelectActivity : AppCompatActivity() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        Dispatcher.register(this)
+        Dispatcher.register(AlarmStore)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Dispatcher.unregister(this)
+        Dispatcher.unregister(AlarmStore)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
@@ -56,5 +72,10 @@ class SoundSelectActivity : AppCompatActivity() {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    @Subscribe
+    fun onAlarmSoundSelectyEvent(event: AlarmStore.AlarmSoundSelectEvent) {
+        Log.d("event", "alarm sound select event 2")
     }
 }

@@ -166,6 +166,7 @@ class AlarmActivity : AppCompatActivity() {
         super.onResume()
         dispatcher.register(this)
         dispatcher.register(alarmStore)
+        listAdapter.notifyDataSetChanged()
     }
 
     override fun onPause() {
@@ -202,5 +203,10 @@ class AlarmActivity : AppCompatActivity() {
         Log.d("event", "alarm destroy event")
         updateUI()
         notifyDestroy()
+    }
+
+    @Subscribe
+    fun onAlarmSoundSelectyEvent(event: AlarmStore.AlarmSoundSelectEvent) {
+        Log.d("event", "alarm sound select even 1")
     }
 }

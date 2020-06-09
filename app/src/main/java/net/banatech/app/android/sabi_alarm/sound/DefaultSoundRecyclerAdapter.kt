@@ -1,12 +1,15 @@
 package net.banatech.app.android.sabi_alarm.sound
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.sound_file_view.view.*
 import net.banatech.app.android.sabi_alarm.R
+import net.banatech.app.android.sabi_alarm.alarm.actions.ActionsCreator
+import net.banatech.app.android.sabi_alarm.alarm.stores.AlarmStore
 
 class DefaultSoundRecyclerAdapter(private val defaultAlarmSoundList: Array<String>) :
     RecyclerView.Adapter<DefaultSoundRecyclerAdapter.DefaultSoundViewHolder>() {
@@ -32,18 +35,25 @@ class DefaultSoundRecyclerAdapter(private val defaultAlarmSoundList: Array<Strin
         val assetManager = holder.soundFileView.resources.assets
         //val soundFile = assetManager.open(defaultSoundFileList[position])
         holder.soundFileView.sound_file_name.text = defaultAlarmSoundList[position]
-
+        val checkBox = holder.soundFileView.sound_file_check
         holder.soundFileView.sound_file_layout.setOnClickListener {
-            val checkBox = holder.soundFileView.sound_file_check
-            check(checkBox.visibility == View.INVISIBLE || checkBox.visibility == View.VISIBLE)
-            {
-                "Sound file check box visibility is invalid"
-            }
-            if (checkBox.visibility == View.INVISIBLE) {
+            ActionsCreator.selectSound(AlarmStore.selectedAlarm.id, defaultAlarmSoundList[position])
+            Log.d("debug", AlarmStore.selectedAlarm.soundFileName)
+            if(AlarmStore.selectedAlarm.soundFileName == defaultAlarmSoundList[position]){
                 checkBox.visibility = View.VISIBLE
-            } else {
+            }else{
                 checkBox.visibility = View.INVISIBLE
             }
+            for(i in defaultAlarmSoundList.indices){
+                if(i != position){
+                    notifyItemChanged(i)
+                }
+            }
+        }
+        if(AlarmStore.selectedAlarm.soundFileName == defaultAlarmSoundList[position]){
+            checkBox.visibility = View.VISIBLE
+        }else{
+            checkBox.visibility = View.INVISIBLE
         }
     }
 
