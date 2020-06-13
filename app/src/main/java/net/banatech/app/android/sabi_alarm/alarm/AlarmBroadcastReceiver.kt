@@ -8,7 +8,6 @@ import android.util.Log
 class AlarmBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         //TODO use intent filter for re-boot, date change ...
-        Log.d("action", intent.action)
         val id = intent.getIntExtra("id", 0)
         val startActivityIntent = Intent(context, PlaySoundActivity::class.java)
         startActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
