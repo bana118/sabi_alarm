@@ -1,9 +1,18 @@
 package net.banatech.app.android.sabi_alarm.alarm.stores
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.util.Log
+import android.widget.Toast
+import net.banatech.app.android.sabi_alarm.alarm.AlarmBroadcastReceiver
 import net.banatech.app.android.sabi_alarm.alarm.actions.Action
 import net.banatech.app.android.sabi_alarm.alarm.actions.AlarmActions
 import net.banatech.app.android.sabi_alarm.database.Alarm
 import org.greenrobot.eventbus.Subscribe
+import java.time.*
+import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -20,8 +29,10 @@ object AlarmStore : Store() {
             AlarmActions.ALARM_CREATE -> {
                 val hour = action.data[AlarmActions.KEY_HOUR]
                 val minute = action.data[AlarmActions.KEY_MINUTE]
+                val context = action.data[AlarmActions.KEY_CONTEXT]
                 check(hour is Int && minute is Int) { "Hour and minute value must be Int" }
-                create(hour, minute)
+                check(context is Context) { "Context value must be Context" }
+                create(hour, minute, context)
                 emitStoreCreate()
             }
             AlarmActions.ALARM_DESTROY -> {
@@ -46,9 +57,11 @@ object AlarmStore : Store() {
             AlarmActions.ALARM_ENABLE_SWITCH -> {
                 val id = action.data[AlarmActions.KEY_ID]
                 val enable = action.data[AlarmActions.KEY_ENABLE]
+                val context = action.data[AlarmActions.KEY_CONTEXT]
                 check(id is Int) { "Id value must be Int" }
                 check(enable is Boolean) { "Enable value must be Int" }
-                switchEnable(id, enable)
+                check(context is Context) { "Context value must be Context" }
+                switchEnable(id, enable, context)
                 emitStoreChange()
             }
             AlarmActions.ALARM_IS_SHOW_DETAIL_SWITCH -> {
@@ -96,7 +109,7 @@ object AlarmStore : Store() {
         }
     }
 
-    private fun create(hour: Int, minute: Int) {
+    private fun create(hour: Int, minute: Int, context: Context) {
         val id = System.currentTimeMillis().toInt() //TODO unnecessary when using database
         val timeText = String.format("%02d:%02d", hour, minute)
         val alarm = Alarm(
@@ -120,6 +133,7 @@ object AlarmStore : Store() {
             isDefaultSound = true
         )
         addElement(alarm)
+        setAlarm(alarm, context)
     }
 
     private fun destroy(id: Int) {
@@ -167,12 +181,17 @@ object AlarmStore : Store() {
         }
     }
 
-    private fun switchEnable(id: Int, enable: Boolean) {
+    private fun switchEnable(id: Int, enable: Boolean, context: Context) {
         val iter = alarms.iterator()
         while (iter.hasNext()) {
             val alarm = iter.next()
             if (alarm.id == id) {
                 alarm.enable = enable
+                if (enable) {
+                    setAlarm(alarm, context)
+                } else {
+
+                }
                 break
             }
         }
@@ -244,7 +263,7 @@ object AlarmStore : Store() {
         }
     }
 
-    private fun selectSound(id: Int, soundFileName: String){
+    private fun selectSound(id: Int, soundFileName: String) {
         val iter = alarms.iterator()
         while (iter.hasNext()) {
             val alarm = iter.next()
@@ -257,6 +276,33 @@ object AlarmStore : Store() {
 
     private fun addElement(clone: Alarm) {
         alarms.add(clone)
+    }
+
+    private fun setAlarm(alarm: Alarm, context: Context) {
+        val setTime = LocalTime.of(alarm.hour, alarm.minute)
+        val nowTime = LocalTime.of(LocalTime.now().hour, LocalTime.now().minute)
+        val intent = Intent(context, AlarmBroadcastReceiver()::class.java)
+        val pending = PendingIntent.getBroadcast(
+            context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        val am = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
+        val alarmTime =
+            if (setTime.isAfter(nowTime)) {
+                LocalDateTime.of(LocalDate.now(), setTime)
+            } else {
+                LocalDateTime.of(LocalDate.now(), setTime).plusDays(1)
+            }
+        val alarmTimeMilli = alarmTime.toEpochSecond(OffsetDateTime.now().offset) * 1000 // seconds -> milliseconds
+        val clockInfo = AlarmManager.AlarmClockInfo(alarmTimeMilli, null)
+        if (am != null && pending != null) {
+            am.setAlarmClock(
+                clockInfo,
+                pending
+            )
+            val formatter = DateTimeFormatter.ofPattern("HH:mm にアラームをセットしました")
+            val alarmText = alarmTime.format(formatter)
+            Toast.makeText(context, alarmText, Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun createEvent(): StoreCreateEvent {

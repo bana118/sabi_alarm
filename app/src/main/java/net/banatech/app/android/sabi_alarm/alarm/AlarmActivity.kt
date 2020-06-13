@@ -176,7 +176,7 @@ class AlarmActivity : AppCompatActivity() {
     }
 
     private fun addAlarm(hour: Int, minute: Int) {
-        actionCreator.create(hour, minute)
+        actionCreator.create(hour, minute, this.applicationContext)
         listAdapter.notifyDataSetChanged()
     }
 

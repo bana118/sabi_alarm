@@ -22,4 +22,5 @@ object AlarmActions {
     const val KEY_DAY_ENABLE = "key-day-enable"
     const val KEY_DAY_OF_WEEK = "key-week-day-of-week"
     const val KEY_SOUND_FILE_NAME = "key-sound-file-name"
+    const val KEY_CONTEXT = "key-context"
 }

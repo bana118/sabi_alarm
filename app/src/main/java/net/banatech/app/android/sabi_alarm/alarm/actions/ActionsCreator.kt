@@ -1,15 +1,17 @@
 package net.banatech.app.android.sabi_alarm.alarm.actions
 
+import android.content.Context
 import net.banatech.app.android.sabi_alarm.alarm.dispatcher.Dispatcher
 
 
 object ActionsCreator {
 
-    fun create(hour: Int, minute: Int) {
+    fun create(hour: Int, minute: Int, context: Context) {
         Dispatcher.dispatch(
             AlarmActions.ALARM_CREATE,
             AlarmActions.KEY_HOUR, hour,
-            AlarmActions.KEY_MINUTE, minute
+            AlarmActions.KEY_MINUTE, minute,
+            AlarmActions.KEY_CONTEXT, context
         )
     }
 
@@ -35,11 +37,12 @@ object ActionsCreator {
         )
     }
 
-    fun switchEnable(id: Int, enable: Boolean) {
+    fun switchEnable(id: Int, enable: Boolean, context: Context) {
         Dispatcher.dispatch(
             AlarmActions.ALARM_ENABLE_SWITCH,
             AlarmActions.KEY_ID, id,
-            AlarmActions.KEY_ENABLE, enable
+            AlarmActions.KEY_ENABLE, enable,
+            AlarmActions.KEY_CONTEXT, context
         )
     }
 

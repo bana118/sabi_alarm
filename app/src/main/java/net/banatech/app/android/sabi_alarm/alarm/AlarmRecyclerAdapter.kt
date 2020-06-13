@@ -79,7 +79,9 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
 
         //Switch alarm on/off
         alarmSwitch.setOnClickListener {
-            actionsCreator.switchEnable(alarms[position].id, alarmSwitch.isChecked)
+            actionsCreator.switchEnable(alarms[position].id,
+                alarmSwitch.isChecked,
+                viewHolder.alarmView.context)
         }
 
         val alarmDetail = viewHolder.alarmView.include_alarm_detail
