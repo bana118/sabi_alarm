@@ -4,7 +4,6 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.widget.Toast
 import net.banatech.app.android.sabi_alarm.alarm.AlarmBroadcastReceiver
 import net.banatech.app.android.sabi_alarm.alarm.actions.Action
@@ -49,9 +48,11 @@ object AlarmStore : Store() {
                 val id = action.data[AlarmActions.KEY_ID]
                 val hour = action.data[AlarmActions.KEY_HOUR]
                 val minute = action.data[AlarmActions.KEY_MINUTE]
+                val context = action.data[AlarmActions.KEY_CONTEXT]
                 check(id is Int) { "Id value must be Int" }
                 check(hour is Int && minute is Int) { "Hour and minute value must be Int" }
-                edit(id, hour, minute)
+                check(context is Context) { "Context value must be Context" }
+                edit(id, hour, minute, context)
                 emitStoreTimeChange()
             }
             AlarmActions.ALARM_ENABLE_SWITCH -> {
@@ -167,7 +168,7 @@ object AlarmStore : Store() {
         }
     }
 
-    private fun edit(id: Int, hour: Int, minute: Int) {
+    private fun edit(id: Int, hour: Int, minute: Int, context: Context) {
         val iter = alarms.iterator()
         val timeText = String.format("%02d:%02d", hour, minute)
         while (iter.hasNext()) {
@@ -176,6 +177,9 @@ object AlarmStore : Store() {
                 alarm.hour = hour
                 alarm.minute = minute
                 alarm.timeText = timeText
+                if(alarm.enable){
+                    setAlarm(alarm, context)
+                }
                 break
             }
         }
@@ -190,7 +194,7 @@ object AlarmStore : Store() {
                 if (enable) {
                     setAlarm(alarm, context)
                 } else {
-
+                    cancelAlarm(alarm, context)
                 }
                 break
             }
@@ -282,10 +286,10 @@ object AlarmStore : Store() {
         val setTime = LocalTime.of(alarm.hour, alarm.minute)
         val nowTime = LocalTime.of(LocalTime.now().hour, LocalTime.now().minute)
         val intent = Intent(context, AlarmBroadcastReceiver()::class.java)
-        val pending = PendingIntent.getBroadcast(
-            context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT
+        val pendingIntent = PendingIntent.getBroadcast(
+            context, alarm.id, intent, PendingIntent.FLAG_UPDATE_CURRENT
         )
-        val am = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
         val alarmTime =
             if (setTime.isAfter(nowTime)) {
                 LocalDateTime.of(LocalDate.now(), setTime)
@@ -294,14 +298,26 @@ object AlarmStore : Store() {
             }
         val alarmTimeMilli = alarmTime.toEpochSecond(OffsetDateTime.now().offset) * 1000 // seconds -> milliseconds
         val clockInfo = AlarmManager.AlarmClockInfo(alarmTimeMilli, null)
-        if (am != null && pending != null) {
-            am.setAlarmClock(
+        if (alarmManager != null && pendingIntent != null) {
+            alarmManager.setAlarmClock(
                 clockInfo,
-                pending
+                pendingIntent
             )
             val formatter = DateTimeFormatter.ofPattern("HH:mm にアラームをセットしました")
             val alarmText = alarmTime.format(formatter)
             Toast.makeText(context, alarmText, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun cancelAlarm(alarm: Alarm, context: Context){
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
+        val intent = Intent(context, AlarmBroadcastReceiver()::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            context, alarm.id, intent, PendingIntent.FLAG_NO_CREATE
+        )
+        if (alarmManager != null && pendingIntent != null) {
+            alarmManager.cancel(pendingIntent)
+            Toast.makeText(context, "このアラームを停止しました", Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -28,12 +28,13 @@ object ActionsCreator {
         )
     }
 
-    fun edit(id: Int, hour: Int, minute: Int) {
+    fun edit(id: Int, hour: Int, minute: Int, context: Context) {
         Dispatcher.dispatch(
             AlarmActions.ALARM_EDIT,
             AlarmActions.KEY_ID, id,
             AlarmActions.KEY_HOUR, hour,
-            AlarmActions.KEY_MINUTE, minute
+            AlarmActions.KEY_MINUTE, minute,
+            AlarmActions.KEY_CONTEXT, context
         )
     }
 

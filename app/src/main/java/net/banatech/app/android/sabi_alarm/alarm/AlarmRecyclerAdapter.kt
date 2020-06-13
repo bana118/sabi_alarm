@@ -67,7 +67,7 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
             val timePickerDialog = TimePickerDialog(
                 viewHolder.alarmView.context,
                 TimePickerDialog.OnTimeSetListener { _: TimePicker, pickerHour: Int, pickerMinute: Int ->
-                    actionsCreator.edit(alarms[position].id, pickerHour, pickerMinute)
+                    actionsCreator.edit(alarms[position].id, pickerHour, pickerMinute, viewHolder.alarmView.context)
                     notifyDataSetChanged()
                 },
                 hour, minute, true
