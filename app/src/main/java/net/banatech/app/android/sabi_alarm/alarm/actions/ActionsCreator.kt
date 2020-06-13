@@ -15,10 +15,11 @@ object ActionsCreator {
         )
     }
 
-    fun destroy(id: Int) {
+    fun destroy(id: Int, context: Context) {
         Dispatcher.dispatch(
             AlarmActions.ALARM_DESTROY,
-            AlarmActions.KEY_ID, id
+            AlarmActions.KEY_ID, id,
+            AlarmActions.KEY_CONTEXT, context
         )
     }
 

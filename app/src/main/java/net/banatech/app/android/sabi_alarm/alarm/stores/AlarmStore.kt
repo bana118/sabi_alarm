@@ -36,8 +36,10 @@ object AlarmStore : Store() {
             }
             AlarmActions.ALARM_DESTROY -> {
                 val id = action.data[AlarmActions.KEY_ID]
+                val context = action.data[AlarmActions.KEY_CONTEXT]
                 check(id is Int) { "Id value must be Int" }
-                destroy(id)
+                check(context is Context) { "Context value must be Context" }
+                destroy(id, context)
                 emitStoreDestroy()
             }
             AlarmActions.ALARM_UNDO_DESTROY -> {
@@ -137,11 +139,12 @@ object AlarmStore : Store() {
         setAlarm(alarm, context)
     }
 
-    private fun destroy(id: Int) {
+    private fun destroy(id: Int, context: Context) {
         val iter = alarms.iterator()
         while (iter.hasNext()) {
             val alarm = iter.next()
             if (alarm.id == id) {
+                cancelAlarm(alarm, context)
                 lastDeleted = alarm.copy()
                 canUndo = true
                 iter.remove()
@@ -286,6 +289,7 @@ object AlarmStore : Store() {
         val setTime = LocalTime.of(alarm.hour, alarm.minute)
         val nowTime = LocalTime.of(LocalTime.now().hour, LocalTime.now().minute)
         val intent = Intent(context, AlarmBroadcastReceiver()::class.java)
+        intent.putExtra("id", alarm.id)
         val pendingIntent = PendingIntent.getBroadcast(
             context, alarm.id, intent, PendingIntent.FLAG_UPDATE_CURRENT
         )

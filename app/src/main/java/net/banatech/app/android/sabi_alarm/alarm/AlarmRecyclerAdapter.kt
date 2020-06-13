@@ -186,7 +186,7 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
                     selectWeekButton(weekButtonList[i], viewHolder)
                 }
             }
-            actionsCreator.destroy(alarms[position].id)
+            actionsCreator.destroy(alarms[position].id, viewHolder.alarmView.context)
             notifyItemRemoved(position)
             notifyItemRangeChanged(position, alarms.size)
         }
