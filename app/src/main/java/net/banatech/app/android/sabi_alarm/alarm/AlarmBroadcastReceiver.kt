@@ -3,34 +3,17 @@ package net.banatech.app.android.sabi_alarm.alarm
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.media.MediaPlayer
-import android.widget.Toast
-import net.banatech.app.android.sabi_alarm.alarm.stores.AlarmStore
+import android.util.Log
 
-class AlarmBroadcastReceiver: BroadcastReceiver() {
+class AlarmBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
+        //TODO use intent filter for re-boot, date change ...
+        Log.d("action", intent.action)
         val id = intent.getIntExtra("id", 0)
-        val iter = AlarmStore.alarms.iterator()
-        while (iter.hasNext()) {
-            val alarm = iter.next()
-            if (alarm.id == id) {
-                Toast.makeText(context, "アラーム!", Toast.LENGTH_LONG).show()
-                assetSoundStart(context, alarm.soundFileName)
-                break
-            }
-        }
+        val startActivityIntent = Intent(context, PlaySoundActivity::class.java)
+        startActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivityIntent.putExtra("id", id)
+        context.startActivity(startActivityIntent)
     }
 
-    private fun assetSoundStart(context: Context, fileName:String){
-        val assetFileDescriptor = context.assets.openFd("default/$fileName")
-        val mediaPlayer = MediaPlayer()
-        mediaPlayer.setDataSource(assetFileDescriptor)
-        mediaPlayer.prepare()
-        mediaPlayer.start()
-        mediaPlayer.setOnCompletionListener {
-            it.stop()
-            it.reset()
-            it.release()
-        }
-    }
 }

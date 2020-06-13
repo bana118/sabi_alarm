@@ -37,7 +37,7 @@ class SoundPagerAdapter(fragmentActivity: FragmentActivity) :
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             val soundList = view.default_sound_list
             val assetManager = this.resources.assets
-            val defaultSoundDir = assetManager.list("")
+            val defaultSoundDir = assetManager.list("default")
             check(defaultSoundDir != null) { "default sound list must not be null" }
             soundList.layoutManager = LinearLayoutManager(this.context)
             val defaultSoundAdapter = DefaultSoundRecyclerAdapter(defaultSoundDir)
