@@ -163,6 +163,13 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
                 } else {
                     unselectWeekButton(weekButtonList[i], viewHolder)
                 }
+                if(!alarms[position].isRepeatable){
+                    alarmDetail.repeat_check_box.isChecked = false
+                    alarmDetail.include_alarm_week.visibility = View.GONE
+                    weekAlarmArray[i] = !weekAlarmArray[i]
+                    selectWeekButton(weekButtonList[i], viewHolder)
+                }
+                Log.d("debug", "repeatable${alarms[position].isRepeatable}, week${weekAlarmArray[i]}")
             }
             if (weekAlarmArray[i]) {
                 selectWeekButton(weekButtonList[i], viewHolder)

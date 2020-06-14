@@ -265,6 +265,32 @@ object AlarmStore : Store() {
                         alarm.isSaturdayAlarm = dayEnable
                     }
                 }
+                if(!alarm.isSundayAlarm && !alarm.isMondayAlarm && !alarm.isTuesdayAlarm && !alarm.isWednesdayAlarm && !alarm.isThursdayAlarm && !alarm.isFridayAlarm && !alarm.isSaturdayAlarm){
+                    alarm.isRepeatable = false
+                    when (dayOfWeek) {
+                        Calendar.SUNDAY -> {
+                            alarm.isSundayAlarm = true
+                        }
+                        Calendar.MONDAY -> {
+                            alarm.isMondayAlarm = true
+                        }
+                        Calendar.TUESDAY -> {
+                            alarm.isTuesdayAlarm = true
+                        }
+                        Calendar.WEDNESDAY -> {
+                            alarm.isWednesdayAlarm = true
+                        }
+                        Calendar.THURSDAY -> {
+                            alarm.isThursdayAlarm = true
+                        }
+                        Calendar.FRIDAY -> {
+                            alarm.isFridayAlarm = true
+                        }
+                        Calendar.SATURDAY -> {
+                            alarm.isSaturdayAlarm = true
+                        }
+                    }
+                }
                 break
             }
         }
