@@ -1,6 +1,14 @@
 package net.banatech.app.android.sabi_alarm.alarm
 
+import android.app.NotificationChannel
+import android.app.NotificationChannelGroup
+import android.app.NotificationManager
 import android.app.TimePickerDialog
+import android.content.ContentResolver
+import android.content.Context
+import android.media.AudioAttributes
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -58,7 +66,10 @@ class AlarmActivity : AppCompatActivity() {
 //                listAdapter.notifyDataSetChanged()
 //            }
 //        }
-
+        val groupId = getString(R.string.group_id)
+        val groupName = getString(R.string.group_name)
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannelGroup(NotificationChannelGroup(groupId, groupName))
     }
 
     private fun initDependencies() {
@@ -155,7 +166,7 @@ class AlarmActivity : AppCompatActivity() {
         if (AlarmStore.canUndo) {
             val snackbar = Snackbar.make(main_layout, "削除しました", Snackbar.LENGTH_LONG)
             snackbar.setAction("元に戻す") {
-                actionCreator.undoDestroy()
+                actionCreator.undoDestroy(this)
                 listAdapter.notifyDataSetChanged()
             }
             snackbar.show()

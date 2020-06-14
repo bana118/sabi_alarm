@@ -15,4 +15,8 @@
     <string name="saturday">土</string>
     <string name="sound_file_check_description">チェック</string>
     <string name="default_sound_file_name">beethoven_no5_1st.mp3</string>
+    <string name="group_id">alarms</string>
+    <string name="group_name">作動中のアラーム</string>
+    <string name="channel_name">sabi_alarm</string>
+    <string name="channel_description">launch sabi_alarm in background</string>
 </resources>

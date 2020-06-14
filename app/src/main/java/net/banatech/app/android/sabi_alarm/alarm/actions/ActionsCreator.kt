@@ -23,9 +23,10 @@ object ActionsCreator {
         )
     }
 
-    fun undoDestroy() {
+    fun undoDestroy(context: Context) {
         Dispatcher.dispatch(
-            AlarmActions.ALARM_UNDO_DESTROY
+            AlarmActions.ALARM_UNDO_DESTROY,
+            AlarmActions.KEY_CONTEXT, context
         )
     }
 

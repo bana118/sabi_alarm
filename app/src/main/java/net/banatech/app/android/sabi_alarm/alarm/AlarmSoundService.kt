@@ -1,32 +1,57 @@
 package net.banatech.app.android.sabi_alarm.alarm
 
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.IBinder
 import android.util.Log
+import androidx.core.app.NotificationCompat
+import net.banatech.app.android.sabi_alarm.R
 import net.banatech.app.android.sabi_alarm.alarm.stores.AlarmStore
 import net.banatech.app.android.sabi_alarm.database.Alarm
 import java.io.IOException
 
-class PlaySoundService : Service(), MediaPlayer.OnCompletionListener {
+class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
     lateinit var alarm: Alarm
     lateinit var mediaPlayer: MediaPlayer
-
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        mediaPlayer = MediaPlayer()
-        val iter = AlarmStore.alarms.iterator()
-        check(intent != null)
+        require(intent != null)
         val id = intent.getIntExtra("id", 0)
+        val iter = AlarmStore.alarms.iterator()
         var isFound = false
+        mediaPlayer = MediaPlayer()
         while (iter.hasNext()) {
             val iterAlarm = iter.next()
             if (iterAlarm.id == id) {
                 isFound = true
+                alarm = iterAlarm
+                val startActivityIntent = Intent(this, StopAlarmActivity::class.java)
+                startActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivityIntent.putExtra("id", id)
+                val channelId = id.toString()
+                val fullScreenIntent = Intent(startActivityIntent)
+                val fullScreenPendingIntent = PendingIntent.getActivity(
+                    this,
+                    id,
+                    fullScreenIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                )
+                val notificationBuilder = NotificationCompat.Builder(this, channelId)
+                    .setSmallIcon(R.mipmap.ic_launcher_round)
+                    .setContentTitle(this.getString(R.string.app_name))
+                    .setContentText("アラーム！")
+                    .setCategory(NotificationCompat.CATEGORY_ALARM)
+                    .setAutoCancel(true)
+                    .addAction(0, "アラームを停止", fullScreenPendingIntent)
+                    .setFullScreenIntent(fullScreenPendingIntent, true)
+
+                val notification = notificationBuilder.build()
+                startForeground(1, notification)
                 alarm = iterAlarm
                 play()
                 break
@@ -70,4 +95,3 @@ class PlaySoundService : Service(), MediaPlayer.OnCompletionListener {
         mediaPlayer.release()
     }
 }
-

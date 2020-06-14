@@ -1,10 +1,14 @@
 package net.banatech.app.android.sabi_alarm.alarm.stores
 
 import android.app.AlarmManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import net.banatech.app.android.sabi_alarm.R
 import net.banatech.app.android.sabi_alarm.alarm.AlarmBroadcastReceiver
 import net.banatech.app.android.sabi_alarm.alarm.actions.Action
 import net.banatech.app.android.sabi_alarm.alarm.actions.AlarmActions
@@ -43,7 +47,9 @@ object AlarmStore : Store() {
                 emitStoreDestroy()
             }
             AlarmActions.ALARM_UNDO_DESTROY -> {
-                undoDestroy()
+                val context = action.data[AlarmActions.KEY_CONTEXT]
+                check(context is Context) { "Context value must be Context" }
+                undoDestroy(context)
                 emitStoreChange()
             }
             AlarmActions.ALARM_EDIT -> {
@@ -135,8 +141,7 @@ object AlarmStore : Store() {
             soundStartTime = 0,
             isDefaultSound = true
         )
-        addElement(alarm)
-        setAlarm(alarm, context)
+        addAlarm(alarm, context)
     }
 
     private fun destroy(id: Int, context: Context) {
@@ -147,6 +152,7 @@ object AlarmStore : Store() {
                 cancelAlarm(alarm, context)
                 lastDeleted = alarm.copy()
                 canUndo = true
+                deleteNotificationChannel(alarm.id.toString(), context)
                 iter.remove()
                 break
             }
@@ -164,9 +170,9 @@ object AlarmStore : Store() {
         return null
     }
 
-    private fun undoDestroy() {
+    private fun undoDestroy(context: Context) {
         if (canUndo) {
-            addElement(lastDeleted.copy())
+            addAlarm(lastDeleted.copy(), context)
             canUndo = false
         }
     }
@@ -196,8 +202,10 @@ object AlarmStore : Store() {
                 alarm.enable = enable
                 if (enable) {
                     setAlarm(alarm, context)
+                    createNotificationChannel(alarm.id.toString(), context)
                 } else {
                     cancelAlarm(alarm, context)
+                    deleteNotificationChannel(alarm.id.toString(), context)
                 }
                 break
             }
@@ -307,8 +315,32 @@ object AlarmStore : Store() {
         }
     }
 
-    private fun addElement(clone: Alarm) {
-        alarms.add(clone)
+    private fun addAlarm(alarm: Alarm, context: Context) {
+        alarms.add(alarm)
+        setAlarm(alarm, context)
+        createNotificationChannel(alarm.id.toString(), context)
+    }
+
+    private fun createNotificationChannel(channelId: String, context: Context){
+        // Create the NotificationChannel
+        val name = context.getString(R.string.channel_name)
+        val descriptionText = context.getString(R.string.channel_description)
+        val importance = NotificationManager.IMPORTANCE_HIGH
+        val alarmChannel = NotificationChannel(channelId, name, importance)
+        alarmChannel.description = descriptionText
+        alarmChannel.setSound(null, null)
+        alarmChannel.group = context.getString(R.string.group_id)
+        // Register the channel with the system; you can't change the importance
+        // or other notification behaviors after this
+        val notificationManager =
+            context.getSystemService(AppCompatActivity.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(alarmChannel)
+    }
+
+    private fun deleteNotificationChannel(channelId: String, context: Context){
+        val notificationManager =
+            context.getSystemService(AppCompatActivity.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.deleteNotificationChannel(channelId)
     }
 
     private fun setAlarm(alarm: Alarm, context: Context) {

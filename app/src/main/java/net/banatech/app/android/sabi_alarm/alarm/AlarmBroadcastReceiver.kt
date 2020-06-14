@@ -4,14 +4,13 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 
+
 class AlarmBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         //TODO use intent filter for re-boot, date change ...
         val id = intent.getIntExtra("id", 0)
-        val startActivityIntent = Intent(context, PlaySoundActivity::class.java)
-        startActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        startActivityIntent.putExtra("id", id)
-        context.startActivity(startActivityIntent)
+        val startServiceIntent = Intent(context, AlarmSoundService::class.java)
+        startServiceIntent.putExtra("id", id)
+        context.startForegroundService(startServiceIntent)
     }
-
 }
