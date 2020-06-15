@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import net.banatech.app.android.sabi_alarm.R
@@ -28,6 +29,7 @@ object AlarmStore : Store() {
     @Subscribe
     @SuppressWarnings("unchecked")
     override fun onAction(action: Action) {
+        Log.d("onAction", "type${action.type}")
         when (action.type) {
             AlarmActions.ALARM_CREATE -> {
                 val hour = action.data[AlarmActions.KEY_HOUR]
@@ -152,7 +154,6 @@ object AlarmStore : Store() {
                 cancelAlarm(alarm, context)
                 lastDeleted = alarm.copy()
                 canUndo = true
-                deleteNotificationChannel(alarm.id.toString(), context)
                 iter.remove()
                 break
             }
@@ -202,10 +203,8 @@ object AlarmStore : Store() {
                 alarm.enable = enable
                 if (enable) {
                     setAlarm(alarm, context)
-                    createNotificationChannel(alarm.id.toString(), context)
                 } else {
                     cancelAlarm(alarm, context)
-                    deleteNotificationChannel(alarm.id.toString(), context)
                 }
                 break
             }
@@ -318,30 +317,29 @@ object AlarmStore : Store() {
     private fun addAlarm(alarm: Alarm, context: Context) {
         alarms.add(alarm)
         setAlarm(alarm, context)
-        createNotificationChannel(alarm.id.toString(), context)
     }
 
-    private fun createNotificationChannel(channelId: String, context: Context){
-        // Create the NotificationChannel
-        val name = context.getString(R.string.channel_name)
-        val descriptionText = context.getString(R.string.channel_description)
-        val importance = NotificationManager.IMPORTANCE_HIGH
-        val alarmChannel = NotificationChannel(channelId, name, importance)
-        alarmChannel.description = descriptionText
-        alarmChannel.setSound(null, null)
-        alarmChannel.group = context.getString(R.string.group_id)
-        // Register the channel with the system; you can't change the importance
-        // or other notification behaviors after this
-        val notificationManager =
-            context.getSystemService(AppCompatActivity.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.createNotificationChannel(alarmChannel)
-    }
-
-    private fun deleteNotificationChannel(channelId: String, context: Context){
-        val notificationManager =
-            context.getSystemService(AppCompatActivity.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.deleteNotificationChannel(channelId)
-    }
+//    private fun createNotificationChannel(channelId: String, context: Context){
+//        // Create the NotificationChannel
+//        val name = context.getString(R.string.channel_name)
+//        val descriptionText = context.getString(R.string.channel_description)
+//        val importance = NotificationManager.IMPORTANCE_HIGH
+//        val alarmChannel = NotificationChannel(channelId, name, importance)
+//        alarmChannel.description = descriptionText
+//        alarmChannel.setSound(null, null)
+//        alarmChannel.group = context.getString(R.string.group_id)
+//        // Register the channel with the system; you can't change the importance
+//        // or other notification behaviors after this
+//        val notificationManager =
+//            context.getSystemService(AppCompatActivity.NOTIFICATION_SERVICE) as NotificationManager
+//        notificationManager.createNotificationChannel(alarmChannel)
+//    }
+//
+//    private fun deleteNotificationChannel(channelId: String, context: Context){
+//        val notificationManager =
+//            context.getSystemService(AppCompatActivity.NOTIFICATION_SERVICE) as NotificationManager
+//        notificationManager.deleteNotificationChannel(channelId)
+//    }
 
     private fun setAlarm(alarm: Alarm, context: Context) {
         val setTime = LocalTime.of(alarm.hour, alarm.minute)

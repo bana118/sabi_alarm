@@ -66,10 +66,18 @@ class AlarmActivity : AppCompatActivity() {
 //                listAdapter.notifyDataSetChanged()
 //            }
 //        }
-        val groupId = getString(R.string.group_id)
-        val groupName = getString(R.string.group_name)
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.createNotificationChannelGroup(NotificationChannelGroup(groupId, groupName))
+        val channelId = getString(R.string.channel_id)
+        val name = getString(R.string.channel_name)
+        val descriptionText = getString(R.string.channel_description)
+        val importance = NotificationManager.IMPORTANCE_HIGH
+        val alarmChannel = NotificationChannel(channelId, name, importance)
+        alarmChannel.description = descriptionText
+        alarmChannel.setSound(null, null)
+        // Register the channel with the system; you can't change the importance
+        // or other notification behaviors after this
+        val notificationManager =
+            getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(alarmChannel)
     }
 
     private fun initDependencies() {

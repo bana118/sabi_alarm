@@ -83,6 +83,7 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
                 alarmSwitch.isChecked,
                 viewHolder.alarmView.context)
         }
+        alarmSwitch.isChecked = alarms[position].enable
 
         val alarmDetail = viewHolder.alarmView.include_alarm_detail
         if (alarms[position].isShowDetail) {

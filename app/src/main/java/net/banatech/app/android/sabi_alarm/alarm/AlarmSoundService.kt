@@ -33,7 +33,7 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
                 val startActivityIntent = Intent(this, StopAlarmActivity::class.java)
                 startActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivityIntent.putExtra("id", id)
-                val channelId = id.toString()
+                val channelId = getString(R.string.channel_id)
                 val fullScreenIntent = Intent(startActivityIntent)
                 val fullScreenPendingIntent = PendingIntent.getActivity(
                     this,
@@ -64,8 +64,8 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         stop()
+        super.onDestroy()
     }
 
     override fun onCompletion(mediaPlayer: MediaPlayer?) {
