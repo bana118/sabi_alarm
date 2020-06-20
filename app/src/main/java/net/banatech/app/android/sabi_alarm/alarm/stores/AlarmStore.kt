@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import net.banatech.app.android.sabi_alarm.R
 import net.banatech.app.android.sabi_alarm.alarm.AlarmBroadcastReceiver
+import net.banatech.app.android.sabi_alarm.alarm.RepeatAlarmManager
 import net.banatech.app.android.sabi_alarm.alarm.actions.Action
 import net.banatech.app.android.sabi_alarm.alarm.actions.AlarmActions
 import net.banatech.app.android.sabi_alarm.database.Alarm
@@ -94,19 +95,23 @@ object AlarmStore : Store() {
             AlarmActions.ALARM_IS_REPEATABLE_SWITCH -> {
                 val id = action.data[AlarmActions.KEY_ID]
                 val isReadable = action.data[AlarmActions.KEY_IS_REPEATABLE]
+                val context = action.data[AlarmActions.KEY_CONTEXT]
                 check(id is Int) { "Id value must be Int" }
                 check(isReadable is Boolean) { "IsRepeatable value must be Int" }
-                switchRepeatable(id, isReadable)
+                check(context is Context) { "Context value must be Context" }
+                switchRepeatable(id, isReadable, context)
                 emitStoreChange()
             }
             AlarmActions.ALARM_DAY_SWITCH -> {
                 val id = action.data[AlarmActions.KEY_ID]
                 val dayOfWeek = action.data[AlarmActions.KEY_DAY_OF_WEEK]
                 val dayEnable = action.data[AlarmActions.KEY_DAY_ENABLE]
+                val context = action.data[AlarmActions.KEY_CONTEXT]
                 check(id is Int) { "Id value must be Int" }
                 check(dayOfWeek is Int) { "DayOfWeek value must be Int" }
                 check(dayEnable is Boolean) { "DayEnable value must be Boolean" }
-                switchWeekEnable(id, dayOfWeek, dayEnable)
+                check(context is Context) { "Context value must be Context" }
+                switchWeekEnable(id, dayOfWeek, dayEnable, context)
                 emitStoreChange()
             }
             AlarmActions.ALARM_SOUND_SELECT -> {
@@ -233,18 +238,21 @@ object AlarmStore : Store() {
         }
     }
 
-    private fun switchRepeatable(id: Int, isReadable: Boolean) {
+    private fun switchRepeatable(id: Int, isReadable: Boolean, context: Context) {
         val iter = alarms.iterator()
         while (iter.hasNext()) {
             val alarm = iter.next()
             if (alarm.id == id) {
                 alarm.isRepeatable = isReadable
+                if(alarm.enable){
+                    setAlarm(alarm, context)
+                }
                 break
             }
         }
     }
 
-    private fun switchWeekEnable(id: Int, dayOfWeek: Int, dayEnable: Boolean) {
+    private fun switchWeekEnable(id: Int, dayOfWeek: Int, dayEnable: Boolean, context: Context) {
         val iter = alarms.iterator()
         while (iter.hasNext()) {
             val alarm = iter.next()
@@ -298,6 +306,9 @@ object AlarmStore : Store() {
                         }
                     }
                 }
+                if(alarm.enable){
+                    setAlarm(alarm, context)
+                }
                 break
             }
         }
@@ -342,43 +353,11 @@ object AlarmStore : Store() {
 //    }
 
     private fun setAlarm(alarm: Alarm, context: Context) {
-        val setTime = LocalTime.of(alarm.hour, alarm.minute)
-        val nowTime = LocalTime.of(LocalTime.now().hour, LocalTime.now().minute)
-        val intent = Intent(context, AlarmBroadcastReceiver()::class.java)
-        intent.putExtra("id", alarm.id)
-        val pendingIntent = PendingIntent.getBroadcast(
-            context, alarm.id, intent, PendingIntent.FLAG_UPDATE_CURRENT
-        )
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
-        val alarmTime =
-            if (setTime.isAfter(nowTime)) {
-                LocalDateTime.of(LocalDate.now(), setTime)
-            } else {
-                LocalDateTime.of(LocalDate.now(), setTime).plusDays(1)
-            }
-        val alarmTimeMilli = alarmTime.toEpochSecond(OffsetDateTime.now().offset) * 1000 // seconds -> milliseconds
-        val clockInfo = AlarmManager.AlarmClockInfo(alarmTimeMilli, null)
-        if (alarmManager != null && pendingIntent != null) {
-            alarmManager.setAlarmClock(
-                clockInfo,
-                pendingIntent
-            )
-            val formatter = DateTimeFormatter.ofPattern("HH:mm にアラームをセットしました")
-            val alarmText = alarmTime.format(formatter)
-            Toast.makeText(context, alarmText, Toast.LENGTH_SHORT).show()
-        }
+        RepeatAlarmManager.setAlarm(alarm, context)
     }
 
     private fun cancelAlarm(alarm: Alarm, context: Context){
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
-        val intent = Intent(context, AlarmBroadcastReceiver()::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(
-            context, alarm.id, intent, PendingIntent.FLAG_NO_CREATE
-        )
-        if (alarmManager != null && pendingIntent != null) {
-            alarmManager.cancel(pendingIntent)
-            Toast.makeText(context, "このアラームを停止しました", Toast.LENGTH_SHORT).show()
-        }
+        RepeatAlarmManager.cancelAlarm(alarm.id, context)
     }
 
     override fun createEvent(): StoreCreateEvent {

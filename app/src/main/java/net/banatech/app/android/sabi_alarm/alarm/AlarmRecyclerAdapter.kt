@@ -107,7 +107,8 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
         alarmDetail.repeat_check_box.setOnClickListener {
             actionsCreator.switchRepeatable(
                 alarms[position].id,
-                alarmDetail.repeat_check_box.isChecked
+                alarmDetail.repeat_check_box.isChecked,
+                viewHolder.alarmView.context
             )
             if (alarms[position].isRepeatable) {
                 alarmDetail.include_alarm_week.visibility = View.VISIBLE

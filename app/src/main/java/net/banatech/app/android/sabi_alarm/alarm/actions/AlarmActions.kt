@@ -11,7 +11,6 @@ object AlarmActions {
     const val ALARM_IS_REPEATABLE_SWITCH = "alarm-is-repeatable-switch"
     const val ALARM_DAY_SWITCH = "alarm-day-switch"
     const val ALARM_SOUND_SELECT = "alarm-sound-select"
-    const val ALARM_STOP = "alarm-stop"
 
     const val KEY_ID = "key-id"
     const val KEY_HOUR = "key-hour"

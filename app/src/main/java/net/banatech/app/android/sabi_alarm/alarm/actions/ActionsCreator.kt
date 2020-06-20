@@ -66,11 +66,12 @@ object ActionsCreator {
         )
     }
 
-    fun switchRepeatable(id: Int, isReadable: Boolean) {
+    fun switchRepeatable(id: Int, isReadable: Boolean, context: Context) {
         Dispatcher.dispatch(
             AlarmActions.ALARM_IS_REPEATABLE_SWITCH,
             AlarmActions.KEY_ID, id,
-            AlarmActions.KEY_IS_REPEATABLE, isReadable
+            AlarmActions.KEY_IS_REPEATABLE, isReadable,
+            AlarmActions.KEY_CONTEXT, context
         )
     }
 
