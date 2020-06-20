@@ -152,28 +152,11 @@ object AlarmStore : Store() {
     }
 
     private fun destroy(id: Int, context: Context) {
-        val iter = alarms.iterator()
-        while (iter.hasNext()) {
-            val alarm = iter.next()
-            if (alarm.id == id) {
-                cancelAlarm(alarm, context)
-                lastDeleted = alarm.copy()
-                canUndo = true
-                iter.remove()
-                break
-            }
-        }
-    }
-
-    private fun getById(id: Int): Alarm? {
-        val iter = alarms.iterator()
-        while (iter.hasNext()) {
-            val alarm = iter.next()
-            if (alarm.id == id) {
-                return alarm
-            }
-        }
-        return null
+        val alarm = alarms.first { it.id == id }
+        cancelAlarm(alarm, context)
+        lastDeleted = alarm.copy()
+        canUndo = true
+        alarms.remove(alarm)
     }
 
     private fun undoDestroy(context: Context) {
@@ -184,145 +167,103 @@ object AlarmStore : Store() {
     }
 
     private fun edit(id: Int, hour: Int, minute: Int, context: Context) {
-        val iter = alarms.iterator()
+        val alarm = alarms.first { it.id == id }
         val timeText = String.format("%02d:%02d", hour, minute)
-        while (iter.hasNext()) {
-            val alarm = iter.next()
-            if (alarm.id == id) {
-                alarm.hour = hour
-                alarm.minute = minute
-                alarm.timeText = timeText
-                if(alarm.enable){
-                    setAlarm(alarm, context)
-                }
-                break
-            }
+        alarm.hour = hour
+        alarm.minute = minute
+        alarm.timeText = timeText
+        if (alarm.enable) {
+            setAlarm(alarm, context)
         }
     }
 
     private fun switchEnable(id: Int, enable: Boolean, context: Context) {
-        val iter = alarms.iterator()
-        while (iter.hasNext()) {
-            val alarm = iter.next()
-            if (alarm.id == id) {
-                alarm.enable = enable
-                if (enable) {
-                    setAlarm(alarm, context)
-                } else {
-                    cancelAlarm(alarm, context)
-                }
-                break
-            }
+        val alarm = alarms.first { it.id == id }
+        alarm.enable = enable
+        if (enable) {
+            setAlarm(alarm, context)
+        } else {
+            cancelAlarm(alarm, context)
         }
     }
 
     private fun switchDetail(id: Int, isShowDetail: Boolean) {
-        val iter = alarms.iterator()
-        while (iter.hasNext()) {
-            val alarm = iter.next()
-            if (alarm.id == id) {
-                alarm.isShowDetail = isShowDetail
-                break
-            }
-        }
+        val alarm = alarms.first { it.id == id }
+        alarm.isShowDetail = isShowDetail
     }
 
     private fun switchVibration(id: Int, isVibration: Boolean) {
-        val iter = alarms.iterator()
-        while (iter.hasNext()) {
-            val alarm = iter.next()
-            if (alarm.id == id) {
-                alarm.isVibration = isVibration
-                break
-            }
-        }
+        val alarm = alarms.first { it.id == id }
+        alarm.isVibration = isVibration
     }
 
     private fun switchRepeatable(id: Int, isReadable: Boolean, context: Context) {
-        val iter = alarms.iterator()
-        while (iter.hasNext()) {
-            val alarm = iter.next()
-            if (alarm.id == id) {
-                alarm.isRepeatable = isReadable
-                if(alarm.enable){
-                    setAlarm(alarm, context)
-                }
-                break
-            }
+        val alarm = alarms.first { it.id == id }
+        alarm.isRepeatable = isReadable
+        if (alarm.enable) {
+            setAlarm(alarm, context)
         }
     }
 
     private fun switchWeekEnable(id: Int, dayOfWeek: Int, dayEnable: Boolean, context: Context) {
-        val iter = alarms.iterator()
-        while (iter.hasNext()) {
-            val alarm = iter.next()
-            if (alarm.id == id) {
-                when (dayOfWeek) {
-                    Calendar.SUNDAY -> {
-                        alarm.isSundayAlarm = dayEnable
-                    }
-                    Calendar.MONDAY -> {
-                        alarm.isMondayAlarm = dayEnable
-                    }
-                    Calendar.TUESDAY -> {
-                        alarm.isTuesdayAlarm = dayEnable
-                    }
-                    Calendar.WEDNESDAY -> {
-                        alarm.isWednesdayAlarm = dayEnable
-                    }
-                    Calendar.THURSDAY -> {
-                        alarm.isThursdayAlarm = dayEnable
-                    }
-                    Calendar.FRIDAY -> {
-                        alarm.isFridayAlarm = dayEnable
-                    }
-                    Calendar.SATURDAY -> {
-                        alarm.isSaturdayAlarm = dayEnable
-                    }
-                }
-                if(!alarm.isSundayAlarm && !alarm.isMondayAlarm && !alarm.isTuesdayAlarm && !alarm.isWednesdayAlarm && !alarm.isThursdayAlarm && !alarm.isFridayAlarm && !alarm.isSaturdayAlarm){
-                    alarm.isRepeatable = false
-                    when (dayOfWeek) {
-                        Calendar.SUNDAY -> {
-                            alarm.isSundayAlarm = true
-                        }
-                        Calendar.MONDAY -> {
-                            alarm.isMondayAlarm = true
-                        }
-                        Calendar.TUESDAY -> {
-                            alarm.isTuesdayAlarm = true
-                        }
-                        Calendar.WEDNESDAY -> {
-                            alarm.isWednesdayAlarm = true
-                        }
-                        Calendar.THURSDAY -> {
-                            alarm.isThursdayAlarm = true
-                        }
-                        Calendar.FRIDAY -> {
-                            alarm.isFridayAlarm = true
-                        }
-                        Calendar.SATURDAY -> {
-                            alarm.isSaturdayAlarm = true
-                        }
-                    }
-                }
-                if(alarm.enable){
-                    setAlarm(alarm, context)
-                }
-                break
+        val alarm = alarms.first { it.id == id }
+        when (dayOfWeek) {
+            Calendar.SUNDAY -> {
+                alarm.isSundayAlarm = dayEnable
             }
+            Calendar.MONDAY -> {
+                alarm.isMondayAlarm = dayEnable
+            }
+            Calendar.TUESDAY -> {
+                alarm.isTuesdayAlarm = dayEnable
+            }
+            Calendar.WEDNESDAY -> {
+                alarm.isWednesdayAlarm = dayEnable
+            }
+            Calendar.THURSDAY -> {
+                alarm.isThursdayAlarm = dayEnable
+            }
+            Calendar.FRIDAY -> {
+                alarm.isFridayAlarm = dayEnable
+            }
+            Calendar.SATURDAY -> {
+                alarm.isSaturdayAlarm = dayEnable
+            }
+        }
+        if (!alarm.isSundayAlarm && !alarm.isMondayAlarm && !alarm.isTuesdayAlarm && !alarm.isWednesdayAlarm && !alarm.isThursdayAlarm && !alarm.isFridayAlarm && !alarm.isSaturdayAlarm) {
+            alarm.isRepeatable = false
+            when (dayOfWeek) {
+                Calendar.SUNDAY -> {
+                    alarm.isSundayAlarm = true
+                }
+                Calendar.MONDAY -> {
+                    alarm.isMondayAlarm = true
+                }
+                Calendar.TUESDAY -> {
+                    alarm.isTuesdayAlarm = true
+                }
+                Calendar.WEDNESDAY -> {
+                    alarm.isWednesdayAlarm = true
+                }
+                Calendar.THURSDAY -> {
+                    alarm.isThursdayAlarm = true
+                }
+                Calendar.FRIDAY -> {
+                    alarm.isFridayAlarm = true
+                }
+                Calendar.SATURDAY -> {
+                    alarm.isSaturdayAlarm = true
+                }
+            }
+        }
+        if (alarm.enable) {
+            setAlarm(alarm, context)
         }
     }
 
     private fun selectSound(id: Int, soundFileName: String) {
-        val iter = alarms.iterator()
-        while (iter.hasNext()) {
-            val alarm = iter.next()
-            if (alarm.id == id) {
-                alarm.soundFileName = soundFileName
-                break
-            }
-        }
+        val alarm = alarms.first { it.id == id }
+        alarm.soundFileName = soundFileName
     }
 
     private fun addAlarm(alarm: Alarm, context: Context) {
@@ -356,7 +297,7 @@ object AlarmStore : Store() {
         RepeatAlarmManager.setAlarm(alarm, context)
     }
 
-    private fun cancelAlarm(alarm: Alarm, context: Context){
+    private fun cancelAlarm(alarm: Alarm, context: Context) {
         RepeatAlarmManager.cancelAlarm(alarm.id, context)
     }
 

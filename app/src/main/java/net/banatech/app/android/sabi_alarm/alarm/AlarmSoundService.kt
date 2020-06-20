@@ -22,44 +22,31 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         require(intent != null)
         val id = intent.getIntExtra("id", 0)
-        val iter = AlarmStore.alarms.iterator()
-        var isFound = false
         mediaPlayer = MediaPlayer()
-        while (iter.hasNext()) {
-            val iterAlarm = iter.next()
-            if (iterAlarm.id == id) {
-                isFound = true
-                alarm = iterAlarm
-                val startActivityIntent = Intent(this, StopAlarmActivity::class.java)
-                startActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivityIntent.putExtra("id", id)
-                val channelId = getString(R.string.channel_id)
-                val fullScreenIntent = Intent(startActivityIntent)
-                val fullScreenPendingIntent = PendingIntent.getActivity(
-                    this,
-                    id,
-                    fullScreenIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-                )
-                val notificationBuilder = NotificationCompat.Builder(this, channelId)
-                    .setSmallIcon(R.mipmap.ic_launcher_round)
-                    .setContentTitle(this.getString(R.string.app_name))
-                    .setContentText("アラーム！")
-                    .setCategory(NotificationCompat.CATEGORY_ALARM)
-                    .setAutoCancel(true)
-                    .addAction(0, "アラームを停止", fullScreenPendingIntent)
-                    .setFullScreenIntent(fullScreenPendingIntent, true)
+        alarm = AlarmStore.alarms.first { it.id == id }
+        val startActivityIntent = Intent(this, StopAlarmActivity::class.java)
+        startActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivityIntent.putExtra("id", id)
+        val channelId = getString(R.string.channel_id)
+        val fullScreenIntent = Intent(startActivityIntent)
+        val fullScreenPendingIntent = PendingIntent.getActivity(
+            this,
+            id,
+            fullScreenIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        val notificationBuilder = NotificationCompat.Builder(this, channelId)
+            .setSmallIcon(R.mipmap.ic_launcher_round)
+            .setContentTitle(this.getString(R.string.app_name))
+            .setContentText("アラーム！")
+            .setCategory(NotificationCompat.CATEGORY_ALARM)
+            .setAutoCancel(true)
+            .addAction(0, "アラームを停止", fullScreenPendingIntent)
+            .setFullScreenIntent(fullScreenPendingIntent, true)
 
-                val notification = notificationBuilder.build()
-                startForeground(1, notification)
-                alarm = iterAlarm
-                play()
-                break
-            }
-        }
-        if (!isFound) {
-            Log.d("debug", "Alarm(id=$id) is not found")
-        }
+        val notification = notificationBuilder.build()
+        startForeground(1, notification)
+        play()
         return START_NOT_STICKY
     }
 
