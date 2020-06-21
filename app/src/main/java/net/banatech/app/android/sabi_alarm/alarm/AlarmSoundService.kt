@@ -75,6 +75,7 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
             mediaPlayer.reset()
             mediaPlayer.setDataSource(assetFileDescriptor)
             mediaPlayer.prepare()
+            mediaPlayer.seekTo(alarm.soundStartTime)
             mediaPlayer.start()
         } catch (e: IOException) {
             e.printStackTrace()
