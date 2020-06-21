@@ -128,7 +128,7 @@ object AlarmStore : Store() {
                 val soundStartTimeText = action.data[AlarmActions.KEY_SOUND_START_TIME_TEXT]
                 check(id is Int) { "Id value must be Int" }
                 check(soundStartTime is Int) { "SoundStartTime value must be Int" }
-                check(soundStartTimeText is String) { "SoundStartTime value must be String"}
+                check(soundStartTimeText is String) { "SoundStartTime value must be String" }
                 changeSoundStartTime(id, soundStartTime, soundStartTimeText)
             }
         }
@@ -185,7 +185,7 @@ object AlarmStore : Store() {
         alarm.minute = minute
         alarm.timeText = timeText
         if (alarm.enable) {
-            setAlarm(alarm, context)
+            setAlarm(alarm.id, context)
         }
     }
 
@@ -193,7 +193,7 @@ object AlarmStore : Store() {
         val alarm = alarms.first { it.id == id }
         alarm.enable = enable
         if (enable) {
-            setAlarm(alarm, context)
+            setAlarm(alarm.id, context)
         } else {
             cancelAlarm(alarm, context)
         }
@@ -213,7 +213,7 @@ object AlarmStore : Store() {
         val alarm = alarms.first { it.id == id }
         alarm.isRepeatable = isReadable
         if (alarm.enable) {
-            setAlarm(alarm, context)
+            setAlarm(alarm.id, context)
         }
     }
 
@@ -269,7 +269,7 @@ object AlarmStore : Store() {
             }
         }
         if (alarm.enable) {
-            setAlarm(alarm, context)
+            setAlarm(alarm.id, context)
         }
     }
 
@@ -278,43 +278,25 @@ object AlarmStore : Store() {
         alarm.soundFileName = soundFileName
     }
 
-    private fun changeSoundStartTime(id: Int, soundStartTimeMilli: Int, soundStartTimeText: String){
-        val alarm = alarms.first{it.id == id}
+    private fun changeSoundStartTime(
+        id: Int,
+        soundStartTimeMilli: Int,
+        soundStartTimeText: String
+    ) {
+        val alarm = alarms.first { it.id == id }
         alarm.soundStartTime = soundStartTimeMilli
         alarm.soundStartTimeText = soundStartTimeText
     }
 
     private fun addAlarm(alarm: Alarm, context: Context) {
         alarms.add(alarm)
-        if(alarm.enable){
-            setAlarm(alarm, context)
+        if (alarm.enable) {
+            setAlarm(alarm.id, context)
         }
     }
 
-//    private fun createNotificationChannel(channelId: String, context: Context){
-//        // Create the NotificationChannel
-//        val name = context.getString(R.string.channel_name)
-//        val descriptionText = context.getString(R.string.channel_description)
-//        val importance = NotificationManager.IMPORTANCE_HIGH
-//        val alarmChannel = NotificationChannel(channelId, name, importance)
-//        alarmChannel.description = descriptionText
-//        alarmChannel.setSound(null, null)
-//        alarmChannel.group = context.getString(R.string.group_id)
-//        // Register the channel with the system; you can't change the importance
-//        // or other notification behaviors after this
-//        val notificationManager =
-//            context.getSystemService(AppCompatActivity.NOTIFICATION_SERVICE) as NotificationManager
-//        notificationManager.createNotificationChannel(alarmChannel)
-//    }
-//
-//    private fun deleteNotificationChannel(channelId: String, context: Context){
-//        val notificationManager =
-//            context.getSystemService(AppCompatActivity.NOTIFICATION_SERVICE) as NotificationManager
-//        notificationManager.deleteNotificationChannel(channelId)
-//    }
-
-    private fun setAlarm(alarm: Alarm, context: Context) {
-        RepeatAlarmManager.setAlarm(alarm, context)
+    private fun setAlarm(id: Int, context: Context) {
+        RepeatAlarmManager.setAlarm(id, context)
     }
 
     private fun cancelAlarm(alarm: Alarm, context: Context) {

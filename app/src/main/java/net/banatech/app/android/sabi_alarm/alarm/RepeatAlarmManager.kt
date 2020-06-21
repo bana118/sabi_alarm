@@ -16,7 +16,8 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 object RepeatAlarmManager {
-    fun setAlarm(alarm: Alarm, context: Context) {
+    fun setAlarm(id: Int, context: Context) {
+        val alarm = AlarmStore.alarms.first { it.id == id }
         val setTime = LocalTime.of(alarm.hour, alarm.minute)
         val nowTime = LocalTime.of(LocalTime.now().hour, LocalTime.now().minute)
         val intent = Intent(context, AlarmBroadcastReceiver()::class.java)
