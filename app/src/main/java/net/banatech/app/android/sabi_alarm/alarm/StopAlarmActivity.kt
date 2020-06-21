@@ -21,7 +21,9 @@ class StopAlarmActivity : AppCompatActivity() {
         val id = intent.getIntExtra("id", 0)
         sound_stop_button.setOnClickListener {
             val alarm = AlarmStore.alarms.first { it.id == id }
-            alarm.enable = false
+            if(!alarm.isRepeatable){
+                alarm.enable = false
+            }
             stopService(Intent(this, AlarmSoundService::class.java))
         }
     }

@@ -268,7 +268,9 @@ object AlarmStore : Store() {
 
     private fun addAlarm(alarm: Alarm, context: Context) {
         alarms.add(alarm)
-        setAlarm(alarm, context)
+        if(alarm.enable){
+            setAlarm(alarm, context)
+        }
     }
 
 //    private fun createNotificationChannel(channelId: String, context: Context){

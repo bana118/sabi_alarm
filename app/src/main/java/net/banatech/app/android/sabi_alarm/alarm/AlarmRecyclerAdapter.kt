@@ -157,7 +157,8 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
                 actionsCreator.switchDayAlarm(
                     alarms[position].id,
                     weekList[i],
-                    !weekAlarmArray[i]
+                    !weekAlarmArray[i],
+                    viewHolder.alarmView.context
                 )
                 weekAlarmArray[i] = !weekAlarmArray[i]
                 if (weekAlarmArray[i]) {

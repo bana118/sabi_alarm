@@ -75,12 +75,13 @@ object ActionsCreator {
         )
     }
 
-    fun switchDayAlarm(id: Int, dayOfWeek: Int, dayEnable: Boolean) {
+    fun switchDayAlarm(id: Int, dayOfWeek: Int, dayEnable: Boolean, context: Context) {
         Dispatcher.dispatch(
             AlarmActions.ALARM_DAY_SWITCH,
             AlarmActions.KEY_ID, id,
             AlarmActions.KEY_DAY_OF_WEEK, dayOfWeek,
-            AlarmActions.KEY_DAY_ENABLE, dayEnable
+            AlarmActions.KEY_DAY_ENABLE, dayEnable,
+            AlarmActions.KEY_CONTEXT, context
         )
     }
 

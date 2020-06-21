@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.widget.Toast
 import net.banatech.app.android.sabi_alarm.alarm.stores.AlarmStore
 import net.banatech.app.android.sabi_alarm.database.Alarm
@@ -13,11 +14,8 @@ import java.time.LocalTime
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
-import kotlin.collections.HashMap
 
 object RepeatAlarmManager {
-    private val alarmIdToPendingIntent: HashMap<Int, PendingIntent> = HashMap()
-
     fun setAlarm(alarm: Alarm, context: Context) {
         val setTime = LocalTime.of(alarm.hour, alarm.minute)
         val nowTime = LocalTime.of(LocalTime.now().hour, LocalTime.now().minute)
@@ -48,7 +46,6 @@ object RepeatAlarmManager {
             val formatter = DateTimeFormatter.ofPattern("HH:mm にアラームをセットしました")
             val alarmText = alarmTime.format(formatter)
             Toast.makeText(context, alarmText, Toast.LENGTH_SHORT).show()
-            alarmIdToPendingIntent[alarm.id] = pendingIntent
         }
     }
 
@@ -60,7 +57,7 @@ object RepeatAlarmManager {
             context, alarm.id, intent, PendingIntent.FLAG_UPDATE_CURRENT
         )
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
-        val nextAlarmTimeMilli = calcDayOfWeekDiff(alarm, true)
+        val nextAlarmTimeMilli = calcDayOfWeekDiff(alarm, true) + System.currentTimeMillis()
         val clockInfo = AlarmManager.AlarmClockInfo(nextAlarmTimeMilli, null)
         if (alarmManager != null && pendingIntent != null) {
             alarmManager.setAlarmClock(
@@ -79,7 +76,6 @@ object RepeatAlarmManager {
         if (alarmManager != null && pendingIntent != null) {
             alarmManager.cancel(pendingIntent)
             Toast.makeText(context, "このアラームを停止しました", Toast.LENGTH_SHORT).show()
-            alarmIdToPendingIntent.remove(id)
         }
     }
 
@@ -99,6 +95,7 @@ object RepeatAlarmManager {
             val index = i % 7
             if(weekList[index]){
                 day = i % 7
+                break
             }
         }
         if(day == 0 && isNextSet){
