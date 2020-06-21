@@ -2,19 +2,19 @@ package net.banatech.app.android.sabi_alarm.alarm
 
 import android.app.TimePickerDialog
 import android.content.Intent
-import android.opengl.Visibility
+import android.media.MediaMetadataRetriever
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.SeekBar
 import android.widget.TimePicker
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.alarm_detail.view.*
 import kotlinx.android.synthetic.main.alarm_view.view.*
 import kotlinx.android.synthetic.main.alarm_week.view.*
-import kotlinx.coroutines.processNextEventInCurrentThread
 import net.banatech.app.android.sabi_alarm.R
 import net.banatech.app.android.sabi_alarm.alarm.actions.ActionsCreator
 import net.banatech.app.android.sabi_alarm.database.Alarm
@@ -55,19 +55,25 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
     }
 
     override fun onBindViewHolder(viewHolder: AlarmViewHolder, position: Int) {
-        viewHolder.alarmView.alarm_time.text = alarms[position].timeText
+        //Show alarm detail
         viewHolder.alarmView.setOnClickListener {
             listener.onItemClickListener(it, position, alarms[position])
         }
 
         //Edit alarm time
+        viewHolder.alarmView.alarm_time.text = alarms[position].timeText
         viewHolder.alarmView.alarm_time.setOnClickListener {
             val hour = alarms[position].hour
             val minute = alarms[position].minute
             val timePickerDialog = TimePickerDialog(
                 viewHolder.alarmView.context,
                 TimePickerDialog.OnTimeSetListener { _: TimePicker, pickerHour: Int, pickerMinute: Int ->
-                    actionsCreator.edit(alarms[position].id, pickerHour, pickerMinute, viewHolder.alarmView.context)
+                    actionsCreator.edit(
+                        alarms[position].id,
+                        pickerHour,
+                        pickerMinute,
+                        viewHolder.alarmView.context
+                    )
                     notifyDataSetChanged()
                 },
                 hour, minute, true
@@ -75,13 +81,52 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
             timePickerDialog.show()
         }
 
+        //Edit sound start time
+        viewHolder.alarmView.sound_start_time_text.text = alarms[position].soundStartTimeText
+        val soundSeekBar = viewHolder.alarmView.sound_start_time
+        val retriever = MediaMetadataRetriever()
+        if (alarms[position].isDefaultSound) {
+            val assetFileDescriptor =
+                viewHolder.alarmView.context.assets.openFd("default/${alarms[position].soundFileName}")
+            retriever.setDataSource(
+                assetFileDescriptor.fileDescriptor,
+                assetFileDescriptor.startOffset,
+                assetFileDescriptor.length
+            )
+        }
+        val duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+        retriever.release()
+        val durationMilli = Integer.parseInt(duration)
+        soundSeekBar.max = durationMilli
+        soundSeekBar.setOnSeekBarChangeListener(
+            object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                    val sumSeconds = progress / 1000
+                    val minute = sumSeconds / 60
+                    val second = sumSeconds % 60
+                    val milli = progress % 1000
+                    val soundStartTimeText = String.format("%02d:%02d.%03d", minute, second, milli)
+                    viewHolder.alarmView.sound_start_time_text.text = soundStartTimeText
+                    actionsCreator.changeSoundStartTime(alarms[position].id, alarms[position].soundStartTime, alarms[position].soundStartTimeText)
+                }
+
+                override fun onStartTrackingTouch(seekBar: SeekBar) {
+                }
+
+                override fun onStopTrackingTouch(seekBar: SeekBar) {
+                }
+            }
+        )
+
         val alarmSwitch = viewHolder.alarmView.alarm_switch
 
         //Switch alarm on/off
         alarmSwitch.setOnClickListener {
-            actionsCreator.switchEnable(alarms[position].id,
+            actionsCreator.switchEnable(
+                alarms[position].id,
                 alarmSwitch.isChecked,
-                viewHolder.alarmView.context)
+                viewHolder.alarmView.context
+            )
         }
         alarmSwitch.isChecked = alarms[position].enable
 
@@ -166,13 +211,16 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
                 } else {
                     unselectWeekButton(weekButtonList[i], viewHolder)
                 }
-                if(!alarms[position].isRepeatable){
+                if (!alarms[position].isRepeatable) {
                     alarmDetail.repeat_check_box.isChecked = false
                     alarmDetail.include_alarm_week.visibility = View.GONE
                     weekAlarmArray[i] = !weekAlarmArray[i]
                     selectWeekButton(weekButtonList[i], viewHolder)
                 }
-                Log.d("debug", "repeatable${alarms[position].isRepeatable}, week${weekAlarmArray[i]}")
+                Log.d(
+                    "debug",
+                    "repeatable${alarms[position].isRepeatable}, week${weekAlarmArray[i]}"
+                )
             }
             if (weekAlarmArray[i]) {
                 selectWeekButton(weekButtonList[i], viewHolder)

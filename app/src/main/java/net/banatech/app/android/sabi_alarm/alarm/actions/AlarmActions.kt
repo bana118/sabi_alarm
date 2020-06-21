@@ -11,6 +11,7 @@ object AlarmActions {
     const val ALARM_IS_REPEATABLE_SWITCH = "alarm-is-repeatable-switch"
     const val ALARM_DAY_SWITCH = "alarm-day-switch"
     const val ALARM_SOUND_SELECT = "alarm-sound-select"
+    const val ALARM_SOUND_START_TIME_CHANGE = "alarm-sound-start-time-change"
 
     const val KEY_ID = "key-id"
     const val KEY_HOUR = "key-hour"
@@ -23,4 +24,6 @@ object AlarmActions {
     const val KEY_DAY_OF_WEEK = "key-week-day-of-week"
     const val KEY_SOUND_FILE_NAME = "key-sound-file-name"
     const val KEY_CONTEXT = "key-context"
+    const val KEY_SOUND_START_TIME = "key-sound-start-time"
+    const val KEY_SOUND_START_TIME_TEXT = "key-sound-start-time-text"
 }

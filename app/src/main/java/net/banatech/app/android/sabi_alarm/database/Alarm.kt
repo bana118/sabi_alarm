@@ -22,6 +22,7 @@ data class Alarm(
     @ColumnInfo(name = "is_friday_alarm") var isFridayAlarm: Boolean,
     @ColumnInfo(name = "is_saturday_alarm") var isSaturdayAlarm: Boolean,
     @ColumnInfo(name = "sound_file_name") var soundFileName: String,
-    @ColumnInfo(name = "sound_start_time") var soundStartTime: Int,
+    @ColumnInfo(name = "sound_start_time") var soundStartTime: Long, //Milli
+    @ColumnInfo(name = "sound_start_time_text") var soundStartTimeText: String,
     @ColumnInfo(name = "is_default_sound") var isDefaultSound: Boolean
 )

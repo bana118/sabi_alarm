@@ -141,6 +141,7 @@ class AlarmActivity : AppCompatActivity() {
             isSaturdayAlarm = false,
             soundFileName = "beethoven_no5_1st.mp3",
             soundStartTime = 0,
+            soundStartTimeText = "00:00",
             isDefaultSound = true
         )
         val dao = db.alarmDao()

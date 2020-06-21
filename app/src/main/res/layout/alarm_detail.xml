@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/alarm_detail_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -65,7 +64,35 @@
         android:drawableLeft="@android:drawable/ic_menu_delete"
         android:text="@string/delete_alarm"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sound_start_time" />
+
+<!--    <TextView-->
+<!--        android:id="@+id/sound_start_time"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="16dp"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/sound_button" />-->
+
+    <TextView
+        android:id="@+id/sound_start_time_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sound_button" />
+
+    <SeekBar
+        android:id="@+id/sound_start_time"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sound_start_time_text" />
 
     <ImageView
         android:id="@+id/alarm_up_arrow"
@@ -75,7 +102,7 @@
         android:layout_marginRight="8dp"
         android:contentDescription="@string/alarm_up_arrow"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/delete_button"
+        app:layout_constraintTop_toBottomOf="@+id/sound_start_time"
         app:srcCompat="@drawable/ic_keyboard_arrow_up_black_24dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
