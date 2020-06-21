@@ -164,8 +164,6 @@ object AlarmStore : Store() {
     private fun destroy(id: Int, context: Context) {
         val alarm = alarms.first { it.id == id }
         cancelAlarm(alarm, context)
-        Log.d("start time", alarm.soundStartTime.toString())
-        Log.d("start time text", alarm.soundStartTimeText)
         lastDeleted = alarm.copy()
         canUndo = true
         alarms.remove(alarm)
@@ -284,8 +282,6 @@ object AlarmStore : Store() {
         val alarm = alarms.first{it.id == id}
         alarm.soundStartTime = soundStartTimeMilli
         alarm.soundStartTimeText = soundStartTimeText
-        Log.d("start time", alarm.soundStartTime.toString())
-        Log.d("start time text", alarm.soundStartTimeText)
     }
 
     private fun addAlarm(alarm: Alarm, context: Context) {
