@@ -44,6 +44,10 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
             .addAction(0, "アラームを停止", fullScreenPendingIntent)
             .setFullScreenIntent(fullScreenPendingIntent, true)
 
+        if (alarm.isVibration) {
+            notificationBuilder.setVibrate(longArrayOf(0, 1000, 100))
+        }
+
         val notification = notificationBuilder.build()
         startForeground(1, notification)
         play()
