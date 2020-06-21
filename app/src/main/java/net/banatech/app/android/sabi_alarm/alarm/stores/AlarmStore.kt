@@ -127,7 +127,7 @@ object AlarmStore : Store() {
                 val soundStartTime = action.data[AlarmActions.KEY_SOUND_START_TIME]
                 val soundStartTimeText = action.data[AlarmActions.KEY_SOUND_START_TIME_TEXT]
                 check(id is Int) { "Id value must be Int" }
-                check(soundStartTime is Long) { "SoundStartTime value must be Long" }
+                check(soundStartTime is Int) { "SoundStartTime value must be Int" }
                 check(soundStartTimeText is String) { "SoundStartTime value must be String"}
                 changeSoundStartTime(id, soundStartTime, soundStartTimeText)
             }
@@ -164,6 +164,8 @@ object AlarmStore : Store() {
     private fun destroy(id: Int, context: Context) {
         val alarm = alarms.first { it.id == id }
         cancelAlarm(alarm, context)
+        Log.d("start time", alarm.soundStartTime.toString())
+        Log.d("start time text", alarm.soundStartTimeText)
         lastDeleted = alarm.copy()
         canUndo = true
         alarms.remove(alarm)
@@ -172,6 +174,8 @@ object AlarmStore : Store() {
     private fun undoDestroy(context: Context) {
         if (canUndo) {
             addAlarm(lastDeleted.copy(), context)
+            Log.d("start time", lastDeleted.soundStartTime.toString())
+            Log.d("start time text", lastDeleted.soundStartTimeText)
             canUndo = false
         }
     }
@@ -276,10 +280,12 @@ object AlarmStore : Store() {
         alarm.soundFileName = soundFileName
     }
 
-    private fun changeSoundStartTime(id: Int, soundStartTimeMilli: Long, soundStartTimeText: String){
+    private fun changeSoundStartTime(id: Int, soundStartTimeMilli: Int, soundStartTimeText: String){
         val alarm = alarms.first{it.id == id}
         alarm.soundStartTime = soundStartTimeMilli
         alarm.soundStartTimeText = soundStartTimeText
+        Log.d("start time", alarm.soundStartTime.toString())
+        Log.d("start time text", alarm.soundStartTimeText)
     }
 
     private fun addAlarm(alarm: Alarm, context: Context) {

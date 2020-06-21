@@ -81,7 +81,7 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
             timePickerDialog.show()
         }
 
-        //Edit sound start time
+        //Change sound start time
         viewHolder.alarmView.sound_start_time_text.text = alarms[position].soundStartTimeText
         val soundSeekBar = viewHolder.alarmView.sound_start_time
         val retriever = MediaMetadataRetriever()
@@ -98,6 +98,7 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
         retriever.release()
         val durationMilli = Integer.parseInt(duration)
         soundSeekBar.max = durationMilli
+        soundSeekBar.progress = alarms[position].soundStartTime
         soundSeekBar.setOnSeekBarChangeListener(
             object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
@@ -107,7 +108,7 @@ class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
                     val milli = progress % 1000
                     val soundStartTimeText = String.format("%02d:%02d.%03d", minute, second, milli)
                     viewHolder.alarmView.sound_start_time_text.text = soundStartTimeText
-                    actionsCreator.changeSoundStartTime(alarms[position].id, alarms[position].soundStartTime, alarms[position].soundStartTimeText)
+                    actionsCreator.changeSoundStartTime(alarms[position].id, progress, soundStartTimeText)
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar) {

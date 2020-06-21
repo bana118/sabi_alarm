@@ -93,7 +93,7 @@ object ActionsCreator {
         )
     }
 
-    fun changeSoundStartTime(id: Int, soundStartTime: Long, soundStartTimeText: String){
+    fun changeSoundStartTime(id: Int, soundStartTime: Int, soundStartTimeText: String){
         Dispatcher.dispatch(
             AlarmActions.ALARM_SOUND_START_TIME_CHANGE,
             AlarmActions.KEY_ID, id,
