@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/alarm_detail_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -76,12 +77,32 @@
 <!--        app:layout_constraintTop_toBottomOf="@+id/sound_button" />-->
 
     <TextView
+        android:id="@+id/sound_start_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/sound_start_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sound_button" />
+
+    <TextView
         android:id="@+id/sound_start_time_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/sound_start_label"
+        app:layout_constraintTop_toBottomOf="@+id/sound_button" />
+
+    <Button
+        android:id="@+id/test_play_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/test_play_label"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sound_button" />
 
     <SeekBar
@@ -89,10 +110,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sound_start_time_text" />
+        app:layout_constraintTop_toBottomOf="@+id/test_play_button" />
 
     <ImageView
         android:id="@+id/alarm_up_arrow"

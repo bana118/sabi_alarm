@@ -3,6 +3,7 @@ package net.banatech.app.android.sabi_alarm.alarm
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.os.IBinder
 import android.util.Log
@@ -67,13 +68,17 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
         val fileName = if (alarm.isDefaultSound) {
             "default/${alarm.soundFileName}"
         } else {
-            "default/${alarm.soundFileName}"
+            "default/${alarm.soundFileName}" // TODO impl not default
         }
         val assetFileDescriptor = this.assets.openFd(fileName)
-        Log.d("debug", alarm.soundFileName)
         try {
             mediaPlayer.reset()
             mediaPlayer.setDataSource(assetFileDescriptor)
+            mediaPlayer.setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_ALARM)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .build())
             mediaPlayer.prepare()
             mediaPlayer.seekTo(alarm.soundStartTime)
             mediaPlayer.start()
