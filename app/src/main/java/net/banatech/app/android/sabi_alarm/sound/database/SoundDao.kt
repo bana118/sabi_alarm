@@ -7,7 +7,7 @@ interface SoundDao {
     @Query("SELECT * FROM sounds")
     suspend fun getAll(): List<Sound>
 
-    @Query("SELECT * FROM alarms WHERE id IN (:soundIds)")
+    @Query("SELECT * FROM sounds WHERE id IN (:soundIds)")
     suspend fun loadAllByIds(soundIds: IntArray): List<Sound>
 
     @Insert

@@ -20,9 +20,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.banatech.app.android.sabi_alarm.R
-import net.banatech.app.android.sabi_alarm.alarm.actions.ActionsCreator
-import net.banatech.app.android.sabi_alarm.alarm.dispatcher.Dispatcher
-import net.banatech.app.android.sabi_alarm.alarm.stores.AlarmStore
+import net.banatech.app.android.sabi_alarm.actions.ActionsCreator
+import net.banatech.app.android.sabi_alarm.dispatcher.Dispatcher
+import net.banatech.app.android.sabi_alarm.stores.AlarmStore
 import net.banatech.app.android.sabi_alarm.alarm.database.Alarm
 import net.banatech.app.android.sabi_alarm.alarm.database.AlarmDatabase
 import org.greenrobot.eventbus.Subscribe

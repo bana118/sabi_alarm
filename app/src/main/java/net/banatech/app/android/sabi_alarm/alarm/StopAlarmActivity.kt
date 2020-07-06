@@ -6,7 +6,7 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_play_sound.*
 import net.banatech.app.android.sabi_alarm.R
-import net.banatech.app.android.sabi_alarm.alarm.stores.AlarmStore
+import net.banatech.app.android.sabi_alarm.stores.AlarmStore
 import net.banatech.app.android.sabi_alarm.alarm.database.Alarm
 
 

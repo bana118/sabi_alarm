@@ -3,7 +3,7 @@ package net.banatech.app.android.sabi_alarm.alarm
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import net.banatech.app.android.sabi_alarm.alarm.stores.AlarmStore
+import net.banatech.app.android.sabi_alarm.stores.AlarmStore
 
 
 class AlarmBroadcastReceiver : BroadcastReceiver() {

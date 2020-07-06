@@ -1,4 +1,4 @@
-package net.banatech.app.android.sabi_alarm.alarm.actions
+package net.banatech.app.android.sabi_alarm.actions
 
 class Action(val type: String, val data: HashMap<String, Any>) {
     companion object {

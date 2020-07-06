@@ -1,8 +1,7 @@
-package net.banatech.app.android.sabi_alarm.alarm.actions
+package net.banatech.app.android.sabi_alarm.actions
 
 import android.content.Context
-import android.util.Log
-import net.banatech.app.android.sabi_alarm.alarm.dispatcher.Dispatcher
+import net.banatech.app.android.sabi_alarm.dispatcher.Dispatcher
 
 
 object ActionsCreator {

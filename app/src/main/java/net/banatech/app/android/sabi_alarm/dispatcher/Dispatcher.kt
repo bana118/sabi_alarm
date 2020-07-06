@@ -1,8 +1,7 @@
-package net.banatech.app.android.sabi_alarm.alarm.dispatcher
+package net.banatech.app.android.sabi_alarm.dispatcher
 
-import android.util.Log
-import net.banatech.app.android.sabi_alarm.alarm.actions.Action
-import net.banatech.app.android.sabi_alarm.alarm.stores.Store
+import net.banatech.app.android.sabi_alarm.actions.Action
+import net.banatech.app.android.sabi_alarm.stores.Store
 import org.greenrobot.eventbus.EventBus
 
 object Dispatcher {

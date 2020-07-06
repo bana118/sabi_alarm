@@ -1,10 +1,10 @@
-package net.banatech.app.android.sabi_alarm.alarm.stores
+package net.banatech.app.android.sabi_alarm.stores
 
 import android.content.Context
 import android.util.Log
 import net.banatech.app.android.sabi_alarm.alarm.RepeatAlarmManager
-import net.banatech.app.android.sabi_alarm.alarm.actions.Action
-import net.banatech.app.android.sabi_alarm.alarm.actions.AlarmActions
+import net.banatech.app.android.sabi_alarm.actions.Action
+import net.banatech.app.android.sabi_alarm.actions.AlarmActions
 import net.banatech.app.android.sabi_alarm.alarm.database.Alarm
 import org.greenrobot.eventbus.Subscribe
 import java.util.*

@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.sound_file_view.view.*
 import net.banatech.app.android.sabi_alarm.R
-import net.banatech.app.android.sabi_alarm.alarm.actions.ActionsCreator
-import net.banatech.app.android.sabi_alarm.alarm.stores.AlarmStore
+import net.banatech.app.android.sabi_alarm.actions.ActionsCreator
+import net.banatech.app.android.sabi_alarm.stores.AlarmStore
 
 class DefaultSoundRecyclerAdapter(private val defaultAlarmSoundArray: Array<String>) :
     RecyclerView.Adapter<DefaultSoundRecyclerAdapter.DefaultSoundViewHolder>() {
