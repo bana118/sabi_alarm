@@ -2,6 +2,7 @@ package net.banatech.app.android.sabi_alarm.sound
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +13,7 @@ import net.banatech.app.android.sabi_alarm.R
 import net.banatech.app.android.sabi_alarm.dispatcher.Dispatcher
 import net.banatech.app.android.sabi_alarm.stores.alarm.AlarmStore
 import net.banatech.app.android.sabi_alarm.alarm.database.Alarm
+import org.greenrobot.eventbus.Subscribe
 
 class SoundSelectActivity : AppCompatActivity() {
 
@@ -72,5 +74,10 @@ class SoundSelectActivity : AppCompatActivity() {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    @Subscribe
+    fun onAlarmSoundSelectyEvent(event: AlarmStore.AlarmSoundSelectEvent) {
+        Log.d("event", "alarm sound select event 2")
     }
 }
