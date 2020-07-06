@@ -1,5 +1,6 @@
 package net.banatech.app.android.sabi_alarm.sound
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Display
@@ -46,6 +47,16 @@ class SoundSelectActivity : AppCompatActivity() {
         local_sound_list.adapter = localSoundAdapter
         default_sound_list.layoutManager =LinearLayoutManager(this)
         default_sound_list.adapter = defaultSoundAdapter
+        add_local_sound_button.setOnClickListener {
+            val READ_REQUEST_CODE = 42
+
+            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                type = "audio/*"
+            }
+
+            startActivityForResult(intent, READ_REQUEST_CODE)
+        }
 
     }
 
