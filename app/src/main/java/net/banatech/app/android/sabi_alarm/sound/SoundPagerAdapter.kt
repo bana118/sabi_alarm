@@ -1,5 +1,6 @@
 package net.banatech.app.android.sabi_alarm.sound
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import kotlinx.android.synthetic.main.default_sound_view.view.*
 import net.banatech.app.android.sabi_alarm.R
-import net.banatech.app.android.sabi_alarm.database.Alarm
 
 class SoundPagerAdapter(fragmentActivity: FragmentActivity) :
     FragmentStateAdapter(fragmentActivity) {
@@ -35,7 +35,7 @@ class SoundPagerAdapter(fragmentActivity: FragmentActivity) :
         }
 
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-            val soundList = view.default_sound_list
+            val soundList = view.default_sound_label
             val assetManager = this.resources.assets
             val defaultSoundDir = assetManager.list("default")
             check(defaultSoundDir != null) { "default sound list must not be null" }
@@ -49,6 +49,34 @@ class SoundPagerAdapter(fragmentActivity: FragmentActivity) :
     }
 
     class LocalSoundPageFragment : Fragment() {
+        override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+        ): View {
+            return inflater.inflate(R.layout.local_file_view, container, false)
+        }
 
+        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//            val fileList = view.local_file_list
+//            val assetManager = this.resources.assets
+//            val rootDirPath = view.context.getExternalFilesDirs("")
+//            val rootLocalFileArray = assetManager.list("default")
+//            check(rootLocalFileArray != null) { "rootLocalFileArray must not be null" }
+//            fileList.layoutManager = LinearLayoutManager(this.context)
+//            val localFileAdapter = LocalFileRecyclerAdapter(rootLocalFileArray)
+//            fileList.adapter = localFileAdapter
+//            val dividerItemDecoration =
+//                DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL)
+//            fileList.addItemDecoration(dividerItemDecoration)
+            val READ_REQUEST_CODE = 42
+
+            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {    // 1
+                addCategory(Intent.CATEGORY_OPENABLE)   // 2
+                type = "image/*"    // 3
+            }
+
+            startActivityForResult(intent, READ_REQUEST_CODE)   // 4
+        }
     }
 }

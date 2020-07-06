@@ -20,4 +20,7 @@
     <string name="channel_description">launch sabi_alarm in background</string>
     <string name="sound_start_label">再生開始時間:</string>
     <string name="test_play_label">視聴</string>
+    <string name="local_sound">デバイスの音楽</string>
+    <string name="default_sound">デフォルトの音楽</string>
+    <string name="add_local_sound">追加</string>
 </resources>

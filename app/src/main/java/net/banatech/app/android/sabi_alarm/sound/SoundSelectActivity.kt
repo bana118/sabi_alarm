@@ -37,16 +37,15 @@ class SoundSelectActivity : AppCompatActivity() {
         }
         check(selectedAlarm != null){ "SelectedAlarm must not be null" }
         AlarmStore.selectedAlarm = selectedAlarm
-        sound_pager.adapter = SoundPagerAdapter(this)
-        sound_pager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
-        TabLayoutMediator(tab_layout, sound_pager) { tab, position ->
-            require(position == 0 || position == 1) { "Tab position must be 0 or 1" }
-            if (position == 0) {
-                tab.text = "Default"
-            } else if (position == 1) {
-                tab.text = "Local"
-            }
-        }.attach()
+        val assetManager = this.resources.assets
+        val defaultSoundDir = assetManager.list("default")
+        check(defaultSoundDir != null) { "default sound list must not be null" }
+        val defaultSoundAdapter = DefaultSoundRecyclerAdapter(defaultSoundDir)
+        val localSoundAdapter = LocalSoundRecyclerAdapter(arrayOf("1","2","3","4","5","6","7","8","9","10","11"))
+        local_sound_list.layoutManager = LinearLayoutManager(this)
+        local_sound_list.adapter = localSoundAdapter
+        default_sound_list.layoutManager =LinearLayoutManager(this)
+        default_sound_list.adapter = defaultSoundAdapter
 
     }
 

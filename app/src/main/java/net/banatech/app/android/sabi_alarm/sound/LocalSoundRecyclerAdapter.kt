@@ -9,50 +9,48 @@ import net.banatech.app.android.sabi_alarm.R
 import net.banatech.app.android.sabi_alarm.alarm.actions.ActionsCreator
 import net.banatech.app.android.sabi_alarm.alarm.stores.AlarmStore
 
-class DefaultSoundRecyclerAdapter(private val defaultAlarmSoundArray: Array<String>) :
-    RecyclerView.Adapter<DefaultSoundRecyclerAdapter.DefaultSoundViewHolder>() {
+class LocalSoundRecyclerAdapter(private val localAlarmSoundArray: Array<String>) :
+    RecyclerView.Adapter<LocalSoundRecyclerAdapter.LocalFileViewHolder>() {
 
-    class DefaultSoundViewHolder(val soundFileView: View) : RecyclerView.ViewHolder(soundFileView)
+    class LocalFileViewHolder(val soundFileView: View) : RecyclerView.ViewHolder(soundFileView)
 
     // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): DefaultSoundViewHolder {
+    ): LocalFileViewHolder {
         // create a new view
-        val soundFileView = LayoutInflater.from(parent.context)
+        val localFileView = LayoutInflater.from(parent.context)
             .inflate(R.layout.sound_file_view, parent, false)
         // set the view's size, margins, paddings and layout parameters
-        return DefaultSoundViewHolder(
-            soundFileView
+        return LocalFileViewHolder(
+            localFileView
         )
     }
 
     // Replace the contents of a view (invoked by the layout manager)
-    override fun onBindViewHolder(holder: DefaultSoundViewHolder, position: Int) {
-        val assetManager = holder.soundFileView.resources.assets
-        //val soundFile = assetManager.open(defaultSoundFileList[position])
-        holder.soundFileView.sound_file_name.text = defaultAlarmSoundArray[position]
+    override fun onBindViewHolder(holder: LocalFileViewHolder, position: Int) {
+        holder.soundFileView.sound_file_name.text = localAlarmSoundArray[position]
         val checkBox = holder.soundFileView.sound_file_check
         holder.soundFileView.sound_file_layout.setOnClickListener {
-            ActionsCreator.selectSound(AlarmStore.selectedAlarm.id, defaultAlarmSoundArray[position])
-            if(AlarmStore.selectedAlarm.soundFileName == defaultAlarmSoundArray[position]){
+            ActionsCreator.selectSound(AlarmStore.selectedAlarm.id, localAlarmSoundArray[position])
+            if(AlarmStore.selectedAlarm.soundFileName == localAlarmSoundArray[position]){
                 checkBox.visibility = View.VISIBLE
             }else{
                 checkBox.visibility = View.INVISIBLE
             }
-            for(i in defaultAlarmSoundArray.indices){
+            for(i in localAlarmSoundArray.indices){
                 if(i != position){
                     notifyItemChanged(i)
                 }
             }
         }
-        if(AlarmStore.selectedAlarm.soundFileName == defaultAlarmSoundArray[position]){
+        if(AlarmStore.selectedAlarm.soundFileName == localAlarmSoundArray[position]){
             checkBox.visibility = View.VISIBLE
         }else{
             checkBox.visibility = View.INVISIBLE
         }
     }
 
-    override fun getItemCount() = defaultAlarmSoundArray.size
+    override fun getItemCount() = localAlarmSoundArray.size
 }
