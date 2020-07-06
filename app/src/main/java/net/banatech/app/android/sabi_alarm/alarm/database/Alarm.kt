@@ -1,4 +1,4 @@
-package net.banatech.app.android.sabi_alarm.database
+package net.banatech.app.android.sabi_alarm.alarm.database
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

@@ -9,7 +9,7 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import net.banatech.app.android.sabi_alarm.R
 import net.banatech.app.android.sabi_alarm.alarm.stores.AlarmStore
-import net.banatech.app.android.sabi_alarm.database.Alarm
+import net.banatech.app.android.sabi_alarm.alarm.database.Alarm
 import java.io.IOException
 
 class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {

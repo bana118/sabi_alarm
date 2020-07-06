@@ -4,10 +4,9 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.widget.Toast
 import net.banatech.app.android.sabi_alarm.alarm.stores.AlarmStore
-import net.banatech.app.android.sabi_alarm.database.Alarm
+import net.banatech.app.android.sabi_alarm.alarm.database.Alarm
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime

@@ -1,14 +1,8 @@
 package net.banatech.app.android.sabi_alarm.alarm
 
 import android.app.NotificationChannel
-import android.app.NotificationChannelGroup
 import android.app.NotificationManager
 import android.app.TimePickerDialog
-import android.content.ContentResolver
-import android.content.Context
-import android.media.AudioAttributes
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -29,8 +23,8 @@ import net.banatech.app.android.sabi_alarm.R
 import net.banatech.app.android.sabi_alarm.alarm.actions.ActionsCreator
 import net.banatech.app.android.sabi_alarm.alarm.dispatcher.Dispatcher
 import net.banatech.app.android.sabi_alarm.alarm.stores.AlarmStore
-import net.banatech.app.android.sabi_alarm.database.Alarm
-import net.banatech.app.android.sabi_alarm.database.AlarmDatabase
+import net.banatech.app.android.sabi_alarm.alarm.database.Alarm
+import net.banatech.app.android.sabi_alarm.alarm.database.AlarmDatabase
 import org.greenrobot.eventbus.Subscribe
 import java.util.*
 

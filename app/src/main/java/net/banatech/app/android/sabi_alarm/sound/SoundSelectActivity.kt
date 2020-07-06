@@ -3,24 +3,16 @@ package net.banatech.app.android.sabi_alarm.sound
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.Display
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.toolbar
-import kotlinx.android.synthetic.main.default_sound_view.*
-import kotlinx.android.synthetic.main.default_sound_view.view.*
-import kotlinx.android.synthetic.main.sound_pager_view.*
 import kotlinx.android.synthetic.main.sound_select.*
 import net.banatech.app.android.sabi_alarm.R
 import net.banatech.app.android.sabi_alarm.alarm.dispatcher.Dispatcher
 import net.banatech.app.android.sabi_alarm.alarm.stores.AlarmStore
-import net.banatech.app.android.sabi_alarm.database.Alarm
+import net.banatech.app.android.sabi_alarm.alarm.database.Alarm
 import org.greenrobot.eventbus.Subscribe
 
 class SoundSelectActivity : AppCompatActivity() {
