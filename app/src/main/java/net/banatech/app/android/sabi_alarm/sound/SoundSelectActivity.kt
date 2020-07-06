@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.android.synthetic.main.sound_select.*
 import net.banatech.app.android.sabi_alarm.R
 import net.banatech.app.android.sabi_alarm.dispatcher.Dispatcher
-import net.banatech.app.android.sabi_alarm.stores.AlarmStore
+import net.banatech.app.android.sabi_alarm.stores.alarm.AlarmStore
 import net.banatech.app.android.sabi_alarm.alarm.database.Alarm
 
 class SoundSelectActivity : AppCompatActivity() {

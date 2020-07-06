@@ -19,20 +19,20 @@ import kotlinx.android.synthetic.main.alarm_detail.view.*
 import kotlinx.android.synthetic.main.alarm_view.view.*
 import kotlinx.android.synthetic.main.alarm_week.view.*
 import net.banatech.app.android.sabi_alarm.R
-import net.banatech.app.android.sabi_alarm.actions.ActionsCreator
+import net.banatech.app.android.sabi_alarm.actions.alarm.AlarmActionsCreator
 import net.banatech.app.android.sabi_alarm.alarm.database.Alarm
 import net.banatech.app.android.sabi_alarm.sound.SoundSelectActivity
 import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
 
-class AlarmRecyclerAdapter(actionsCreator: ActionsCreator) :
+class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
     RecyclerView.Adapter<AlarmRecyclerAdapter.AlarmViewHolder>() {
     lateinit var listener: OnItemClickListener
     private var alarmIdToSoundTestMediaPlayers: Pair<Int, MediaPlayer?> = Pair(0, null)
 
     companion object {
-        lateinit var actionsCreator: ActionsCreator
+        lateinit var actionsCreator: AlarmActionsCreator
     }
 
     private var alarms: ArrayList<Alarm> = ArrayList()

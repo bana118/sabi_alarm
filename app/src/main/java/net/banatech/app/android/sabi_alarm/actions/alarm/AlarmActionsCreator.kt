@@ -1,10 +1,10 @@
-package net.banatech.app.android.sabi_alarm.actions
+package net.banatech.app.android.sabi_alarm.actions.alarm
 
 import android.content.Context
+import net.banatech.app.android.sabi_alarm.actions.alarm.AlarmActions
 import net.banatech.app.android.sabi_alarm.dispatcher.Dispatcher
 
-
-object ActionsCreator {
+object AlarmActionsCreator {
 
     fun create(hour: Int, minute: Int, context: Context) {
         Dispatcher.dispatch(

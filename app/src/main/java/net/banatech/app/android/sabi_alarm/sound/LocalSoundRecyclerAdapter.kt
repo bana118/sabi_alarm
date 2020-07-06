@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.sound_file_view.view.*
 import net.banatech.app.android.sabi_alarm.R
-import net.banatech.app.android.sabi_alarm.actions.ActionsCreator
-import net.banatech.app.android.sabi_alarm.stores.AlarmStore
+import net.banatech.app.android.sabi_alarm.actions.alarm.AlarmActionsCreator
+import net.banatech.app.android.sabi_alarm.stores.alarm.AlarmStore
 
 class LocalSoundRecyclerAdapter(private val localAlarmSoundArray: Array<String>) :
     RecyclerView.Adapter<LocalSoundRecyclerAdapter.LocalFileViewHolder>() {
@@ -33,7 +33,7 @@ class LocalSoundRecyclerAdapter(private val localAlarmSoundArray: Array<String>)
         holder.soundFileView.sound_file_name.text = localAlarmSoundArray[position]
         val checkBox = holder.soundFileView.sound_file_check
         holder.soundFileView.sound_file_layout.setOnClickListener {
-            ActionsCreator.selectSound(AlarmStore.selectedAlarm.id, localAlarmSoundArray[position])
+            AlarmActionsCreator.selectSound(AlarmStore.selectedAlarm.id, localAlarmSoundArray[position])
             if(AlarmStore.selectedAlarm.soundFileName == localAlarmSoundArray[position]){
                 checkBox.visibility = View.VISIBLE
             }else{

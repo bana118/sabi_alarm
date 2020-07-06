@@ -1,11 +1,12 @@
-package net.banatech.app.android.sabi_alarm.stores
+package net.banatech.app.android.sabi_alarm.stores.alarm
 
 import android.content.Context
 import android.util.Log
 import net.banatech.app.android.sabi_alarm.alarm.RepeatAlarmManager
 import net.banatech.app.android.sabi_alarm.actions.Action
-import net.banatech.app.android.sabi_alarm.actions.AlarmActions
+import net.banatech.app.android.sabi_alarm.actions.alarm.AlarmActions
 import net.banatech.app.android.sabi_alarm.alarm.database.Alarm
+import net.banatech.app.android.sabi_alarm.stores.Store
 import org.greenrobot.eventbus.Subscribe
 import java.util.*
 import kotlin.collections.ArrayList
@@ -27,7 +28,11 @@ object AlarmStore : Store() {
                 val context = action.data[AlarmActions.KEY_CONTEXT]
                 check(hour is Int && minute is Int) { "Hour and minute value must be Int" }
                 check(context is Context) { "Context value must be Context" }
-                create(hour, minute, context)
+                create(
+                    hour,
+                    minute,
+                    context
+                )
                 emitStoreCreate()
             }
             AlarmActions.ALARM_DESTROY -> {
@@ -35,13 +40,18 @@ object AlarmStore : Store() {
                 val context = action.data[AlarmActions.KEY_CONTEXT]
                 check(id is Int) { "Id value must be Int" }
                 check(context is Context) { "Context value must be Context" }
-                destroy(id, context)
+                destroy(
+                    id,
+                    context
+                )
                 emitStoreDestroy()
             }
             AlarmActions.ALARM_UNDO_DESTROY -> {
                 val context = action.data[AlarmActions.KEY_CONTEXT]
                 check(context is Context) { "Context value must be Context" }
-                undoDestroy(context)
+                undoDestroy(
+                    context
+                )
                 emitStoreChange()
             }
             AlarmActions.ALARM_EDIT -> {
@@ -52,7 +62,12 @@ object AlarmStore : Store() {
                 check(id is Int) { "Id value must be Int" }
                 check(hour is Int && minute is Int) { "Hour and minute value must be Int" }
                 check(context is Context) { "Context value must be Context" }
-                edit(id, hour, minute, context)
+                edit(
+                    id,
+                    hour,
+                    minute,
+                    context
+                )
                 emitStoreTimeChange()
             }
             AlarmActions.ALARM_ENABLE_SWITCH -> {
@@ -62,7 +77,11 @@ object AlarmStore : Store() {
                 check(id is Int) { "Id value must be Int" }
                 check(enable is Boolean) { "Enable value must be Int" }
                 check(context is Context) { "Context value must be Context" }
-                switchEnable(id, enable, context)
+                switchEnable(
+                    id,
+                    enable,
+                    context
+                )
                 emitStoreChange()
             }
             AlarmActions.ALARM_IS_SHOW_DETAIL_SWITCH -> {
@@ -70,7 +89,10 @@ object AlarmStore : Store() {
                 val isShowDetail = action.data[AlarmActions.KEY_IS_SHOW_DETAIL_SWITCH]
                 check(id is Int) { "Id value must be Int" }
                 check(isShowDetail is Boolean) { "IsShowDetail value must be Int" }
-                switchDetail(id, isShowDetail)
+                switchDetail(
+                    id,
+                    isShowDetail
+                )
                 emitStoreChange()
             }
             AlarmActions.ALARM_IS_VIBRATION_SWITCH -> {
@@ -78,7 +100,10 @@ object AlarmStore : Store() {
                 val isVibration = action.data[AlarmActions.KEY_IS_VIBRATION]
                 check(id is Int) { "Id value must be Int" }
                 check(isVibration is Boolean) { "IsVibration value must be Int" }
-                switchVibration(id, isVibration)
+                switchVibration(
+                    id,
+                    isVibration
+                )
                 emitStoreChange()
             }
             AlarmActions.ALARM_IS_REPEATABLE_SWITCH -> {
@@ -88,7 +113,11 @@ object AlarmStore : Store() {
                 check(id is Int) { "Id value must be Int" }
                 check(isReadable is Boolean) { "IsRepeatable value must be Int" }
                 check(context is Context) { "Context value must be Context" }
-                switchRepeatable(id, isReadable, context)
+                switchRepeatable(
+                    id,
+                    isReadable,
+                    context
+                )
                 emitStoreChange()
             }
             AlarmActions.ALARM_DAY_SWITCH -> {
@@ -100,7 +129,12 @@ object AlarmStore : Store() {
                 check(dayOfWeek is Int) { "DayOfWeek value must be Int" }
                 check(dayEnable is Boolean) { "DayEnable value must be Boolean" }
                 check(context is Context) { "Context value must be Context" }
-                switchWeekEnable(id, dayOfWeek, dayEnable, context)
+                switchWeekEnable(
+                    id,
+                    dayOfWeek,
+                    dayEnable,
+                    context
+                )
                 emitStoreChange()
             }
             AlarmActions.ALARM_SOUND_SELECT -> {
@@ -108,7 +142,10 @@ object AlarmStore : Store() {
                 val soundFileName = action.data[AlarmActions.KEY_SOUND_FILE_NAME]
                 check(id is Int) { "Id value must be Int" }
                 check(soundFileName is String) { "SoundFileName value must be String" }
-                selectSound(id, soundFileName)
+                selectSound(
+                    id,
+                    soundFileName
+                )
                 emitStoreSoundSelect()
             }
             AlarmActions.ALARM_SOUND_START_TIME_CHANGE -> {
@@ -118,7 +155,11 @@ object AlarmStore : Store() {
                 check(id is Int) { "Id value must be Int" }
                 check(soundStartTime is Int) { "SoundStartTime value must be Int" }
                 check(soundStartTimeText is String) { "SoundStartTime value must be String" }
-                changeSoundStartTime(id, soundStartTime, soundStartTimeText)
+                changeSoundStartTime(
+                    id,
+                    soundStartTime,
+                    soundStartTimeText
+                )
             }
         }
     }
@@ -147,12 +188,18 @@ object AlarmStore : Store() {
             soundStartTimeText = "00:00.000",
             isDefaultSound = true
         )
-        addAlarm(alarm, context)
+        addAlarm(
+            alarm,
+            context
+        )
     }
 
     private fun destroy(id: Int, context: Context) {
         val alarm = alarms.first { it.id == id }
-        cancelAlarm(alarm, context)
+        cancelAlarm(
+            alarm,
+            context
+        )
         lastDeleted = alarm.copy()
         canUndo = true
         alarms.remove(alarm)
@@ -160,7 +207,10 @@ object AlarmStore : Store() {
 
     private fun undoDestroy(context: Context) {
         if (canUndo) {
-            addAlarm(lastDeleted.copy(), context)
+            addAlarm(
+                lastDeleted.copy(),
+                context
+            )
             Log.d("start time", lastDeleted.soundStartTime.toString())
             Log.d("start time text", lastDeleted.soundStartTimeText)
             canUndo = false
@@ -174,7 +224,10 @@ object AlarmStore : Store() {
         alarm.minute = minute
         alarm.timeText = timeText
         if (alarm.enable) {
-            setAlarm(alarm.id, context)
+            setAlarm(
+                alarm.id,
+                context
+            )
         }
     }
 
@@ -182,9 +235,15 @@ object AlarmStore : Store() {
         val alarm = alarms.first { it.id == id }
         alarm.enable = enable
         if (enable) {
-            setAlarm(alarm.id, context)
+            setAlarm(
+                alarm.id,
+                context
+            )
         } else {
-            cancelAlarm(alarm, context)
+            cancelAlarm(
+                alarm,
+                context
+            )
         }
     }
 
@@ -202,7 +261,10 @@ object AlarmStore : Store() {
         val alarm = alarms.first { it.id == id }
         alarm.isRepeatable = isReadable
         if (alarm.enable) {
-            setAlarm(alarm.id, context)
+            setAlarm(
+                alarm.id,
+                context
+            )
         }
     }
 
@@ -258,7 +320,10 @@ object AlarmStore : Store() {
             }
         }
         if (alarm.enable) {
-            setAlarm(alarm.id, context)
+            setAlarm(
+                alarm.id,
+                context
+            )
         }
     }
 
@@ -280,7 +345,10 @@ object AlarmStore : Store() {
     private fun addAlarm(alarm: Alarm, context: Context) {
         alarms.add(alarm)
         if (alarm.enable) {
-            setAlarm(alarm.id, context)
+            setAlarm(
+                alarm.id,
+                context
+            )
         }
     }
 
@@ -312,9 +380,14 @@ object AlarmStore : Store() {
         return AlarmSoundSelectEvent()
     }
 
-    class AlarmStoreCreateEvent : StoreCreateEvent
-    class AlarmStoreTimeChangeEvent : StoreTimeChangeEvent
-    class AlarmStoreChangeEvent : StoreChangeEvent
-    class AlarmStoreDestroyEvent : StoreDestroyEvent
-    class AlarmSoundSelectEvent : StoreSoundSelectEvent
+    class AlarmStoreCreateEvent :
+        StoreCreateEvent
+    class AlarmStoreTimeChangeEvent :
+        StoreTimeChangeEvent
+    class AlarmStoreChangeEvent :
+        StoreChangeEvent
+    class AlarmStoreDestroyEvent :
+        StoreDestroyEvent
+    class AlarmSoundSelectEvent :
+        StoreSoundSelectEvent
 }

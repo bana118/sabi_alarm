@@ -35,9 +35,14 @@ abstract class Store {
 
 
     interface StoreEvent
-    interface StoreCreateEvent : StoreEvent
-    interface StoreTimeChangeEvent : StoreEvent
-    interface StoreChangeEvent : StoreEvent
-    interface StoreDestroyEvent : StoreEvent
-    interface StoreSoundSelectEvent: StoreEvent
+    interface StoreCreateEvent :
+        StoreEvent
+    interface StoreTimeChangeEvent :
+        StoreEvent
+    interface StoreChangeEvent :
+        StoreEvent
+    interface StoreDestroyEvent :
+        StoreEvent
+    interface StoreSoundSelectEvent:
+        StoreEvent
 }

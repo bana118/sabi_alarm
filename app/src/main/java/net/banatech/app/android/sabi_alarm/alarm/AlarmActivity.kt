@@ -20,9 +20,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.banatech.app.android.sabi_alarm.R
-import net.banatech.app.android.sabi_alarm.actions.ActionsCreator
+import net.banatech.app.android.sabi_alarm.actions.alarm.AlarmActionsCreator
 import net.banatech.app.android.sabi_alarm.dispatcher.Dispatcher
-import net.banatech.app.android.sabi_alarm.stores.AlarmStore
+import net.banatech.app.android.sabi_alarm.stores.alarm.AlarmStore
 import net.banatech.app.android.sabi_alarm.alarm.database.Alarm
 import net.banatech.app.android.sabi_alarm.alarm.database.AlarmDatabase
 import org.greenrobot.eventbus.Subscribe
@@ -32,7 +32,7 @@ import java.util.*
 class AlarmActivity : AppCompatActivity() {
 
     private lateinit var dispatcher: Dispatcher
-    private lateinit var actionCreator: ActionsCreator
+    private lateinit var actionCreator: AlarmActionsCreator
     private lateinit var alarmStore: AlarmStore
     private lateinit var listAdapter: AlarmRecyclerAdapter
 
@@ -76,7 +76,8 @@ class AlarmActivity : AppCompatActivity() {
 
     private fun initDependencies() {
         dispatcher = Dispatcher
-        actionCreator = ActionsCreator
+        actionCreator =
+            AlarmActionsCreator
         alarmStore = AlarmStore
     }
 

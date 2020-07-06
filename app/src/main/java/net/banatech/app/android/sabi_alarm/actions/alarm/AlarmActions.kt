@@ -1,4 +1,4 @@
-package net.banatech.app.android.sabi_alarm.actions
+package net.banatech.app.android.sabi_alarm.actions.alarm
 
 object AlarmActions {
     const val ALARM_CREATE = "alarm-create"
