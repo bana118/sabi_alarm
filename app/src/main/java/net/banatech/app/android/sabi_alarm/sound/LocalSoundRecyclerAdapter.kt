@@ -4,7 +4,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.sound_file_view.view.*
+import kotlinx.android.synthetic.main.default_sound_file_view.view.*
+import kotlinx.android.synthetic.main.default_sound_file_view.view.sound_file_check
+import kotlinx.android.synthetic.main.default_sound_file_view.view.sound_file_name
+import kotlinx.android.synthetic.main.local_sound_file_view.view.*
 import net.banatech.app.android.sabi_alarm.R
 import net.banatech.app.android.sabi_alarm.actions.alarm.AlarmActionsCreator
 import net.banatech.app.android.sabi_alarm.stores.alarm.AlarmStore
@@ -21,7 +24,7 @@ class LocalSoundRecyclerAdapter(private val localAlarmSoundArray: Array<String>)
     ): LocalFileViewHolder {
         // create a new view
         val localFileView = LayoutInflater.from(parent.context)
-            .inflate(R.layout.sound_file_view, parent, false)
+            .inflate(R.layout.local_sound_file_view, parent, false)
         // set the view's size, margins, paddings and layout parameters
         return LocalFileViewHolder(
             localFileView
@@ -32,18 +35,18 @@ class LocalSoundRecyclerAdapter(private val localAlarmSoundArray: Array<String>)
     override fun onBindViewHolder(holder: LocalFileViewHolder, position: Int) {
         holder.soundFileView.sound_file_name.text = localAlarmSoundArray[position]
         val checkBox = holder.soundFileView.sound_file_check
-        holder.soundFileView.sound_file_layout.setOnClickListener {
-            AlarmActionsCreator.selectSound(AlarmStore.selectedAlarm.id, localAlarmSoundArray[position])
-            if(AlarmStore.selectedAlarm.soundFileName == localAlarmSoundArray[position]){
-                checkBox.visibility = View.VISIBLE
-            }else{
-                checkBox.visibility = View.INVISIBLE
-            }
-            for(i in localAlarmSoundArray.indices){
-                if(i != position){
-                    notifyItemChanged(i)
-                }
-            }
+        holder.soundFileView.local_sound_file_layout.setOnClickListener {
+//            AlarmActionsCreator.selectSound(AlarmStore.selectedAlarm.id, localAlarmSoundArray[position])
+//            if(AlarmStore.selectedAlarm.soundFileName == localAlarmSoundArray[position]){
+//                checkBox.visibility = View.VISIBLE
+//            }else{
+//                checkBox.visibility = View.INVISIBLE
+//            }
+//            for(i in localAlarmSoundArray.indices){
+//                if(i != position){
+//                    notifyItemChanged(i)
+//                }
+//            }
         }
         if(AlarmStore.selectedAlarm.soundFileName == localAlarmSoundArray[position]){
             checkBox.visibility = View.VISIBLE
