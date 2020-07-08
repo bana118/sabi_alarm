@@ -140,11 +140,14 @@ object AlarmStore : Store() {
             AlarmActions.ALARM_SOUND_SELECT -> {
                 val id = action.data[AlarmActions.KEY_ID]
                 val soundFileName = action.data[AlarmActions.KEY_SOUND_FILE_NAME]
+                val isDefaultSound = action.data[AlarmActions.KEY_IS_DEFAULT_SOUND]
                 check(id is Int) { "Id value must be Int" }
                 check(soundFileName is String) { "SoundFileName value must be String" }
+                check(isDefaultSound is Boolean) { "IsDefaultSound value must be Boolean" }
                 selectSound(
                     id,
-                    soundFileName
+                    soundFileName,
+                    isDefaultSound
                 )
                 emitStoreSoundSelect()
             }
@@ -327,9 +330,10 @@ object AlarmStore : Store() {
         }
     }
 
-    private fun selectSound(id: Int, soundFileName: String) {
+    private fun selectSound(id: Int, soundFileName: String, isDefaultSound: Boolean) {
         val alarm = alarms.first { it.id == id }
         alarm.soundFileName = soundFileName
+        alarm.isDefaultSound = isDefaultSound
     }
 
     private fun changeSoundStartTime(

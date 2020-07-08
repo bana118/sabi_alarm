@@ -375,15 +375,7 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
     override fun getItemCount() = alarms.size
 
     fun setItems(alarms: ArrayList<Alarm>) {
-//        Log.d("size", alarms.size.toString())
-//        for(alarm in alarms) {
-//            Log.d("id", alarm.id.toString())
-//            Log.d("isVibration", alarm.isVibration.toString())
-//            Log.d("isRepeatable", alarm.isRepeatable.toString())
-//        }
         alarms.sortWith(compareBy({ it.hour }, { it.minute }))
-//        Log.d("current", this.alarms.toString())
-//        Log.d("next", alarms.toString())
         this.alarms = alarms
     }
 

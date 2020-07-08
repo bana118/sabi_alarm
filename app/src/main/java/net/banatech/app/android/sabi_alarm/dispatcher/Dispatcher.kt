@@ -15,6 +15,10 @@ object Dispatcher {
         bus.unregister(cls)
     }
 
+    fun isRegistered(cls: Any): Boolean {
+        return bus.isRegistered(cls)
+    }
+
     fun emitEvent(o: Store.StoreEvent) {
         post(o)
     }
