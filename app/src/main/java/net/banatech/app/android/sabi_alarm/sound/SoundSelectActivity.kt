@@ -76,7 +76,6 @@ class SoundSelectActivity : AppCompatActivity() {
         }
         if (requestCode == readRequestCode && resultCode == Activity.RESULT_OK) {
             resultData?.data?.also {uri ->
-                Log.d("uri", uri.toString())
                 val fileName = getFileName(uri)
                 check(fileName is String){ "FileName must be String"}
                 SoundActionsCreator.add(fileName, uri.toString(), this)
@@ -141,7 +140,6 @@ class SoundSelectActivity : AppCompatActivity() {
                 result = result?.substring(cut + 1)
             }
         }
-        Log.d("string uri", result)
         return result
     }
 

@@ -218,8 +218,6 @@ object AlarmStore : Store() {
                 lastDeleted.copy(),
                 context
             )
-            Log.d("start time", lastDeleted.soundStartTime.toString())
-            Log.d("start time text", lastDeleted.soundStartTimeText)
             canUndo = false
         }
     }

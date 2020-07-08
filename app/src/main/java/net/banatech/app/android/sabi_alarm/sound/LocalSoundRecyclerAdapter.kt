@@ -65,7 +65,6 @@ class LocalSoundRecyclerAdapter(actionsCreator: SoundActionsCreator, private val
                     notifyItemChanged(i)
                 }
             }
-            Log.d("local adapter", this.toString())
             defaultSoundAdapter.notifyDataSetChanged()
         }
         if(AlarmStore.selectedAlarm.soundFileName == sounds[position].fileName){

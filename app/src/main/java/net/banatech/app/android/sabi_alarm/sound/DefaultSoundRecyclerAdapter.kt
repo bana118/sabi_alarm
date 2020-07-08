@@ -47,7 +47,6 @@ class DefaultSoundRecyclerAdapter(private val defaultAlarmSoundArray: Array<Stri
                     notifyItemChanged(i)
                 }
             }
-            Log.d("default adapter", localSoundAdapter.toString())
             localSoundAdapter.notifyDataSetChanged()
         }
         if(AlarmStore.selectedAlarm.soundFileName == defaultAlarmSoundArray[position]){
