@@ -23,6 +23,7 @@ class StopAlarmActivity : AppCompatActivity() {
                 alarm.enable = false
             }
             stopService(Intent(this, AlarmSoundService::class.java))
+            startActivity(Intent(this, AlarmActivity::class.java))
         }
     }
 }

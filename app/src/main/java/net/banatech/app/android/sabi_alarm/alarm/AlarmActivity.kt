@@ -99,6 +99,8 @@ class AlarmActivity : AppCompatActivity() {
         alarm_list.layoutManager = viewManager
         listAdapter = AlarmRecyclerAdapter(actionCreator)
         alarm_list.adapter = listAdapter
+        updateUI()
+        listAdapter.notifyDataSetChanged()
         val dividerItemDecoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         alarm_list.addItemDecoration(dividerItemDecoration)
         alarm_list.setHasFixedSize(true)
