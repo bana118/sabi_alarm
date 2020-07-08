@@ -142,4 +142,10 @@ class SoundSelectActivity : AppCompatActivity() {
         Log.d("event", "alarm sound add event")
         updateUI()
     }
+
+    @Subscribe
+    fun onSoundRemoveEvent(event: SoundStore.SoundStoreRemoveEvent) {
+        Log.d("event", "alarm sound remove event")
+        updateUI()
+    }
 }
