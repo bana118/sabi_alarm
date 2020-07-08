@@ -20,7 +20,7 @@ object AlarmStore : Store() {
     @Subscribe
     @SuppressWarnings("unchecked")
     override fun onAction(action: Action) {
-        Log.d("onAction", "type${action.type}")
+        Log.d("onAction", "type: ${action.type}")
         when (action.type) {
             AlarmActions.ALARM_CREATE -> {
                 val hour = action.data[AlarmActions.KEY_HOUR]

@@ -1,5 +1,6 @@
 package net.banatech.app.android.sabi_alarm.sound
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +16,7 @@ import net.banatech.app.android.sabi_alarm.actions.sound.SoundActionsCreator
 import net.banatech.app.android.sabi_alarm.sound.database.Sound
 import net.banatech.app.android.sabi_alarm.stores.alarm.AlarmStore
 
-class LocalSoundRecyclerAdapter(actionsCreator: SoundActionsCreator) :
+class LocalSoundRecyclerAdapter(actionsCreator: SoundActionsCreator, private val defaultSoundAdapter: DefaultSoundRecyclerAdapter) :
     RecyclerView.Adapter<LocalSoundRecyclerAdapter.LocalFileViewHolder>() {
 
     companion object {
@@ -64,6 +65,8 @@ class LocalSoundRecyclerAdapter(actionsCreator: SoundActionsCreator) :
                     notifyItemChanged(i)
                 }
             }
+            Log.d("local adapter", this.toString())
+            defaultSoundAdapter.notifyDataSetChanged()
         }
         if(AlarmStore.selectedAlarm.soundFileName == sounds[position].fileName){
             checkBox.visibility = View.VISIBLE
@@ -77,6 +80,7 @@ class LocalSoundRecyclerAdapter(actionsCreator: SoundActionsCreator) :
             SoundActionsCreator.remove(sounds[position].id, holder.soundFileView.context)
             notifyItemRemoved(position)
             notifyItemRangeChanged(position, sounds.size)
+            defaultSoundAdapter.notifyDataSetChanged()
         }
     }
     fun setItems(sounds: ArrayList<Sound>) {

@@ -15,7 +15,7 @@ object SoundStore{
     @Subscribe
     @SuppressWarnings("unchecked")
     fun onAction(action: Action) {
-        Log.d("onAction", "type${action.type}")
+        Log.d("onAction", "type: ${action.type}")
         when (action.type) {
             SoundActions.SOUND_ADD -> {
                 val soundFileName = action.data[SoundActions.KEY_SOUND_FILE_NAME]

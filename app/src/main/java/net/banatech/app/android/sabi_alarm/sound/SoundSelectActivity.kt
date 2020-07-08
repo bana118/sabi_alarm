@@ -45,9 +45,12 @@ class SoundSelectActivity : AppCompatActivity() {
         val defaultSoundDir = assetManager.list("default")
         check(defaultSoundDir != null) { "default sound list must not be null" }
         val defaultSoundAdapter = DefaultSoundRecyclerAdapter(defaultSoundDir)
-        localSoundAdapter = LocalSoundRecyclerAdapter(SoundActionsCreator)
+        localSoundAdapter = LocalSoundRecyclerAdapter(SoundActionsCreator, defaultSoundAdapter)
+        defaultSoundAdapter.setlocalAdapter(localSoundAdapter)
         local_sound_list.layoutManager = LinearLayoutManager(this)
         local_sound_list.adapter = localSoundAdapter
+        updateUI()
+        localSoundAdapter.notifyDataSetChanged()
         default_sound_list.layoutManager =LinearLayoutManager(this)
         default_sound_list.adapter = defaultSoundAdapter
         add_local_sound_button.setOnClickListener {
@@ -68,6 +71,9 @@ class SoundSelectActivity : AppCompatActivity() {
         if(!Dispatcher.isRegistered(SoundStore)){
             Dispatcher.register(SoundStore)
         }
+        if(!Dispatcher.isRegistered(AlarmStore)){
+            Dispatcher.register(AlarmStore)
+        }
         if (requestCode == readRequestCode && resultCode == Activity.RESULT_OK) {
             resultData?.data?.also {uri ->
                 Log.d("uri", uri.toString())
@@ -87,7 +93,9 @@ class SoundSelectActivity : AppCompatActivity() {
         if(!Dispatcher.isRegistered(SoundStore)){
            Dispatcher.register(SoundStore)
         }
-        Dispatcher.register(AlarmStore)
+        if(!Dispatcher.isRegistered(AlarmStore)){
+            Dispatcher.register(AlarmStore)
+        }
     }
 
     override fun onPause() {
@@ -110,7 +118,7 @@ class SoundSelectActivity : AppCompatActivity() {
     }
 
     private fun updateUI() {
-        localSoundAdapter.setItems(SoundStore.sounds)
+        localSoundAdapter?.setItems(SoundStore.sounds)
     }
 
     private fun getFileName(uri: Uri): String? {
@@ -146,6 +154,12 @@ class SoundSelectActivity : AppCompatActivity() {
     @Subscribe
     fun onSoundRemoveEvent(event: SoundStore.SoundStoreRemoveEvent) {
         Log.d("event", "alarm sound remove event")
+        updateUI()
+    }
+
+    @Subscribe
+    fun onSoundSelectEvent(event: AlarmStore.AlarmSoundSelectEvent) {
+        Log.d("event", "alarm sound select event")
         updateUI()
     }
 }

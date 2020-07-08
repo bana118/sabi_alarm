@@ -13,6 +13,8 @@ import net.banatech.app.android.sabi_alarm.stores.alarm.AlarmStore
 class DefaultSoundRecyclerAdapter(private val defaultAlarmSoundArray: Array<String>) :
     RecyclerView.Adapter<DefaultSoundRecyclerAdapter.DefaultSoundViewHolder>() {
 
+    private lateinit var localSoundAdapter: LocalSoundRecyclerAdapter
+
     class DefaultSoundViewHolder(val soundFileView: View) : RecyclerView.ViewHolder(soundFileView)
 
     // Create new views (invoked by the layout manager)
@@ -45,14 +47,18 @@ class DefaultSoundRecyclerAdapter(private val defaultAlarmSoundArray: Array<Stri
                     notifyItemChanged(i)
                 }
             }
-            Log.d("selected", AlarmStore.selectedAlarm.soundFileName)
-            Log.d("position sound", defaultAlarmSoundArray[position])
+            Log.d("default adapter", localSoundAdapter.toString())
+            localSoundAdapter.notifyDataSetChanged()
         }
         if(AlarmStore.selectedAlarm.soundFileName == defaultAlarmSoundArray[position]){
             checkBox.visibility = View.VISIBLE
         }else{
             checkBox.visibility = View.INVISIBLE
         }
+    }
+
+    fun setlocalAdapter(adapter: LocalSoundRecyclerAdapter) {
+        localSoundAdapter = adapter
     }
 
     override fun getItemCount() = defaultAlarmSoundArray.size
