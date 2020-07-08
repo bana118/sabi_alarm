@@ -135,6 +135,7 @@ class AlarmActivity : AppCompatActivity() {
             isFridayAlarm = true,
             isSaturdayAlarm = false,
             soundFileName = "beethoven_no5_1st.mp3",
+            soundFileUri = "",
             soundStartTime = 0,
             soundStartTimeText = "00:00",
             isDefaultSound = true

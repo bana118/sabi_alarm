@@ -5,6 +5,7 @@ import android.app.Service
 import android.content.Intent
 import android.media.AudioAttributes
 import android.media.MediaPlayer
+import android.net.Uri
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import net.banatech.app.android.sabi_alarm.R
@@ -64,25 +65,39 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
     }
 
     private fun play() {
-        val fileName = if (alarm.isDefaultSound) {
-            "default/${alarm.soundFileName}"
-        } else {
-            "default/${alarm.soundFileName}" // TODO impl not default
-        }
-        val assetFileDescriptor = this.assets.openFd(fileName)
-        try {
-            mediaPlayer.reset()
-            mediaPlayer.setDataSource(assetFileDescriptor)
-            mediaPlayer.setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_ALARM)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .build())
-            mediaPlayer.prepare()
-            mediaPlayer.seekTo(alarm.soundStartTime)
-            mediaPlayer.start()
-        } catch (e: IOException) {
-            e.printStackTrace()
+        if(alarm.isDefaultSound) {
+            val fileName = "default/${alarm.soundFileName}"
+            val assetFileDescriptor = this.assets.openFd(fileName)
+            try {
+                mediaPlayer.reset()
+                mediaPlayer.setDataSource(assetFileDescriptor)
+                mediaPlayer.setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .build())
+                mediaPlayer.prepare()
+                mediaPlayer.seekTo(alarm.soundStartTime)
+                mediaPlayer.start()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }else{
+            val fileUri = Uri.parse(alarm.soundFileUri)
+            try {
+                mediaPlayer.reset()
+                mediaPlayer.setDataSource(this, fileUri)
+                mediaPlayer.setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .build())
+                mediaPlayer.prepare()
+                mediaPlayer.seekTo(alarm.soundStartTime)
+                mediaPlayer.start()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
         }
     }
 

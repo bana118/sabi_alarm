@@ -84,12 +84,13 @@ object AlarmActionsCreator {
         )
     }
 
-    fun selectSound(id: Int, soundFileName: String, isDefaultSound: Boolean) {
+    fun selectSound(id: Int, soundFileName: String, isDefaultSound: Boolean, soundFileUri: String) {
         Dispatcher.dispatch(
             AlarmActions.ALARM_SOUND_SELECT,
             AlarmActions.KEY_ID,  id,
             AlarmActions.KEY_SOUND_FILE_NAME, soundFileName,
-            AlarmActions.KEY_IS_DEFAULT_SOUND, isDefaultSound
+            AlarmActions.KEY_IS_DEFAULT_SOUND, isDefaultSound,
+            AlarmActions.KEY_SOUND_FILE_URI, soundFileUri
         )
     }
 

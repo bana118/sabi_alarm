@@ -6,6 +6,7 @@ import android.content.Intent
 import android.media.AudioAttributes
 import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
+import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -98,6 +99,8 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
                 assetFileDescriptor.startOffset,
                 assetFileDescriptor.length
             )
+        }else{
+            retriever.setDataSource(viewHolder.alarmView.context, Uri.parse(alarms[position].soundFileUri))
         }
         val duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
         retriever.release()
@@ -306,28 +309,45 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
         } else if(alarmIdToSoundTestMediaPlayers.second == null) {
             val mediaPlayer = MediaPlayer()
             alarmIdToSoundTestMediaPlayers = Pair(alarm.id, mediaPlayer)
-            val fileName = if (alarm.isDefaultSound) {
-                "default/${alarm.soundFileName}"
-            } else {
-                "default/${alarm.soundFileName}" // TODO impl not default
-            }
-            val assetFileDescriptor = context.assets.openFd(fileName)
-            try {
-                mediaPlayer.reset()
-                mediaPlayer.setDataSource(assetFileDescriptor)
-                mediaPlayer.setAudioAttributes(AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_ALARM)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .build())
-                mediaPlayer.prepare()
-                mediaPlayer.seekTo(alarm.soundStartTime)
-                mediaPlayer.start()
-                mediaPlayer.setOnCompletionListener {
-                    it.release()
-                    alarmIdToSoundTestMediaPlayers = Pair(0, null)
+            if(alarm.isDefaultSound){
+                val fileName =  "default/${alarm.soundFileName}"
+                val assetFileDescriptor = context.assets.openFd(fileName)
+                try {
+                    mediaPlayer.reset()
+                    mediaPlayer.setDataSource(assetFileDescriptor)
+                    mediaPlayer.setAudioAttributes(AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .build())
+                    mediaPlayer.prepare()
+                    mediaPlayer.seekTo(alarm.soundStartTime)
+                    mediaPlayer.start()
+                    mediaPlayer.setOnCompletionListener {
+                        it.release()
+                        alarmIdToSoundTestMediaPlayers = Pair(0, null)
+                    }
+                } catch (e: IOException) {
+                    e.printStackTrace()
                 }
-            } catch (e: IOException) {
-                e.printStackTrace()
+            }else{
+                val fileUri =  Uri.parse(alarm.soundFileUri)
+                try {
+                    mediaPlayer.reset()
+                    mediaPlayer.setDataSource(context, fileUri)
+                    mediaPlayer.setAudioAttributes(AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .build())
+                    mediaPlayer.prepare()
+                    mediaPlayer.seekTo(alarm.soundStartTime)
+                    mediaPlayer.start()
+                    mediaPlayer.setOnCompletionListener {
+                        it.release()
+                        alarmIdToSoundTestMediaPlayers = Pair(0, null)
+                    }
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
             }
         }else{
             val existMediaPlayer = alarmIdToSoundTestMediaPlayers.second
@@ -336,28 +356,45 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
             existMediaPlayer.release()
             val mediaPlayer = MediaPlayer()
             alarmIdToSoundTestMediaPlayers = Pair(alarm.id, mediaPlayer)
-            val fileName = if (alarm.isDefaultSound) {
-                "default/${alarm.soundFileName}"
-            } else {
-                "default/${alarm.soundFileName}" // TODO impl not default
-            }
-            val assetFileDescriptor = context.assets.openFd(fileName)
-            try {
-                mediaPlayer.reset()
-                mediaPlayer.setDataSource(assetFileDescriptor)
-                mediaPlayer.setAudioAttributes(AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_ALARM)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .build())
-                mediaPlayer.prepare()
-                mediaPlayer.seekTo(alarm.soundStartTime)
-                mediaPlayer.start()
-                mediaPlayer.setOnCompletionListener {
-                    it.release()
-                    alarmIdToSoundTestMediaPlayers = Pair(0, null)
+            if(alarm.isDefaultSound){
+                val fileName = "default/${alarm.soundFileName}"
+                val assetFileDescriptor = context.assets.openFd(fileName)
+                try {
+                    mediaPlayer.reset()
+                    mediaPlayer.setDataSource(assetFileDescriptor)
+                    mediaPlayer.setAudioAttributes(AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .build())
+                    mediaPlayer.prepare()
+                    mediaPlayer.seekTo(alarm.soundStartTime)
+                    mediaPlayer.start()
+                    mediaPlayer.setOnCompletionListener {
+                        it.release()
+                        alarmIdToSoundTestMediaPlayers = Pair(0, null)
+                    }
+                } catch (e: IOException) {
+                    e.printStackTrace()
                 }
-            } catch (e: IOException) {
-                e.printStackTrace()
+            }else{
+                val fileUri = Uri.parse(alarm.soundFileUri)
+                try {
+                    mediaPlayer.reset()
+                    mediaPlayer.setDataSource(context, fileUri)
+                    mediaPlayer.setAudioAttributes(AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .build())
+                    mediaPlayer.prepare()
+                    mediaPlayer.seekTo(alarm.soundStartTime)
+                    mediaPlayer.start()
+                    mediaPlayer.setOnCompletionListener {
+                        it.release()
+                        alarmIdToSoundTestMediaPlayers = Pair(0, null)
+                    }
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
             }
         }
     }

@@ -53,17 +53,17 @@ class LocalSoundRecyclerAdapter(actionsCreator: SoundActionsCreator) :
         holder.soundFileView.sound_file_name.text = sounds[position].fileName
         val checkBox = holder.soundFileView.sound_file_check
         holder.soundFileView.local_sound_file_layout.setOnClickListener {
-//            AlarmActionsCreator.selectSound(AlarmStore.selectedAlarm.id, localAlarmSoundArray[position])
-//            if(AlarmStore.selectedAlarm.soundFileName == localAlarmSoundArray[position]){
-//                checkBox.visibility = View.VISIBLE
-//            }else{
-//                checkBox.visibility = View.INVISIBLE
-//            }
-//            for(i in localAlarmSoundArray.indices){
-//                if(i != position){
-//                    notifyItemChanged(i)
-//                }
-//            }
+            AlarmActionsCreator.selectSound(AlarmStore.selectedAlarm.id, sounds[position].fileName, false, sounds[position].stringUri)
+            if(AlarmStore.selectedAlarm.soundFileName == sounds[position].fileName){
+                checkBox.visibility = View.VISIBLE
+            }else{
+                checkBox.visibility = View.INVISIBLE
+            }
+            for(i in sounds.indices){
+                if(i != position){
+                    notifyItemChanged(i)
+                }
+            }
         }
         if(AlarmStore.selectedAlarm.soundFileName == sounds[position].fileName){
             checkBox.visibility = View.VISIBLE
@@ -72,7 +72,7 @@ class LocalSoundRecyclerAdapter(actionsCreator: SoundActionsCreator) :
         }
         holder.soundFileView.delete_button.setOnClickListener{
             if(AlarmStore.selectedAlarm.soundFileName == sounds[position].fileName){
-                AlarmActionsCreator.selectSound(AlarmStore.selectedAlarm.id, "beethoven_no5_1st.mp3", true)
+                AlarmActionsCreator.selectSound(AlarmStore.selectedAlarm.id, "beethoven_no5_1st.mp3", true, "")
             }
             SoundActionsCreator.remove(sounds[position].id, holder.soundFileView.context)
             notifyItemRemoved(position)

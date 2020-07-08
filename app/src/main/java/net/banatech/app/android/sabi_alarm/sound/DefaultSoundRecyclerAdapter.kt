@@ -34,7 +34,7 @@ class DefaultSoundRecyclerAdapter(private val defaultAlarmSoundArray: Array<Stri
         holder.soundFileView.sound_file_name.text = defaultAlarmSoundArray[position]
         val checkBox = holder.soundFileView.sound_file_check
         holder.soundFileView.default_sound_file_layout.setOnClickListener {
-            AlarmActionsCreator.selectSound(AlarmStore.selectedAlarm.id, defaultAlarmSoundArray[position], true)
+            AlarmActionsCreator.selectSound(AlarmStore.selectedAlarm.id, defaultAlarmSoundArray[position], true, "")
             if(AlarmStore.selectedAlarm.soundFileName == defaultAlarmSoundArray[position]){
                 checkBox.visibility = View.VISIBLE
             }else{

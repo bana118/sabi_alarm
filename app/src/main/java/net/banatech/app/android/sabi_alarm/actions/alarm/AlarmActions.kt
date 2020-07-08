@@ -27,4 +27,5 @@ object AlarmActions {
     const val KEY_SOUND_START_TIME = "key-sound-start-time"
     const val KEY_SOUND_START_TIME_TEXT = "key-sound-start-time-text"
     const val KEY_IS_DEFAULT_SOUND = "key-is-default-sound"
+    const val KEY_SOUND_FILE_URI = "key-sound-file-uri"
 }
