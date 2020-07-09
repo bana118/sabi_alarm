@@ -1,18 +1,19 @@
 package net.banatech.app.android.sabi_alarm.sound
 
-import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.sound_file_view.view.*
+import kotlinx.android.synthetic.main.default_sound_file_view.view.*
 import net.banatech.app.android.sabi_alarm.R
-import net.banatech.app.android.sabi_alarm.alarm.actions.ActionsCreator
-import net.banatech.app.android.sabi_alarm.alarm.stores.AlarmStore
+import net.banatech.app.android.sabi_alarm.actions.alarm.AlarmActionsCreator
+import net.banatech.app.android.sabi_alarm.stores.alarm.AlarmStore
 
-class DefaultSoundRecyclerAdapter(private val defaultAlarmSoundList: Array<String>) :
+class DefaultSoundRecyclerAdapter(private val defaultAlarmSoundArray: Array<String>) :
     RecyclerView.Adapter<DefaultSoundRecyclerAdapter.DefaultSoundViewHolder>() {
+
+    private lateinit var localSoundAdapter: LocalSoundRecyclerAdapter
 
     class DefaultSoundViewHolder(val soundFileView: View) : RecyclerView.ViewHolder(soundFileView)
 
@@ -23,7 +24,7 @@ class DefaultSoundRecyclerAdapter(private val defaultAlarmSoundList: Array<Strin
     ): DefaultSoundViewHolder {
         // create a new view
         val soundFileView = LayoutInflater.from(parent.context)
-            .inflate(R.layout.sound_file_view, parent, false)
+            .inflate(R.layout.default_sound_file_view, parent, false)
         // set the view's size, margins, paddings and layout parameters
         return DefaultSoundViewHolder(
             soundFileView
@@ -32,29 +33,32 @@ class DefaultSoundRecyclerAdapter(private val defaultAlarmSoundList: Array<Strin
 
     // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(holder: DefaultSoundViewHolder, position: Int) {
-        val assetManager = holder.soundFileView.resources.assets
-        //val soundFile = assetManager.open(defaultSoundFileList[position])
-        holder.soundFileView.sound_file_name.text = defaultAlarmSoundList[position]
+        holder.soundFileView.sound_file_name.text = defaultAlarmSoundArray[position]
         val checkBox = holder.soundFileView.sound_file_check
-        holder.soundFileView.sound_file_layout.setOnClickListener {
-            ActionsCreator.selectSound(AlarmStore.selectedAlarm.id, defaultAlarmSoundList[position])
-            if(AlarmStore.selectedAlarm.soundFileName == defaultAlarmSoundList[position]){
+        holder.soundFileView.default_sound_file_layout.setOnClickListener {
+            AlarmActionsCreator.selectSound(AlarmStore.selectedAlarm.id, defaultAlarmSoundArray[position], true, "")
+            if(AlarmStore.selectedAlarm.soundFileName == defaultAlarmSoundArray[position]){
                 checkBox.visibility = View.VISIBLE
             }else{
                 checkBox.visibility = View.INVISIBLE
             }
-            for(i in defaultAlarmSoundList.indices){
+            for(i in defaultAlarmSoundArray.indices){
                 if(i != position){
                     notifyItemChanged(i)
                 }
             }
+            localSoundAdapter.notifyDataSetChanged()
         }
-        if(AlarmStore.selectedAlarm.soundFileName == defaultAlarmSoundList[position]){
+        if(AlarmStore.selectedAlarm.soundFileName == defaultAlarmSoundArray[position]){
             checkBox.visibility = View.VISIBLE
         }else{
             checkBox.visibility = View.INVISIBLE
         }
     }
 
-    override fun getItemCount() = defaultAlarmSoundList.size
+    fun setlocalAdapter(adapter: LocalSoundRecyclerAdapter) {
+        localSoundAdapter = adapter
+    }
+
+    override fun getItemCount() = defaultAlarmSoundArray.size
 }

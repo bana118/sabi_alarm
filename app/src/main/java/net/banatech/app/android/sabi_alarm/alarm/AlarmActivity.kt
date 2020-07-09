@@ -1,14 +1,8 @@
 package net.banatech.app.android.sabi_alarm.alarm
 
 import android.app.NotificationChannel
-import android.app.NotificationChannelGroup
 import android.app.NotificationManager
 import android.app.TimePickerDialog
-import android.content.ContentResolver
-import android.content.Context
-import android.media.AudioAttributes
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -26,11 +20,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.banatech.app.android.sabi_alarm.R
-import net.banatech.app.android.sabi_alarm.alarm.actions.ActionsCreator
-import net.banatech.app.android.sabi_alarm.alarm.dispatcher.Dispatcher
-import net.banatech.app.android.sabi_alarm.alarm.stores.AlarmStore
-import net.banatech.app.android.sabi_alarm.database.Alarm
-import net.banatech.app.android.sabi_alarm.database.AlarmDatabase
+import net.banatech.app.android.sabi_alarm.actions.alarm.AlarmActionsCreator
+import net.banatech.app.android.sabi_alarm.dispatcher.Dispatcher
+import net.banatech.app.android.sabi_alarm.stores.alarm.AlarmStore
+import net.banatech.app.android.sabi_alarm.alarm.database.Alarm
+import net.banatech.app.android.sabi_alarm.alarm.database.AlarmDatabase
 import org.greenrobot.eventbus.Subscribe
 import java.util.*
 
@@ -38,7 +32,7 @@ import java.util.*
 class AlarmActivity : AppCompatActivity() {
 
     private lateinit var dispatcher: Dispatcher
-    private lateinit var actionCreator: ActionsCreator
+    private lateinit var actionCreator: AlarmActionsCreator
     private lateinit var alarmStore: AlarmStore
     private lateinit var listAdapter: AlarmRecyclerAdapter
 
@@ -82,7 +76,8 @@ class AlarmActivity : AppCompatActivity() {
 
     private fun initDependencies() {
         dispatcher = Dispatcher
-        actionCreator = ActionsCreator
+        actionCreator =
+            AlarmActionsCreator
         alarmStore = AlarmStore
     }
 
@@ -104,6 +99,8 @@ class AlarmActivity : AppCompatActivity() {
         alarm_list.layoutManager = viewManager
         listAdapter = AlarmRecyclerAdapter(actionCreator)
         alarm_list.adapter = listAdapter
+        updateUI()
+        listAdapter.notifyDataSetChanged()
         val dividerItemDecoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         alarm_list.addItemDecoration(dividerItemDecoration)
         alarm_list.setHasFixedSize(true)
@@ -140,6 +137,7 @@ class AlarmActivity : AppCompatActivity() {
             isFridayAlarm = true,
             isSaturdayAlarm = false,
             soundFileName = "beethoven_no5_1st.mp3",
+            soundFileUri = "",
             soundStartTime = 0,
             soundStartTimeText = "00:00",
             isDefaultSound = true

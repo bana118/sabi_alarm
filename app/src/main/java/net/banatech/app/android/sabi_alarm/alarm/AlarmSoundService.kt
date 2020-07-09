@@ -5,12 +5,12 @@ import android.app.Service
 import android.content.Intent
 import android.media.AudioAttributes
 import android.media.MediaPlayer
+import android.net.Uri
 import android.os.IBinder
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import net.banatech.app.android.sabi_alarm.R
-import net.banatech.app.android.sabi_alarm.alarm.stores.AlarmStore
-import net.banatech.app.android.sabi_alarm.database.Alarm
+import net.banatech.app.android.sabi_alarm.stores.alarm.AlarmStore
+import net.banatech.app.android.sabi_alarm.alarm.database.Alarm
 import java.io.IOException
 
 class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
@@ -25,15 +25,15 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
         val id = intent.getIntExtra("id", 0)
         mediaPlayer = MediaPlayer()
         alarm = AlarmStore.alarms.first { it.id == id }
-        val startActivityIntent = Intent(this, StopAlarmActivity::class.java)
-        startActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        startActivityIntent.putExtra("id", id)
+        val stopSoundActivityIntent = Intent(this, StopAlarmActivity::class.java)
+        stopSoundActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        stopSoundActivityIntent.putExtra("id", id)
         val channelId = getString(R.string.channel_id)
-        val fullScreenIntent = Intent(startActivityIntent)
-        val fullScreenPendingIntent = PendingIntent.getActivity(
+        val stopSoundFullScreenIntent = Intent(stopSoundActivityIntent)
+        val stopSoundFullScreenPendingIntent = PendingIntent.getActivity(
             this,
             id,
-            fullScreenIntent,
+            stopSoundFullScreenIntent,
             PendingIntent.FLAG_UPDATE_CURRENT
         )
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
@@ -42,8 +42,8 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
             .setContentText("アラーム！")
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setAutoCancel(true)
-            .addAction(0, "アラームを停止", fullScreenPendingIntent)
-            .setFullScreenIntent(fullScreenPendingIntent, true)
+            .addAction(0, "アラームを停止", stopSoundFullScreenPendingIntent)
+            .setFullScreenIntent(stopSoundFullScreenPendingIntent, true)
 
         if (alarm.isVibration) {
             notificationBuilder.setVibrate(longArrayOf(0, 1000, 100))
@@ -65,25 +65,39 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
     }
 
     private fun play() {
-        val fileName = if (alarm.isDefaultSound) {
-            "default/${alarm.soundFileName}"
-        } else {
-            "default/${alarm.soundFileName}" // TODO impl not default
-        }
-        val assetFileDescriptor = this.assets.openFd(fileName)
-        try {
-            mediaPlayer.reset()
-            mediaPlayer.setDataSource(assetFileDescriptor)
-            mediaPlayer.setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_ALARM)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .build())
-            mediaPlayer.prepare()
-            mediaPlayer.seekTo(alarm.soundStartTime)
-            mediaPlayer.start()
-        } catch (e: IOException) {
-            e.printStackTrace()
+        if(alarm.isDefaultSound) {
+            val fileName = "default/${alarm.soundFileName}"
+            val assetFileDescriptor = this.assets.openFd(fileName)
+            try {
+                mediaPlayer.reset()
+                mediaPlayer.setDataSource(assetFileDescriptor)
+                mediaPlayer.setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .build())
+                mediaPlayer.prepare()
+                mediaPlayer.seekTo(alarm.soundStartTime)
+                mediaPlayer.start()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }else{
+            val fileUri = Uri.parse(alarm.soundFileUri)
+            try {
+                mediaPlayer.reset()
+                mediaPlayer.setDataSource(this, fileUri)
+                mediaPlayer.setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .build())
+                mediaPlayer.prepare()
+                mediaPlayer.seekTo(alarm.soundStartTime)
+                mediaPlayer.start()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
         }
     }
 

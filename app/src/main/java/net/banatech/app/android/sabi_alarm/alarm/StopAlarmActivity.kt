@@ -2,14 +2,12 @@ package net.banatech.app.android.sabi_alarm.alarm
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_play_sound.*
 import net.banatech.app.android.sabi_alarm.R
-import net.banatech.app.android.sabi_alarm.alarm.actions.ActionsCreator
-import net.banatech.app.android.sabi_alarm.alarm.stores.AlarmStore
-import net.banatech.app.android.sabi_alarm.database.Alarm
+import net.banatech.app.android.sabi_alarm.stores.alarm.AlarmStore
+import net.banatech.app.android.sabi_alarm.alarm.database.Alarm
 
 
 class StopAlarmActivity : AppCompatActivity() {
@@ -25,6 +23,7 @@ class StopAlarmActivity : AppCompatActivity() {
                 alarm.enable = false
             }
             stopService(Intent(this, AlarmSoundService::class.java))
+            startActivity(Intent(this, AlarmActivity::class.java))
         }
     }
 }
