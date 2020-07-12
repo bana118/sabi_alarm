@@ -59,6 +59,11 @@ object Detector {
         decoder.release()
         extractor.release()
         Log.d("pcm data size", pcmData.size.toString())
+        Log.d("pcm data max", pcmData.max().toString())
+        Log.d("pcm data min", pcmData.min().toString())
+        pcmData.forEach {
+            Log.d("pcm data", it.toString())
+        }
         return sabiArray
     }
 
@@ -132,6 +137,7 @@ object Detector {
                 Log.d("pcm samples", "null")
             }else{
                 Log.d("pcm size", pcmSamples.size.toString())
+                pcmData.add((pcmSamples.sum()/pcmSamples.size).toShort())
 //                for(pcmSample in pcmSamples){
 //                    pcmData.add(pcmSample)
 //                }
