@@ -1,20 +1,19 @@
 package net.banatech.app.android.sabi_alarm.sabi_detector
 
-import android.content.Context
-import android.content.res.AssetFileDescriptor
 import android.content.res.AssetManager
 import android.media.MediaCodec
 import android.media.MediaExtractor
 import android.media.MediaFormat
 import android.net.Uri
 import android.util.Log
-import android.util.Log.e
 import java.nio.ByteBuffer
-import java.util.logging.Logger
+import java.nio.ByteOrder
+import java.nio.ShortBuffer
 
 object Detector {
 
     private const val timeOutUs: Long = 1000 // 1ms
+    private var pcmData = arrayListOf<Short>()
 
     fun detect(soundFileUri: Uri, assets: AssetManager): Array<Int> {
         val sabiArray = arrayOf(0)
@@ -34,13 +33,24 @@ object Detector {
         val decoder = MediaCodec.createDecoderByType(audioMime)
         decoder.configure(audioFormat, null, null, 0)
         decoder.start()
+//        var isExtractEnd = false
+//        while(!isExtractEnd){
+//            isExtractEnd = extract(extractor, decoder)
+//        }
+//        val pcmData = getSamplesForChannel(decoder, 0)
+//        if(pcmData == null){
+//            Log.d("pcm data", "null")
+//        }else{
+//            pcmData.forEach {
+//                Log.d("pcm data", it.toString())
+//            }
+//        }
         var isDecodeEnd = false
         var isExtractEnd = false
         Log.d("file length", assetsFile.length.toString())
         val byteArray = ByteArray(assetsFile.length.toInt())
-        while(!isDecodeEnd){
-            Log.d("while", byteArray.toString())
-            if(!isExtractEnd){
+        while (!isDecodeEnd) {
+            if (!isExtractEnd) {
                 isExtractEnd = extract(extractor, decoder)
             }
             isDecodeEnd = decode(decoder, byteArray)
@@ -48,6 +58,7 @@ object Detector {
         decoder.stop()
         decoder.release()
         extractor.release()
+        Log.d("pcm data size", pcmData.size.toString())
         return sabiArray
     }
 
@@ -69,6 +80,7 @@ object Detector {
             val inputBuffer = decoder.getInputBuffer(inputBufferIdx) as ByteBuffer
             val sampleSize = extractor.readSampleData(inputBuffer, 0)
             if (sampleSize > 0) {
+                Log.d("extract sample time", (extractor.sampleTime/1000).toString())
                 decoder.queueInputBuffer(
                     inputBufferIdx,
                     0,
@@ -114,11 +126,34 @@ object Detector {
                 if (isDecodeEnd) MediaCodec.BUFFER_FLAG_END_OF_STREAM else decoderOutputBufferInfo
             //decoderOutputBuffer.get(bytes)
             //Log.d("bytearray", bytes.toString())
-            decoder.releaseOutputBuffer(decoderOutputBufferIdx, false)
-            if(decoderOutputBufferInfo.flags != 0 && !isDecodeEnd){
-                Log.d("buffer", decoderOutputBuffer[decoderOutputBufferIdx].toString())
+            val buf = decoderOutputBuffer[decoderOutputBufferIdx]
+            val pcmSamples = getSamplesForChannel(decoder, decoderOutputBufferIdx, 0)
+            if(pcmSamples == null){
+                Log.d("pcm samples", "null")
+            }else{
+                Log.d("pcm size", pcmSamples.size.toString())
+//                for(pcmSample in pcmSamples){
+//                    pcmData.add(pcmSample)
+//                }
             }
+            decoder.releaseOutputBuffer(decoderOutputBufferIdx, false)
         }
         return isDecodeEnd
+    }
+
+    private fun getSamplesForChannel(codec: MediaCodec, bufferId: Int, channelIx: Int): ShortArray? {
+        val outputBuffer = codec.getOutputBuffer(bufferId)
+        val format = codec.getOutputFormat(bufferId)
+        val samples: ShortBuffer =
+            outputBuffer!!.order(ByteOrder.nativeOrder()).asShortBuffer()
+        val numChannels = format.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
+        if (channelIx < 0 || channelIx >= numChannels) {
+            return null
+        }
+        val res = ShortArray(samples.remaining() / numChannels)
+        for (i in res.indices) {
+            res[i] = samples.get(i * numChannels + channelIx)
+        }
+        return res
     }
 }
