@@ -13,7 +13,6 @@ import java.nio.ShortBuffer
 object Detector {
 
     private const val timeOutUs: Long = 1000 // 1ms
-    private var pcmData = arrayListOf<Short>()
 
     fun detect(soundFileUri: Uri, assets: AssetManager): Array<Int> {
         val sabiArray = arrayOf(0)
@@ -47,20 +46,21 @@ object Detector {
 //        }
         var isDecodeEnd = false
         var isExtractEnd = false
+        val numChannels = audioFormat.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
+        val pcmData = (0 until numChannels).map{
+            arrayListOf<Short>()
+        }
         Log.d("file length", assetsFile.length.toString())
-        val byteArray = ByteArray(assetsFile.length.toInt())
         while (!isDecodeEnd) {
             if (!isExtractEnd) {
                 isExtractEnd = extract(extractor, decoder)
             }
-            isDecodeEnd = decode(decoder, byteArray)
+            isDecodeEnd = decode(decoder, pcmData)
         }
         decoder.stop()
         decoder.release()
         extractor.release()
-        Log.d("pcm data size", pcmData.size.toString())
-        Log.d("pcm data max", pcmData.max().toString())
-        Log.d("pcm data min", pcmData.min().toString())
+        Log.d("pcm data size", pcmData[0].size.toString())
         pcmData.forEach {
             Log.d("pcm data", it.toString())
         }
@@ -112,7 +112,7 @@ object Detector {
         return isExtractEnd
     }
 
-    private fun decode(decoder: MediaCodec, bytes: ByteArray): Boolean {
+    private fun decode(decoder: MediaCodec, pcmData: List<ArrayList<Short>>): Boolean {
         var isDecodeEnd = false
         val decoderOutputBufferInfo = MediaCodec.BufferInfo()
         val decoderOutputBufferIdx = decoder.dequeueOutputBuffer(decoderOutputBufferInfo, timeOutUs)
@@ -131,16 +131,17 @@ object Detector {
                 if (isDecodeEnd) MediaCodec.BUFFER_FLAG_END_OF_STREAM else decoderOutputBufferInfo
             //decoderOutputBuffer.get(bytes)
             //Log.d("bytearray", bytes.toString())
-            val buf = decoderOutputBuffer[decoderOutputBufferIdx]
-            val pcmSamples = getSamplesForChannel(decoder, decoderOutputBufferIdx, 0)
-            if(pcmSamples == null){
-                Log.d("pcm samples", "null")
-            }else{
-                Log.d("pcm size", pcmSamples.size.toString())
-                pcmData.add((pcmSamples.sum()/pcmSamples.size).toShort())
+            for(i in pcmData.indices) {
+                val pcmSamples = getSamplesForChannel(decoder, decoderOutputBufferIdx, i)
+                if(pcmSamples == null){
+                    Log.d("pcm samples", "null")
+                }else{
+                    Log.d("pcm size", pcmSamples.size.toString())
+                    pcmData[i].add((pcmSamples.sum()/pcmSamples.size).toShort())
 //                for(pcmSample in pcmSamples){
 //                    pcmData.add(pcmSample)
 //                }
+                }
             }
             decoder.releaseOutputBuffer(decoderOutputBufferIdx, false)
         }
