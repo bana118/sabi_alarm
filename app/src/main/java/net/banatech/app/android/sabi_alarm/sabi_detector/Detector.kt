@@ -10,6 +10,7 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.ShortBuffer
 
+// TODO The sabi detection function will have to wait.
 object Detector {
 
     private const val timeOutUs: Long = 1000 // 1ms

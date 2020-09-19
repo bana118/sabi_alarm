@@ -279,11 +279,11 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
         }
         alarmDetail.sound_button.text = alarms[position].soundFileName
 
-        //Detect sabi
-        alarmDetail.sabi_detect_button.setOnClickListener {
-            stopPlayingSound()
-            Detector.detect(Uri.parse(""), viewHolder.alarmView.context.assets)
-        }
+        // TODO The sabi detection function will have to wait.
+//        alarmDetail.sabi_detect_button.setOnClickListener {
+//            stopPlayingSound()
+//            Detector.detect(Uri.parse(""), viewHolder.alarmView.context.assets)
+//        }
     }
 
     private fun selectWeekButton(weekButton: Button, viewHolder: AlarmViewHolder) {
