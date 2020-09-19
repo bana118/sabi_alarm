@@ -22,6 +22,7 @@ import kotlinx.android.synthetic.main.alarm_week.view.*
 import net.banatech.app.android.sabi_alarm.R
 import net.banatech.app.android.sabi_alarm.actions.alarm.AlarmActionsCreator
 import net.banatech.app.android.sabi_alarm.alarm.database.Alarm
+import net.banatech.app.android.sabi_alarm.sabi_detector.Detector
 import net.banatech.app.android.sabi_alarm.sound.SoundSelectActivity
 import java.io.IOException
 import java.util.*
@@ -277,6 +278,12 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
             alarmDetail.context.startActivity(intent)
         }
         alarmDetail.sound_button.text = alarms[position].soundFileName
+
+        // TODO The sabi detection function will have to wait
+//        alarmDetail.sabi_detect_button.setOnClickListener {
+//            stopPlayingSound()
+//            Detector.detect(Uri.parse(""), viewHolder.alarmView.context.assets)
+//        }
     }
 
     private fun selectWeekButton(weekButton: Button, viewHolder: AlarmViewHolder) {

@@ -60,7 +60,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
         android:drawableLeft="@android:drawable/ic_menu_delete"
         android:text="@string/delete_alarm"
@@ -110,10 +109,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:contentDescription="@string/alarm_up_arrow"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sound_start_time"
+        app:layout_constraintTop_toBottomOf="@+id/delete_button"
         app:srcCompat="@drawable/ic_keyboard_arrow_up_black_24dp" />
+
+    <!--TODO The sabi detection function will have to wait-->
+<!--    <Button-->
+<!--        android:id="@+id/sabi_detect_button"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="16dp"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:text="@string/sabi_detect"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/sound_start_time" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
