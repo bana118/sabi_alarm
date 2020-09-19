@@ -279,7 +279,7 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
         }
         alarmDetail.sound_button.text = alarms[position].soundFileName
 
-        // TODO The sabi detection function will have to wait.
+        // TODO The sabi detection function will have to wait
 //        alarmDetail.sabi_detect_button.setOnClickListener {
 //            stopPlayingSound()
 //            Detector.detect(Uri.parse(""), viewHolder.alarmView.context.assets)
