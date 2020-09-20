@@ -6,10 +6,12 @@ import android.content.Intent
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.net.Uri
+import android.os.Handler
 import android.os.IBinder
 import android.os.VibrationEffect
 import android.os.VibrationEffect.DEFAULT_AMPLITUDE
 import android.os.Vibrator
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
@@ -54,6 +56,20 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
         val notification = notificationBuilder.build()
         startForeground(1, notification)
         play()
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val stopAlarmMinutes = sharedPreferences.getString("stop_sound_time", "-1")?.toLong()
+        Log.d("debug", stopAlarmMinutes.toString())
+        if(stopAlarmMinutes != null && stopAlarmMinutes > 0) {
+            Handler().postDelayed({
+                val alarm = AlarmStore.alarms.first { it.id == id }
+                if (!alarm.isRepeatable) {
+                    alarm.enable = false
+                    AlarmStore.updateDb(alarm)
+                }
+                stopService(Intent(this, AlarmSoundService::class.java))
+
+            }, stopAlarmMinutes * 60 * 1000)
+        }
         return START_NOT_STICKY
     }
 
@@ -101,6 +117,11 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
                         it.start()
                     } else {
                         it.release()
+                        if (!alarm.isRepeatable) {
+                            alarm.enable = false
+                            AlarmStore.updateDb(alarm)
+                        }
+                        stopService(Intent(this, AlarmSoundService::class.java))
                     }
                 }
             } catch (e: IOException) {
@@ -128,6 +149,11 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
                         it.start()
                     } else {
                         it.release()
+                        if (!alarm.isRepeatable) {
+                            alarm.enable = false
+                            AlarmStore.updateDb(alarm)
+                        }
+                        stopService(Intent(this, AlarmSoundService::class.java))
                     }
                 }
             } catch (e: IOException) {
