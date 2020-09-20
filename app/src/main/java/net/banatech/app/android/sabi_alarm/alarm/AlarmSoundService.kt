@@ -109,17 +109,27 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
                 mediaPlayer.start()
                 mediaPlayer.setOnCompletionListener {
                     val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-                    val enableLoop = sharedPreferences.getBoolean("enable_sound_loop", false)
-                    if (enableLoop) {
-                        it.seekTo(alarm.soundStartTime)
-                        it.start()
-                    } else {
-                        it.release()
-                        if (!alarm.isRepeatable) {
-                            alarm.enable = false
-                            AlarmStore.updateDb(alarm)
+                    val soundFinishAction =
+                        sharedPreferences.getString("sound_finish_action", "0")?.toInt()
+                    if (soundFinishAction != null) {
+                        when (soundFinishAction) {
+                            0 -> {
+                                it.seekTo(alarm.soundStartTime)
+                                it.start()
+                            }
+                            1 -> {
+                                it.seekTo(0)
+                                it.start()
+                            }
+                            2 -> {
+                                it.release()
+                                if (!alarm.isRepeatable) {
+                                    alarm.enable = false
+                                    AlarmStore.updateDb(alarm)
+                                }
+                                stopService(Intent(this, AlarmSoundService::class.java))
+                            }
                         }
-                        stopService(Intent(this, AlarmSoundService::class.java))
                     }
                 }
             } catch (e: IOException) {
@@ -141,17 +151,27 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
                 mediaPlayer.start()
                 mediaPlayer.setOnCompletionListener {
                     val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-                    val enableLoop = sharedPreferences.getBoolean("enable_sound_loop", false)
-                    if (enableLoop) {
-                        it.seekTo(alarm.soundStartTime)
-                        it.start()
-                    } else {
-                        it.release()
-                        if (!alarm.isRepeatable) {
-                            alarm.enable = false
-                            AlarmStore.updateDb(alarm)
+                    val soundFinishAction =
+                        sharedPreferences.getString("sound_finish_action", "0")?.toInt()
+                    if (soundFinishAction != null) {
+                        when (soundFinishAction) {
+                            0 -> {
+                                it.seekTo(alarm.soundStartTime)
+                                it.start()
+                            }
+                            1 -> {
+                                it.seekTo(0)
+                                it.start()
+                            }
+                            2 -> {
+                                it.release()
+                                if (!alarm.isRepeatable) {
+                                    alarm.enable = false
+                                    AlarmStore.updateDb(alarm)
+                                }
+                                stopService(Intent(this, AlarmSoundService::class.java))
+                            }
                         }
-                        stopService(Intent(this, AlarmSoundService::class.java))
                     }
                 }
             } catch (e: IOException) {

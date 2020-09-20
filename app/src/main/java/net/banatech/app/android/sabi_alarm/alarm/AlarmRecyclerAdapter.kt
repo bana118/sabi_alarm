@@ -348,13 +348,23 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
                     mediaPlayer.setOnCompletionListener {
                         val sharedPreferences =
                             PreferenceManager.getDefaultSharedPreferences(context)
-                        val enableLoop = sharedPreferences.getBoolean("enable_sound_loop", false)
-                        if (enableLoop) {
-                            it.seekTo(alarm.soundStartTime)
-                            it.start()
-                        } else {
-                            it.release()
-                            alarmIdToSoundTestMediaPlayers = Pair(0, null)
+                        val soundFinishAction =
+                            sharedPreferences.getString("sound_finish_action", "0")?.toInt()
+                        if (soundFinishAction != null) {
+                            when (soundFinishAction) {
+                                0 -> {
+                                    it.seekTo(alarm.soundStartTime)
+                                    it.start()
+                                }
+                                1 -> {
+                                    it.seekTo(0)
+                                    it.start()
+                                }
+                                2 -> {
+                                    it.release()
+                                    alarmIdToSoundTestMediaPlayers = Pair(0, null)
+                                }
+                            }
                         }
                     }
                 } catch (e: IOException) {
@@ -377,13 +387,23 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
                     mediaPlayer.setOnCompletionListener {
                         val sharedPreferences =
                             PreferenceManager.getDefaultSharedPreferences(context)
-                        val enableLoop = sharedPreferences.getBoolean("enable_sound_loop", false)
-                        if (enableLoop) {
-                            it.seekTo(alarm.soundStartTime)
-                            it.start()
-                        } else {
-                            it.release()
-                            alarmIdToSoundTestMediaPlayers = Pair(0, null)
+                        val soundFinishAction =
+                            sharedPreferences.getString("sound_finish_action", "0")?.toInt()
+                        if (soundFinishAction != null) {
+                            when (soundFinishAction) {
+                                0 -> {
+                                    it.seekTo(alarm.soundStartTime)
+                                    it.start()
+                                }
+                                1 -> {
+                                    it.seekTo(0)
+                                    it.start()
+                                }
+                                2 -> {
+                                    it.release()
+                                    alarmIdToSoundTestMediaPlayers = Pair(0, null)
+                                }
+                            }
                         }
                     }
                 } catch (e: IOException) {
