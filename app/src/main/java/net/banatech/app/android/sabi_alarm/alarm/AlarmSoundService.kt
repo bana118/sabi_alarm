@@ -7,7 +7,11 @@ import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.IBinder
+import android.os.VibrationEffect
+import android.os.VibrationEffect.DEFAULT_AMPLITUDE
+import android.os.Vibrator
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import net.banatech.app.android.sabi_alarm.R
 import net.banatech.app.android.sabi_alarm.stores.alarm.AlarmStore
 import net.banatech.app.android.sabi_alarm.alarm.database.Alarm
@@ -16,6 +20,7 @@ import java.io.IOException
 class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
     lateinit var alarm: Alarm
     lateinit var mediaPlayer: MediaPlayer
+    private var vibrator: Vibrator? = null
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
@@ -45,10 +50,6 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
             .addAction(0, "アラームを停止", stopSoundFullScreenPendingIntent)
             .setFullScreenIntent(stopSoundFullScreenPendingIntent, true)
 
-        if (alarm.isVibration) {
-            notificationBuilder.setVibrate(longArrayOf(0, 1000, 100))
-        }
-
         val notification = notificationBuilder.build()
         startForeground(1, notification)
         play()
@@ -65,7 +66,18 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
     }
 
     private fun play() {
-        if(alarm.isDefaultSound) {
+        if (alarm.isVibration) {
+            val context = applicationContext
+            vibrator =
+                ContextCompat.getSystemService(context, Vibrator::class.java)
+            val vibrationEffect = VibrationEffect.createWaveform(
+                longArrayOf(200, 500),
+                intArrayOf(0, DEFAULT_AMPLITUDE),
+                0
+            )
+            vibrator?.vibrate(vibrationEffect)
+        }
+        if (alarm.isDefaultSound) {
             val fileName = "default/${alarm.soundFileName}"
             val assetFileDescriptor = this.assets.openFd(fileName)
             try {
@@ -75,14 +87,15 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
                     AudioAttributes.Builder()
                         .setUsage(AudioAttributes.USAGE_ALARM)
                         .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        .build())
+                        .build()
+                )
                 mediaPlayer.prepare()
                 mediaPlayer.seekTo(alarm.soundStartTime)
                 mediaPlayer.start()
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-        }else{
+        } else {
             val fileUri = Uri.parse(alarm.soundFileUri)
             try {
                 mediaPlayer.reset()
@@ -91,7 +104,8 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
                     AudioAttributes.Builder()
                         .setUsage(AudioAttributes.USAGE_ALARM)
                         .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        .build())
+                        .build()
+                )
                 mediaPlayer.prepare()
                 mediaPlayer.seekTo(alarm.soundStartTime)
                 mediaPlayer.start()
@@ -102,6 +116,7 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
     }
 
     private fun stop() {
+        vibrator?.cancel()
         mediaPlayer.stop()
         mediaPlayer.release()
     }

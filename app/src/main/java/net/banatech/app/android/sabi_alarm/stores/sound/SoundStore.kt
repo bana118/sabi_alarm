@@ -2,14 +2,19 @@ package net.banatech.app.android.sabi_alarm.stores.sound
 
 import android.content.Context
 import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.banatech.app.android.sabi_alarm.actions.Action
 import net.banatech.app.android.sabi_alarm.actions.sound.SoundActions
 import net.banatech.app.android.sabi_alarm.dispatcher.Dispatcher
+import net.banatech.app.android.sabi_alarm.sound.SoundSelectActivity
 import net.banatech.app.android.sabi_alarm.sound.database.Sound
 import net.banatech.app.android.sabi_alarm.stores.Store
 import org.greenrobot.eventbus.Subscribe
 
-object SoundStore{
+object SoundStore {
     val sounds: ArrayList<Sound> = ArrayList()
 
     @Subscribe
@@ -21,8 +26,8 @@ object SoundStore{
                 val soundFileName = action.data[SoundActions.KEY_SOUND_FILE_NAME]
                 val stringUri = action.data[SoundActions.KEY_SOUND_STRING_URI]
                 val context = action.data[SoundActions.KEY_CONTEXT]
-                check(soundFileName is String){ "SoundFileName value must be String"}
-                check(stringUri is String){ "SoundStringUri value must be String"}
+                check(soundFileName is String) { "SoundFileName value must be String" }
+                check(stringUri is String) { "SoundStringUri value must be String" }
                 check(context is Context) { "Context value must be Context" }
                 add(soundFileName, stringUri, context)
                 emitSoundStoreAdd()
@@ -38,7 +43,7 @@ object SoundStore{
         }
     }
 
-    private fun add(soundFileName: String, stringUri: String, context: Context){
+    private fun add(soundFileName: String, stringUri: String, context: Context) {
         val id = System.currentTimeMillis().toInt() //TODO unnecessary when using database
         val sound = Sound(
             id = id,
@@ -46,11 +51,29 @@ object SoundStore{
             stringUri = stringUri
         )
         sounds.add(sound)
+        val dao = SoundSelectActivity.db.soundDao()
+        CoroutineScope(Dispatchers.Main).launch {
+            withContext(Dispatchers.Default) {
+                dao.insertAll(sound)
+            }
+        }
     }
 
     private fun remove(id: Int, context: Context) {
         val sound = sounds.first { it.id == id }
         sounds.remove(sound)
+        val dao = SoundSelectActivity.db.soundDao()
+        CoroutineScope(Dispatchers.Main).launch {
+            withContext(Dispatchers.Default) {
+                dao.delete(sound)
+            }
+        }
+    }
+
+    fun restoreSounds(soundList: List<Sound>) {
+        soundList.forEach {
+            sounds.add(it)
+        }
     }
 
     fun emitSoundStoreAdd() {
@@ -69,6 +92,6 @@ object SoundStore{
         return SoundStoreRemoveEvent()
     }
 
-    class SoundStoreAddEvent: Store.StoreEvent
-    class SoundStoreRemoveEvent: Store.StoreEvent
+    class SoundStoreAddEvent : Store.StoreEvent
+    class SoundStoreRemoveEvent : Store.StoreEvent
 }

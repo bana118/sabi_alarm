@@ -2,9 +2,14 @@ package net.banatech.app.android.sabi_alarm.stores.alarm
 
 import android.content.Context
 import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.banatech.app.android.sabi_alarm.alarm.RepeatAlarmManager
 import net.banatech.app.android.sabi_alarm.actions.Action
 import net.banatech.app.android.sabi_alarm.actions.alarm.AlarmActions
+import net.banatech.app.android.sabi_alarm.alarm.AlarmActivity
 import net.banatech.app.android.sabi_alarm.alarm.database.Alarm
 import net.banatech.app.android.sabi_alarm.stores.Store
 import org.greenrobot.eventbus.Subscribe
@@ -205,11 +210,18 @@ object AlarmStore : Store() {
         val alarm = alarms.first { it.id == id }
         cancelAlarm(
             alarm,
-            context
+            context,
+            false
         )
         lastDeleted = alarm.copy()
         canUndo = true
         alarms.remove(alarm)
+        val dao = AlarmActivity.db.alarmDao()
+        CoroutineScope(Dispatchers.Main).launch {
+            withContext(Dispatchers.Default) {
+                dao.delete(alarm)
+            }
+        }
     }
 
     private fun undoDestroy(context: Context) {
@@ -231,9 +243,11 @@ object AlarmStore : Store() {
         if (alarm.enable) {
             setAlarm(
                 alarm.id,
-                context
+                context,
+                true
             )
         }
+        updateDb(alarm)
     }
 
     private fun switchEnable(id: Int, enable: Boolean, context: Context) {
@@ -242,24 +256,29 @@ object AlarmStore : Store() {
         if (enable) {
             setAlarm(
                 alarm.id,
-                context
+                context,
+                true
             )
         } else {
             cancelAlarm(
                 alarm,
-                context
+                context,
+                true
             )
         }
+        updateDb(alarm)
     }
 
     private fun switchDetail(id: Int, isShowDetail: Boolean) {
         val alarm = alarms.first { it.id == id }
         alarm.isShowDetail = isShowDetail
+        updateDb(alarm)
     }
 
     private fun switchVibration(id: Int, isVibration: Boolean) {
         val alarm = alarms.first { it.id == id }
         alarm.isVibration = isVibration
+        updateDb(alarm)
     }
 
     private fun switchRepeatable(id: Int, isReadable: Boolean, context: Context) {
@@ -268,9 +287,11 @@ object AlarmStore : Store() {
         if (alarm.enable) {
             setAlarm(
                 alarm.id,
-                context
+                context,
+                false
             )
         }
+        updateDb(alarm)
     }
 
     private fun switchWeekEnable(id: Int, dayOfWeek: Int, dayEnable: Boolean, context: Context) {
@@ -327,16 +348,27 @@ object AlarmStore : Store() {
         if (alarm.enable) {
             setAlarm(
                 alarm.id,
-                context
+                context,
+                false
             )
         }
+        updateDb(alarm)
     }
 
-    private fun selectSound(id: Int, soundFileName: String, isDefaultSound: Boolean, soundFileUri: String) {
+    private fun selectSound(
+        id: Int,
+        soundFileName: String,
+        isDefaultSound: Boolean,
+        soundFileUri: String
+    ) {
         val alarm = alarms.first { it.id == id }
         alarm.soundFileName = soundFileName
         alarm.isDefaultSound = isDefaultSound
         alarm.soundFileUri = soundFileUri
+        alarm.soundStartTime = 0
+        val soundStartTimeText = "00:00.000"
+        alarm.soundStartTimeText = soundStartTimeText
+        updateDb(alarm)
     }
 
     private fun changeSoundStartTime(
@@ -347,24 +379,56 @@ object AlarmStore : Store() {
         val alarm = alarms.first { it.id == id }
         alarm.soundStartTime = soundStartTimeMilli
         alarm.soundStartTimeText = soundStartTimeText
+        updateDb(alarm)
     }
 
     private fun addAlarm(alarm: Alarm, context: Context) {
         alarms.add(alarm)
+        val dao = AlarmActivity.db.alarmDao()
+        CoroutineScope(Dispatchers.Main).launch {
+            withContext(Dispatchers.Default) {
+                dao.insertAll(alarm)
+            }
+        }
         if (alarm.enable) {
             setAlarm(
                 alarm.id,
-                context
+                context,
+                true
             )
         }
     }
 
-    private fun setAlarm(id: Int, context: Context) {
-        RepeatAlarmManager.setAlarm(id, context)
+    private fun setAlarm(id: Int, context: Context, enableToast: Boolean) {
+        RepeatAlarmManager.setAlarm(id, context, enableToast)
     }
 
-    private fun cancelAlarm(alarm: Alarm, context: Context) {
-        RepeatAlarmManager.cancelAlarm(alarm.id, context)
+    private fun cancelAlarm(alarm: Alarm, context: Context, enableToast: Boolean) {
+        RepeatAlarmManager.cancelAlarm(alarm.id, context, enableToast)
+    }
+
+    private fun updateDb(alarm: Alarm) {
+        val dao = AlarmActivity.db.alarmDao()
+        CoroutineScope(Dispatchers.Main).launch {
+            withContext(Dispatchers.Default) {
+                dao.update(alarm)
+            }
+        }
+    }
+
+    fun restoreAlarms(alarmList: List<Alarm>) {
+        alarmList.forEach {
+            alarms.add(it)
+        }
+    }
+
+    fun rebootAlarms(alarmList: List<Alarm>, context: Context) {
+        restoreAlarms(alarmList)
+        alarmList.forEach {
+            if (it.enable) {
+                setAlarm(it.id, context, false)
+            }
+        }
     }
 
     override fun createEvent(): StoreCreateEvent {
@@ -389,12 +453,16 @@ object AlarmStore : Store() {
 
     class AlarmStoreCreateEvent :
         StoreCreateEvent
+
     class AlarmStoreTimeChangeEvent :
         StoreTimeChangeEvent
+
     class AlarmStoreChangeEvent :
         StoreChangeEvent
+
     class AlarmStoreDestroyEvent :
         StoreDestroyEvent
+
     class AlarmSoundSelectEvent :
         StoreSoundSelectEvent
 }

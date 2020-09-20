@@ -1,6 +1,5 @@
 package net.banatech.app.android.sabi_alarm.sound
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,46 +16,47 @@ class DefaultSoundRecyclerAdapter(private val defaultAlarmSoundArray: Array<Stri
 
     class DefaultSoundViewHolder(val soundFileView: View) : RecyclerView.ViewHolder(soundFileView)
 
-    // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): DefaultSoundViewHolder {
-        // create a new view
         val soundFileView = LayoutInflater.from(parent.context)
             .inflate(R.layout.default_sound_file_view, parent, false)
-        // set the view's size, margins, paddings and layout parameters
         return DefaultSoundViewHolder(
             soundFileView
         )
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(holder: DefaultSoundViewHolder, position: Int) {
         holder.soundFileView.sound_file_name.text = defaultAlarmSoundArray[position]
         val checkBox = holder.soundFileView.sound_file_check
         holder.soundFileView.default_sound_file_layout.setOnClickListener {
-            AlarmActionsCreator.selectSound(AlarmStore.selectedAlarm.id, defaultAlarmSoundArray[position], true, "")
-            if(AlarmStore.selectedAlarm.soundFileName == defaultAlarmSoundArray[position]){
+            AlarmActionsCreator.selectSound(
+                AlarmStore.selectedAlarm.id,
+                defaultAlarmSoundArray[position],
+                true,
+                ""
+            )
+            if (AlarmStore.selectedAlarm.soundFileName == defaultAlarmSoundArray[position]) {
                 checkBox.visibility = View.VISIBLE
-            }else{
+            } else {
                 checkBox.visibility = View.INVISIBLE
             }
-            for(i in defaultAlarmSoundArray.indices){
-                if(i != position){
+            for (i in defaultAlarmSoundArray.indices) {
+                if (i != position) {
                     notifyItemChanged(i)
                 }
             }
             localSoundAdapter.notifyDataSetChanged()
         }
-        if(AlarmStore.selectedAlarm.soundFileName == defaultAlarmSoundArray[position]){
+        if (AlarmStore.selectedAlarm.soundFileName == defaultAlarmSoundArray[position]) {
             checkBox.visibility = View.VISIBLE
-        }else{
+        } else {
             checkBox.visibility = View.INVISIBLE
         }
     }
 
-    fun setlocalAdapter(adapter: LocalSoundRecyclerAdapter) {
+    fun setLocalSoundAdapter(adapter: LocalSoundRecyclerAdapter) {
         localSoundAdapter = adapter
     }
 

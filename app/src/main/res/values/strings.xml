@@ -24,4 +24,6 @@
     <string name="default_sound">デフォルトの音楽</string>
     <string name="add_local_sound">追加</string>
     <string name="sabi_detect">サビ</string>
+    <string name="delete_button_description">削除</string>
+    <string name="sound_stop_text">STOP!</string>
 </resources>

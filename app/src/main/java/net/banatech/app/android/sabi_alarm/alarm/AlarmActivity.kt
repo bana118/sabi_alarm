@@ -36,12 +36,10 @@ class AlarmActivity : AppCompatActivity() {
     private lateinit var alarmStore: AlarmStore
     private lateinit var listAdapter: AlarmRecyclerAdapter
 
-
     companion object {
         lateinit var db: AlarmDatabase
     }
 
-    private var timeDataset: ArrayList<Alarm> = arrayListOf()
     private var viewManager = LinearLayoutManager(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,16 +48,17 @@ class AlarmActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         initDependencies()
         setupView()
-//        db = AlarmDatabase.getInstance(this.applicationContext)
-//        val dao = db.alarmDao()
-//        CoroutineScope(Dispatchers.Main).launch {
-//            withContext(Dispatchers.Main){
-//                dao.getAll().forEach{
-//                    timeDataset.add(it)
-//                }
-//                listAdapter.notifyDataSetChanged()
-//            }
-//        }
+        db = AlarmDatabase.getInstance(this.applicationContext)
+        val dao = db.alarmDao()
+        if (AlarmStore.alarms.isEmpty()) {
+            CoroutineScope(Dispatchers.Main).launch {
+                withContext(Dispatchers.Main) {
+                    AlarmStore.restoreAlarms(dao.getAll())
+                    updateUI()
+                    listAdapter.notifyDataSetChanged()
+                }
+            }
+        }
         val channelId = getString(R.string.channel_id)
         val name = getString(R.string.channel_name)
         val descriptionText = getString(R.string.channel_description)
@@ -67,8 +66,7 @@ class AlarmActivity : AppCompatActivity() {
         val alarmChannel = NotificationChannel(channelId, name, importance)
         alarmChannel.description = descriptionText
         alarmChannel.setSound(null, null)
-        // Register the channel with the system; you can't change the importance
-        // or other notification behaviors after this
+
         val notificationManager =
             getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(alarmChannel)
@@ -117,40 +115,6 @@ class AlarmActivity : AppCompatActivity() {
                 }
             }
         })
-    }
-
-    private fun setAlarm(hour: Int, minute: Int) {
-        val setTimeText = String.format("%02d:%02d", hour, minute)
-        val alarmData = Alarm(
-            hour = hour,
-            minute = minute,
-            timeText = setTimeText,
-            enable = true,
-            isShowDetail = false,
-            isVibration = false,
-            isRepeatable = false,
-            isSundayAlarm = false,
-            isMondayAlarm = true,
-            isTuesdayAlarm = true,
-            isWednesdayAlarm = true,
-            isThursdayAlarm = true,
-            isFridayAlarm = true,
-            isSaturdayAlarm = false,
-            soundFileName = "beethoven_no5_1st.mp3",
-            soundFileUri = "",
-            soundStartTime = 0,
-            soundStartTimeText = "00:00",
-            isDefaultSound = true
-        )
-        val dao = db.alarmDao()
-        CoroutineScope(Dispatchers.Main).launch {
-            withContext(Dispatchers.Default) {
-                dao.insertAll(alarmData)
-                Log.d("debug", dao.getAll().toString())
-            }
-        }
-        timeDataset.add(alarmData)
-        listAdapter.notifyItemInserted(timeDataset.size - 1)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
