@@ -15,14 +15,14 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val id = intent.getIntExtra("id", 0)
         val startServiceIntent = Intent(context, AlarmSoundService::class.java)
-        if(AlarmStore.alarms.isEmpty()) {
+        if (AlarmStore.alarms.isEmpty()) {
             val db = AlarmDatabase.getInstance(context)
             val dao = db.alarmDao()
             CoroutineScope(Dispatchers.Main).launch {
-                withContext(Dispatchers.Main){
+                withContext(Dispatchers.Main) {
                     AlarmStore.restoreAlarms(dao.getAll())
-                    val alarm = AlarmStore.alarms.first{it.id == id}
-                    if(alarm.isRepeatable){
+                    val alarm = AlarmStore.alarms.first { it.id == id }
+                    if (alarm.isRepeatable) {
                         RepeatAlarmManager.nextSetAlarm(id, context)
                     }
                     startServiceIntent.putExtra("id", id)
@@ -30,8 +30,8 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
                 }
             }
         } else {
-            val alarm = AlarmStore.alarms.first{it.id == id}
-            if(alarm.isRepeatable){
+            val alarm = AlarmStore.alarms.first { it.id == id }
+            if (alarm.isRepeatable) {
                 RepeatAlarmManager.nextSetAlarm(id, context)
             }
             startServiceIntent.putExtra("id", id)

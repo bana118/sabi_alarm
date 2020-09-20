@@ -1,6 +1,5 @@
 package net.banatech.app.android.sabi_alarm.sound
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,22 +31,27 @@ class DefaultSoundRecyclerAdapter(private val defaultAlarmSoundArray: Array<Stri
         holder.soundFileView.sound_file_name.text = defaultAlarmSoundArray[position]
         val checkBox = holder.soundFileView.sound_file_check
         holder.soundFileView.default_sound_file_layout.setOnClickListener {
-            AlarmActionsCreator.selectSound(AlarmStore.selectedAlarm.id, defaultAlarmSoundArray[position], true, "")
-            if(AlarmStore.selectedAlarm.soundFileName == defaultAlarmSoundArray[position]){
+            AlarmActionsCreator.selectSound(
+                AlarmStore.selectedAlarm.id,
+                defaultAlarmSoundArray[position],
+                true,
+                ""
+            )
+            if (AlarmStore.selectedAlarm.soundFileName == defaultAlarmSoundArray[position]) {
                 checkBox.visibility = View.VISIBLE
-            }else{
+            } else {
                 checkBox.visibility = View.INVISIBLE
             }
-            for(i in defaultAlarmSoundArray.indices){
-                if(i != position){
+            for (i in defaultAlarmSoundArray.indices) {
+                if (i != position) {
                     notifyItemChanged(i)
                 }
             }
             localSoundAdapter.notifyDataSetChanged()
         }
-        if(AlarmStore.selectedAlarm.soundFileName == defaultAlarmSoundArray[position]){
+        if (AlarmStore.selectedAlarm.soundFileName == defaultAlarmSoundArray[position]) {
             checkBox.visibility = View.VISIBLE
-        }else{
+        } else {
             checkBox.visibility = View.INVISIBLE
         }
     }

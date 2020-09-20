@@ -355,7 +355,12 @@ object AlarmStore : Store() {
         updateDb(alarm)
     }
 
-    private fun selectSound(id: Int, soundFileName: String, isDefaultSound: Boolean, soundFileUri: String) {
+    private fun selectSound(
+        id: Int,
+        soundFileName: String,
+        isDefaultSound: Boolean,
+        soundFileUri: String
+    ) {
         val alarm = alarms.first { it.id == id }
         alarm.soundFileName = soundFileName
         alarm.isDefaultSound = isDefaultSound
@@ -412,15 +417,15 @@ object AlarmStore : Store() {
     }
 
     fun restoreAlarms(alarmList: List<Alarm>) {
-        alarmList.forEach{
+        alarmList.forEach {
             alarms.add(it)
         }
     }
 
     fun rebootAlarms(alarmList: List<Alarm>, context: Context) {
         restoreAlarms(alarmList)
-        alarmList.forEach{
-            if(it.enable) {
+        alarmList.forEach {
+            if (it.enable) {
                 setAlarm(it.id, context, false)
             }
         }
@@ -448,12 +453,16 @@ object AlarmStore : Store() {
 
     class AlarmStoreCreateEvent :
         StoreCreateEvent
+
     class AlarmStoreTimeChangeEvent :
         StoreTimeChangeEvent
+
     class AlarmStoreChangeEvent :
         StoreChangeEvent
+
     class AlarmStoreDestroyEvent :
         StoreDestroyEvent
+
     class AlarmSoundSelectEvent :
         StoreSoundSelectEvent
 }

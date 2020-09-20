@@ -52,7 +52,7 @@ class AlarmActivity : AppCompatActivity() {
         val dao = db.alarmDao()
         if (AlarmStore.alarms.isEmpty()) {
             CoroutineScope(Dispatchers.Main).launch {
-                withContext(Dispatchers.Main){
+                withContext(Dispatchers.Main) {
                     AlarmStore.restoreAlarms(dao.getAll())
                     updateUI()
                     listAdapter.notifyDataSetChanged()

@@ -14,7 +14,7 @@ import net.banatech.app.android.sabi_alarm.sound.database.Sound
 import net.banatech.app.android.sabi_alarm.stores.Store
 import org.greenrobot.eventbus.Subscribe
 
-object SoundStore{
+object SoundStore {
     val sounds: ArrayList<Sound> = ArrayList()
 
     @Subscribe
@@ -26,8 +26,8 @@ object SoundStore{
                 val soundFileName = action.data[SoundActions.KEY_SOUND_FILE_NAME]
                 val stringUri = action.data[SoundActions.KEY_SOUND_STRING_URI]
                 val context = action.data[SoundActions.KEY_CONTEXT]
-                check(soundFileName is String){ "SoundFileName value must be String"}
-                check(stringUri is String){ "SoundStringUri value must be String"}
+                check(soundFileName is String) { "SoundFileName value must be String" }
+                check(stringUri is String) { "SoundStringUri value must be String" }
                 check(context is Context) { "Context value must be Context" }
                 add(soundFileName, stringUri, context)
                 emitSoundStoreAdd()
@@ -43,7 +43,7 @@ object SoundStore{
         }
     }
 
-    private fun add(soundFileName: String, stringUri: String, context: Context){
+    private fun add(soundFileName: String, stringUri: String, context: Context) {
         val id = System.currentTimeMillis().toInt() //TODO unnecessary when using database
         val sound = Sound(
             id = id,
@@ -71,7 +71,7 @@ object SoundStore{
     }
 
     fun restoreSounds(soundList: List<Sound>) {
-        soundList.forEach{
+        soundList.forEach {
             sounds.add(it)
         }
     }
@@ -92,6 +92,6 @@ object SoundStore{
         return SoundStoreRemoveEvent()
     }
 
-    class SoundStoreAddEvent: Store.StoreEvent
-    class SoundStoreRemoveEvent: Store.StoreEvent
+    class SoundStoreAddEvent : Store.StoreEvent
+    class SoundStoreRemoveEvent : Store.StoreEvent
 }

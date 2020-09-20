@@ -40,7 +40,7 @@ class SoundSelectActivity : AppCompatActivity() {
         val dao = db.soundDao()
         if (SoundStore.sounds.isEmpty()) {
             CoroutineScope(Dispatchers.Main).launch {
-                withContext(Dispatchers.Main){
+                withContext(Dispatchers.Main) {
                     SoundStore.restoreSounds(dao.getAll())
                     updateUI()
                     localSoundAdapter.notifyDataSetChanged()
@@ -62,7 +62,7 @@ class SoundSelectActivity : AppCompatActivity() {
         local_sound_list.adapter = localSoundAdapter
         updateUI()
         localSoundAdapter.notifyDataSetChanged()
-        default_sound_list.layoutManager =LinearLayoutManager(this)
+        default_sound_list.layoutManager = LinearLayoutManager(this)
         default_sound_list.adapter = defaultSoundAdapter
         add_local_sound_button.setOnClickListener {
             val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
@@ -76,19 +76,19 @@ class SoundSelectActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
         super.onActivityResult(requestCode, resultCode, resultData)
-        if(!Dispatcher.isRegistered(this)){
+        if (!Dispatcher.isRegistered(this)) {
             Dispatcher.register(this)
         }
-        if(!Dispatcher.isRegistered(SoundStore)){
+        if (!Dispatcher.isRegistered(SoundStore)) {
             Dispatcher.register(SoundStore)
         }
-        if(!Dispatcher.isRegistered(AlarmStore)){
+        if (!Dispatcher.isRegistered(AlarmStore)) {
             Dispatcher.register(AlarmStore)
         }
         if (requestCode == readRequestCode && resultCode == Activity.RESULT_OK) {
-            resultData?.data?.also {uri ->
+            resultData?.data?.also { uri ->
                 val fileName = getFileName(uri)
-                check(fileName is String){ "FileName must be String"}
+                check(fileName is String) { "FileName must be String" }
                 SoundActionsCreator.add(fileName, uri.toString(), this)
                 localSoundAdapter.notifyDataSetChanged()
             }
@@ -97,13 +97,13 @@ class SoundSelectActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if(!Dispatcher.isRegistered(this)){
+        if (!Dispatcher.isRegistered(this)) {
             Dispatcher.register(this)
         }
-        if(!Dispatcher.isRegistered(SoundStore)){
-           Dispatcher.register(SoundStore)
+        if (!Dispatcher.isRegistered(SoundStore)) {
+            Dispatcher.register(SoundStore)
         }
-        if(!Dispatcher.isRegistered(AlarmStore)){
+        if (!Dispatcher.isRegistered(AlarmStore)) {
             Dispatcher.register(AlarmStore)
         }
     }
@@ -134,7 +134,7 @@ class SoundSelectActivity : AppCompatActivity() {
     private fun getFileName(uri: Uri): String? {
         var result: String? = null
         if (uri.scheme.equals("content")) {
-            val cursor= contentResolver.query(uri, null, null, null, null)
+            val cursor = contentResolver.query(uri, null, null, null, null)
             try {
                 if (cursor != null && cursor.moveToFirst()) {
                     result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))

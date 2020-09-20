@@ -48,7 +48,7 @@ object Detector {
         var isDecodeEnd = false
         var isExtractEnd = false
         val numChannels = audioFormat.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
-        val pcmData = (0 until numChannels).map{
+        val pcmData = (0 until numChannels).map {
             arrayListOf<Short>()
         }
         Log.d("file length", assetsFile.length.toString())
@@ -86,7 +86,7 @@ object Detector {
             val inputBuffer = decoder.getInputBuffer(inputBufferIdx) as ByteBuffer
             val sampleSize = extractor.readSampleData(inputBuffer, 0)
             if (sampleSize > 0) {
-                Log.d("extract sample time", (extractor.sampleTime/1000).toString())
+                Log.d("extract sample time", (extractor.sampleTime / 1000).toString())
                 decoder.queueInputBuffer(
                     inputBufferIdx,
                     0,
@@ -132,13 +132,13 @@ object Detector {
                 if (isDecodeEnd) MediaCodec.BUFFER_FLAG_END_OF_STREAM else decoderOutputBufferInfo
             //decoderOutputBuffer.get(bytes)
             //Log.d("bytearray", bytes.toString())
-            for(i in pcmData.indices) {
+            for (i in pcmData.indices) {
                 val pcmSamples = getSamplesForChannel(decoder, decoderOutputBufferIdx, i)
-                if(pcmSamples == null){
+                if (pcmSamples == null) {
                     Log.d("pcm samples", "null")
-                }else{
+                } else {
                     Log.d("pcm size", pcmSamples.size.toString())
-                    pcmData[i].add((pcmSamples.sum()/pcmSamples.size).toShort())
+                    pcmData[i].add((pcmSamples.sum() / pcmSamples.size).toShort())
 //                for(pcmSample in pcmSamples){
 //                    pcmData.add(pcmSample)
 //                }
@@ -149,7 +149,11 @@ object Detector {
         return isDecodeEnd
     }
 
-    private fun getSamplesForChannel(codec: MediaCodec, bufferId: Int, channelIx: Int): ShortArray? {
+    private fun getSamplesForChannel(
+        codec: MediaCodec,
+        bufferId: Int,
+        channelIx: Int
+    ): ShortArray? {
         val outputBuffer = codec.getOutputBuffer(bufferId)
         val format = codec.getOutputFormat(bufferId)
         val samples: ShortBuffer =
