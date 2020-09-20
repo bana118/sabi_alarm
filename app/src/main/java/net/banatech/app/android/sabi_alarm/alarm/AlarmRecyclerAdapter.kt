@@ -19,6 +19,7 @@ import android.widget.SeekBar
 import android.widget.TimePicker
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.alarm_detail.view.*
 import kotlinx.android.synthetic.main.alarm_view.view.*
@@ -345,8 +346,15 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
                     mediaPlayer.seekTo(alarm.soundStartTime)
                     mediaPlayer.start()
                     mediaPlayer.setOnCompletionListener {
-                        it.release()
-                        alarmIdToSoundTestMediaPlayers = Pair(0, null)
+                        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+                        val enableLoop = sharedPreferences.getBoolean("enable_sound_loop", false)
+                        if (enableLoop) {
+                            it.seekTo(alarm.soundStartTime)
+                            it.start()
+                        } else {
+                            it.release()
+                            alarmIdToSoundTestMediaPlayers = Pair(0, null)
+                        }
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -366,8 +374,15 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
                     mediaPlayer.seekTo(alarm.soundStartTime)
                     mediaPlayer.start()
                     mediaPlayer.setOnCompletionListener {
-                        it.release()
-                        alarmIdToSoundTestMediaPlayers = Pair(0, null)
+                        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+                        val enableLoop = sharedPreferences.getBoolean("enable_sound_loop", false)
+                        if (enableLoop) {
+                            it.seekTo(alarm.soundStartTime)
+                            it.start()
+                        } else {
+                            it.release()
+                            alarmIdToSoundTestMediaPlayers = Pair(0, null)
+                        }
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()

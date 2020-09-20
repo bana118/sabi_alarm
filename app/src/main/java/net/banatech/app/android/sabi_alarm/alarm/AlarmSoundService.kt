@@ -12,6 +12,7 @@ import android.os.VibrationEffect.DEFAULT_AMPLITUDE
 import android.os.Vibrator
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.preference.PreferenceManager
 import net.banatech.app.android.sabi_alarm.R
 import net.banatech.app.android.sabi_alarm.stores.alarm.AlarmStore
 import net.banatech.app.android.sabi_alarm.alarm.database.Alarm
@@ -66,8 +67,8 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
     }
 
     private fun play() {
+        val context = applicationContext
         if (alarm.isVibration) {
-            val context = applicationContext
             vibrator =
                 ContextCompat.getSystemService(context, Vibrator::class.java)
             val vibrationEffect = VibrationEffect.createWaveform(
@@ -92,6 +93,16 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
                 mediaPlayer.prepare()
                 mediaPlayer.seekTo(alarm.soundStartTime)
                 mediaPlayer.start()
+                mediaPlayer.setOnCompletionListener {
+                    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+                    val enableLoop = sharedPreferences.getBoolean("enable_sound_loop", false)
+                    if (enableLoop) {
+                        it.seekTo(alarm.soundStartTime)
+                        it.start()
+                    } else {
+                        it.release()
+                    }
+                }
             } catch (e: IOException) {
                 e.printStackTrace()
             }
@@ -109,6 +120,16 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
                 mediaPlayer.prepare()
                 mediaPlayer.seekTo(alarm.soundStartTime)
                 mediaPlayer.start()
+                mediaPlayer.setOnCompletionListener {
+                    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+                    val enableLoop = sharedPreferences.getBoolean("enable_sound_loop", false)
+                    if (enableLoop) {
+                        it.seekTo(alarm.soundStartTime)
+                        it.start()
+                    } else {
+                        it.release()
+                    }
+                }
             } catch (e: IOException) {
                 e.printStackTrace()
             }
