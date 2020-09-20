@@ -50,16 +50,15 @@ class AlarmActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         initDependencies()
         setupView()
-//        db = AlarmDatabase.getInstance(this.applicationContext)
-//        val dao = db.alarmDao()
-//        CoroutineScope(Dispatchers.Main).launch {
-//            withContext(Dispatchers.Main){
-//                dao.getAll().forEach{
-//                    timeDataset.add(it)
-//                }
-//                listAdapter.notifyDataSetChanged()
-//            }
-//        }
+        db = AlarmDatabase.getInstance(this.applicationContext)
+        val dao = db.alarmDao()
+        CoroutineScope(Dispatchers.Main).launch {
+            withContext(Dispatchers.Main){
+                AlarmStore.restoreAlarms(dao.getAll())
+                updateUI()
+                listAdapter.notifyDataSetChanged()
+            }
+        }
         val channelId = getString(R.string.channel_id)
         val name = getString(R.string.channel_name)
         val descriptionText = getString(R.string.channel_description)
