@@ -117,7 +117,7 @@ class SoundSelectActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_with_setting, menu)
+        menuInflater.inflate(R.menu.main_menu, menu)
         return true
     }
 
