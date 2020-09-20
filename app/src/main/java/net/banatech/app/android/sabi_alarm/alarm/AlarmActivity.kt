@@ -3,6 +3,7 @@ package net.banatech.app.android.sabi_alarm.alarm
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.TimePickerDialog
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -25,6 +26,7 @@ import net.banatech.app.android.sabi_alarm.dispatcher.Dispatcher
 import net.banatech.app.android.sabi_alarm.stores.alarm.AlarmStore
 import net.banatech.app.android.sabi_alarm.alarm.database.Alarm
 import net.banatech.app.android.sabi_alarm.alarm.database.AlarmDatabase
+import net.banatech.app.android.sabi_alarm.setting.SettingActivity
 import org.greenrobot.eventbus.Subscribe
 import java.util.*
 
@@ -118,13 +120,17 @@ class AlarmActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
+        menuInflater.inflate(R.menu.main_menu, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_settings -> true
+            R.id.action_settings -> {
+                val intent = Intent(this, SettingActivity::class.java)
+                startActivity(intent)
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }

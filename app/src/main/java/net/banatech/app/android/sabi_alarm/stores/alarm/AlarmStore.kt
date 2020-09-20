@@ -407,7 +407,7 @@ object AlarmStore : Store() {
         RepeatAlarmManager.cancelAlarm(alarm.id, context, enableToast)
     }
 
-    private fun updateDb(alarm: Alarm) {
+    fun updateDb(alarm: Alarm) {
         val dao = AlarmActivity.db.alarmDao()
         CoroutineScope(Dispatchers.Main).launch {
             withContext(Dispatchers.Default) {

@@ -19,6 +19,7 @@ import kotlinx.coroutines.withContext
 import net.banatech.app.android.sabi_alarm.R
 import net.banatech.app.android.sabi_alarm.actions.sound.SoundActionsCreator
 import net.banatech.app.android.sabi_alarm.dispatcher.Dispatcher
+import net.banatech.app.android.sabi_alarm.setting.SettingActivity
 import net.banatech.app.android.sabi_alarm.sound.database.SoundDatabase
 import net.banatech.app.android.sabi_alarm.stores.alarm.AlarmStore
 import net.banatech.app.android.sabi_alarm.stores.sound.SoundStore
@@ -71,7 +72,7 @@ class SoundSelectActivity : AppCompatActivity() {
             }
             startActivityForResult(intent, readRequestCode)
         }
-
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
@@ -116,13 +117,21 @@ class SoundSelectActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
+        menuInflater.inflate(R.menu.main_menu, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_settings -> true
+            R.id.action_settings -> {
+                val intent = Intent(this, SettingActivity::class.java)
+                startActivity(intent)
+                true
+            }
+            android.R.id.home -> {
+                finish()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }

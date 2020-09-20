@@ -6,12 +6,14 @@ import android.content.Intent
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.net.Uri
+import android.os.Handler
 import android.os.IBinder
 import android.os.VibrationEffect
 import android.os.VibrationEffect.DEFAULT_AMPLITUDE
 import android.os.Vibrator
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.preference.PreferenceManager
 import net.banatech.app.android.sabi_alarm.R
 import net.banatech.app.android.sabi_alarm.stores.alarm.AlarmStore
 import net.banatech.app.android.sabi_alarm.alarm.database.Alarm
@@ -53,6 +55,19 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
         val notification = notificationBuilder.build()
         startForeground(1, notification)
         play()
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val stopAlarmMinutes = sharedPreferences.getString("stop_sound_time", "-1")?.toLong()
+        if (stopAlarmMinutes != null && stopAlarmMinutes > 0) {
+            Handler().postDelayed({
+                val alarm = AlarmStore.alarms.first { it.id == id }
+                if (!alarm.isRepeatable) {
+                    alarm.enable = false
+                    AlarmStore.updateDb(alarm)
+                }
+                stopService(Intent(this, AlarmSoundService::class.java))
+
+            }, stopAlarmMinutes * 60 * 1000)
+        }
         return START_NOT_STICKY
     }
 
@@ -66,8 +81,8 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
     }
 
     private fun play() {
+        val context = applicationContext
         if (alarm.isVibration) {
-            val context = applicationContext
             vibrator =
                 ContextCompat.getSystemService(context, Vibrator::class.java)
             val vibrationEffect = VibrationEffect.createWaveform(
@@ -92,6 +107,21 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
                 mediaPlayer.prepare()
                 mediaPlayer.seekTo(alarm.soundStartTime)
                 mediaPlayer.start()
+                mediaPlayer.setOnCompletionListener {
+                    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+                    val enableLoop = sharedPreferences.getBoolean("enable_sound_loop", false)
+                    if (enableLoop) {
+                        it.seekTo(alarm.soundStartTime)
+                        it.start()
+                    } else {
+                        it.release()
+                        if (!alarm.isRepeatable) {
+                            alarm.enable = false
+                            AlarmStore.updateDb(alarm)
+                        }
+                        stopService(Intent(this, AlarmSoundService::class.java))
+                    }
+                }
             } catch (e: IOException) {
                 e.printStackTrace()
             }
@@ -109,6 +139,21 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
                 mediaPlayer.prepare()
                 mediaPlayer.seekTo(alarm.soundStartTime)
                 mediaPlayer.start()
+                mediaPlayer.setOnCompletionListener {
+                    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+                    val enableLoop = sharedPreferences.getBoolean("enable_sound_loop", false)
+                    if (enableLoop) {
+                        it.seekTo(alarm.soundStartTime)
+                        it.start()
+                    } else {
+                        it.release()
+                        if (!alarm.isRepeatable) {
+                            alarm.enable = false
+                            AlarmStore.updateDb(alarm)
+                        }
+                        stopService(Intent(this, AlarmSoundService::class.java))
+                    }
+                }
             } catch (e: IOException) {
                 e.printStackTrace()
             }

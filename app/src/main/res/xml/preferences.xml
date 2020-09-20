@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreferenceCompat
+        app:key="enable_sound_loop"
+        app:title="曲が終わったらループする"/>
+
+    <ListPreference
+        android:key="stop_sound_time"
+        android:title="消音までの時間"
+        android:entries="@array/stop_sound_time_labels"
+        android:entryValues="@array/stop_sound_time_values"
+        android:dialogTitle="消音までの時間"
+        android:defaultValue="1"
+        app:useSimpleSummaryProvider="true"/>
+
+    <Preference android:title="開発ページ(Github)" >
+        <intent android:action="android.intent.action.VIEW"
+            android:data="https://github.com/bana118/sabi_alarm" />
+    </Preference>
+
+</PreferenceScreen>
