@@ -40,10 +40,8 @@ class LocalSoundRecyclerAdapter(actionsCreator: SoundActionsCreator, private val
         parent: ViewGroup,
         viewType: Int
     ): LocalFileViewHolder {
-        // create a new view
         val localFileView = LayoutInflater.from(parent.context)
             .inflate(R.layout.local_sound_file_view, parent, false)
-        // set the view's size, margins, paddings and layout parameters
         return LocalFileViewHolder(
             localFileView
         )

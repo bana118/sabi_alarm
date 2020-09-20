@@ -269,6 +269,7 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
             alarmDetail.include_alarm_week.visibility = View.GONE
             alarmDetail.vibration_check_box.isChecked = false
             alarmSwitch.isChecked = true
+            soundSeekBar.progress = 0
             for (i in 0 until 7) {
                 if (i == 0 || i == 6) {
                     unselectWeekButton(weekButtonList[i], viewHolder)

@@ -360,6 +360,9 @@ object AlarmStore : Store() {
         alarm.soundFileName = soundFileName
         alarm.isDefaultSound = isDefaultSound
         alarm.soundFileUri = soundFileUri
+        alarm.soundStartTime = 0
+        val soundStartTimeText = "00:00.000"
+        alarm.soundStartTimeText = soundStartTimeText
         updateDb(alarm)
     }
 
