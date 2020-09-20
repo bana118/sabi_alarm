@@ -11,7 +11,6 @@ import android.os.IBinder
 import android.os.VibrationEffect
 import android.os.VibrationEffect.DEFAULT_AMPLITUDE
 import android.os.Vibrator
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
@@ -58,8 +57,7 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
         play()
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         val stopAlarmMinutes = sharedPreferences.getString("stop_sound_time", "-1")?.toLong()
-        Log.d("debug", stopAlarmMinutes.toString())
-        if(stopAlarmMinutes != null && stopAlarmMinutes > 0) {
+        if (stopAlarmMinutes != null && stopAlarmMinutes > 0) {
             Handler().postDelayed({
                 val alarm = AlarmStore.alarms.first { it.id == id }
                 if (!alarm.isRepeatable) {

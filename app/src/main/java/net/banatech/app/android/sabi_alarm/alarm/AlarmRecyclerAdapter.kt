@@ -346,7 +346,8 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
                     mediaPlayer.seekTo(alarm.soundStartTime)
                     mediaPlayer.start()
                     mediaPlayer.setOnCompletionListener {
-                        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+                        val sharedPreferences =
+                            PreferenceManager.getDefaultSharedPreferences(context)
                         val enableLoop = sharedPreferences.getBoolean("enable_sound_loop", false)
                         if (enableLoop) {
                             it.seekTo(alarm.soundStartTime)
@@ -374,7 +375,8 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
                     mediaPlayer.seekTo(alarm.soundStartTime)
                     mediaPlayer.start()
                     mediaPlayer.setOnCompletionListener {
-                        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+                        val sharedPreferences =
+                            PreferenceManager.getDefaultSharedPreferences(context)
                         val enableLoop = sharedPreferences.getBoolean("enable_sound_loop", false)
                         if (enableLoop) {
                             it.seekTo(alarm.soundStartTime)

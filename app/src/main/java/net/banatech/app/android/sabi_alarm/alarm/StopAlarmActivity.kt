@@ -3,7 +3,6 @@ package net.banatech.app.android.sabi_alarm.alarm
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
@@ -22,8 +21,7 @@ class StopAlarmActivity : AppCompatActivity() {
         val id = intent.getIntExtra("id", 0)
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         val stopAlarmMinutes = sharedPreferences.getString("stop_sound_time", "0")?.toLong()
-        Log.d("debug", stopAlarmMinutes.toString())
-        if(stopAlarmMinutes != null && stopAlarmMinutes > 0) {
+        if (stopAlarmMinutes != null && stopAlarmMinutes > 0) {
             Handler().postDelayed({
                 val alarm = AlarmStore.alarms.first { it.id == id }
                 if (!alarm.isRepeatable) {
