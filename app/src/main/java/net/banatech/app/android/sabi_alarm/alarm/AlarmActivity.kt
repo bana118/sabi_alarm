@@ -40,7 +40,6 @@ class AlarmActivity : AppCompatActivity() {
         lateinit var db: AlarmDatabase
     }
 
-    private var timeDataset: ArrayList<Alarm> = arrayListOf()
     private var viewManager = LinearLayoutManager(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,8 +66,7 @@ class AlarmActivity : AppCompatActivity() {
         val alarmChannel = NotificationChannel(channelId, name, importance)
         alarmChannel.description = descriptionText
         alarmChannel.setSound(null, null)
-        // Register the channel with the system; you can't change the importance
-        // or other notification behaviors after this
+
         val notificationManager =
             getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(alarmChannel)
@@ -117,40 +115,6 @@ class AlarmActivity : AppCompatActivity() {
                 }
             }
         })
-    }
-
-    private fun setAlarm(hour: Int, minute: Int) {
-        val setTimeText = String.format("%02d:%02d", hour, minute)
-        val alarmData = Alarm(
-            hour = hour,
-            minute = minute,
-            timeText = setTimeText,
-            enable = true,
-            isShowDetail = false,
-            isVibration = false,
-            isRepeatable = false,
-            isSundayAlarm = false,
-            isMondayAlarm = true,
-            isTuesdayAlarm = true,
-            isWednesdayAlarm = true,
-            isThursdayAlarm = true,
-            isFridayAlarm = true,
-            isSaturdayAlarm = false,
-            soundFileName = "beethoven_no5_1st.mp3",
-            soundFileUri = "",
-            soundStartTime = 0,
-            soundStartTimeText = "00:00",
-            isDefaultSound = true
-        )
-        val dao = db.alarmDao()
-        CoroutineScope(Dispatchers.Main).launch {
-            withContext(Dispatchers.Default) {
-                dao.insertAll(alarmData)
-                Log.d("debug", dao.getAll().toString())
-            }
-        }
-        timeDataset.add(alarmData)
-        listAdapter.notifyItemInserted(timeDataset.size - 1)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

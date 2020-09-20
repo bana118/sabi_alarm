@@ -13,7 +13,6 @@ import net.banatech.app.android.sabi_alarm.stores.alarm.AlarmStore
 
 class AlarmBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        //TODO use intent filter for re-boot, date change ...
         val id = intent.getIntExtra("id", 0)
         val startServiceIntent = Intent(context, AlarmSoundService::class.java)
         if(AlarmStore.alarms.isEmpty()) {

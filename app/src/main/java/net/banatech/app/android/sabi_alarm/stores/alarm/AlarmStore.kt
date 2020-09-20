@@ -410,6 +410,15 @@ object AlarmStore : Store() {
         }
     }
 
+    fun rebootAlarms(alarmList: List<Alarm>, context: Context) {
+        restoreAlarms(alarmList)
+        alarmList.forEach{
+            if(it.enable) {
+                setAlarm(it.id, context)
+            }
+        }
+    }
+
     override fun createEvent(): StoreCreateEvent {
         return AlarmStoreCreateEvent()
     }
