@@ -244,7 +244,7 @@ object AlarmStore : Store() {
             setAlarm(
                 alarm.id,
                 context,
-                false
+                true
             )
         }
         updateDb(alarm)
