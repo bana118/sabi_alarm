@@ -210,7 +210,8 @@ object AlarmStore : Store() {
         val alarm = alarms.first { it.id == id }
         cancelAlarm(
             alarm,
-            context
+            context,
+            false
         )
         lastDeleted = alarm.copy()
         canUndo = true
@@ -219,7 +220,6 @@ object AlarmStore : Store() {
         CoroutineScope(Dispatchers.Main).launch {
             withContext(Dispatchers.Default) {
                 dao.delete(alarm)
-                Log.d("debug", dao.getAll().toString())
             }
         }
     }
@@ -243,7 +243,8 @@ object AlarmStore : Store() {
         if (alarm.enable) {
             setAlarm(
                 alarm.id,
-                context
+                context,
+                false
             )
         }
         updateDb(alarm)
@@ -255,12 +256,14 @@ object AlarmStore : Store() {
         if (enable) {
             setAlarm(
                 alarm.id,
-                context
+                context,
+                true
             )
         } else {
             cancelAlarm(
                 alarm,
-                context
+                context,
+                true
             )
         }
         updateDb(alarm)
@@ -284,7 +287,8 @@ object AlarmStore : Store() {
         if (alarm.enable) {
             setAlarm(
                 alarm.id,
-                context
+                context,
+                false
             )
         }
         updateDb(alarm)
@@ -344,7 +348,8 @@ object AlarmStore : Store() {
         if (alarm.enable) {
             setAlarm(
                 alarm.id,
-                context
+                context,
+                false
             )
         }
         updateDb(alarm)
@@ -375,23 +380,23 @@ object AlarmStore : Store() {
         CoroutineScope(Dispatchers.Main).launch {
             withContext(Dispatchers.Default) {
                 dao.insertAll(alarm)
-                Log.d("debug", dao.getAll().toString())
             }
         }
         if (alarm.enable) {
             setAlarm(
                 alarm.id,
-                context
+                context,
+                true
             )
         }
     }
 
-    private fun setAlarm(id: Int, context: Context) {
-        RepeatAlarmManager.setAlarm(id, context)
+    private fun setAlarm(id: Int, context: Context, enableToast: Boolean) {
+        RepeatAlarmManager.setAlarm(id, context, enableToast)
     }
 
-    private fun cancelAlarm(alarm: Alarm, context: Context) {
-        RepeatAlarmManager.cancelAlarm(alarm.id, context)
+    private fun cancelAlarm(alarm: Alarm, context: Context, enableToast: Boolean) {
+        RepeatAlarmManager.cancelAlarm(alarm.id, context, enableToast)
     }
 
     private fun updateDb(alarm: Alarm) {
@@ -399,7 +404,6 @@ object AlarmStore : Store() {
         CoroutineScope(Dispatchers.Main).launch {
             withContext(Dispatchers.Default) {
                 dao.update(alarm)
-                Log.d("debug", dao.getAll().toString())
             }
         }
     }
@@ -414,7 +418,7 @@ object AlarmStore : Store() {
         restoreAlarms(alarmList)
         alarmList.forEach{
             if(it.enable) {
-                setAlarm(it.id, context)
+                setAlarm(it.id, context, false)
             }
         }
     }

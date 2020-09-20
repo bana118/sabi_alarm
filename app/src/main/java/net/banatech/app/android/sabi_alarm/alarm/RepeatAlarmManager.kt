@@ -15,7 +15,7 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 object RepeatAlarmManager {
-    fun setAlarm(id: Int, context: Context) {
+    fun setAlarm(id: Int, context: Context, enableToast: Boolean) {
         val alarm = AlarmStore.alarms.first { it.id == id }
         val setTime = LocalTime.of(alarm.hour, alarm.minute)
         val nowTime = LocalTime.of(LocalTime.now().hour, LocalTime.now().minute)
@@ -43,9 +43,11 @@ object RepeatAlarmManager {
                 clockInfo,
                 pendingIntent
             )
-            val formatter = DateTimeFormatter.ofPattern("HH:mm にアラームをセットしました")
-            val alarmText = alarmTime.format(formatter)
-            Toast.makeText(context, alarmText, Toast.LENGTH_SHORT).show()
+            if (enableToast) {
+                val formatter = DateTimeFormatter.ofPattern("HH:mm にアラームをセットしました")
+                val alarmText = alarmTime.format(formatter)
+                Toast.makeText(context, alarmText, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -67,7 +69,7 @@ object RepeatAlarmManager {
         }
     }
 
-    fun cancelAlarm(id: Int, context: Context) {
+    fun cancelAlarm(id: Int, context: Context, enableToast: Boolean) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
         val intent = Intent(context, AlarmBroadcastReceiver()::class.java)
         val pendingIntent = PendingIntent.getBroadcast(
@@ -75,7 +77,9 @@ object RepeatAlarmManager {
         )
         if (alarmManager != null && pendingIntent != null) {
             alarmManager.cancel(pendingIntent)
-            Toast.makeText(context, "このアラームを停止しました", Toast.LENGTH_SHORT).show()
+            if (enableToast) {
+                Toast.makeText(context, "このアラームを停止しました", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
