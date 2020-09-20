@@ -2,7 +2,6 @@ package net.banatech.app.android.sabi_alarm.sound
 
 import android.app.Activity
 import android.content.Intent
-import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
@@ -13,16 +12,23 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.android.synthetic.main.sound_select.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.banatech.app.android.sabi_alarm.R
 import net.banatech.app.android.sabi_alarm.actions.sound.SoundActionsCreator
-import net.banatech.app.android.sabi_alarm.alarm.database.Alarm
 import net.banatech.app.android.sabi_alarm.dispatcher.Dispatcher
+import net.banatech.app.android.sabi_alarm.sound.database.SoundDatabase
 import net.banatech.app.android.sabi_alarm.stores.alarm.AlarmStore
 import net.banatech.app.android.sabi_alarm.stores.sound.SoundStore
 import org.greenrobot.eventbus.Subscribe
 
 
 class SoundSelectActivity : AppCompatActivity() {
+    companion object {
+        lateinit var db: SoundDatabase
+    }
 
     private val readRequestCode = 42
 
@@ -30,23 +36,28 @@ class SoundSelectActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        db = SoundDatabase.getInstance(this.applicationContext)
+        val dao = db.soundDao()
+        if (SoundStore.sounds.isEmpty()) {
+            CoroutineScope(Dispatchers.Main).launch {
+                withContext(Dispatchers.Main){
+                    SoundStore.restoreSounds(dao.getAll())
+                    updateUI()
+                    localSoundAdapter.notifyDataSetChanged()
+                }
+            }
+        }
         setContentView(R.layout.sound_select)
         setSupportActionBar(toolbar)
         val selectedAlarmId = intent.getIntExtra("ALARM_ID", 0)
-        var selectedAlarm: Alarm? = null
-        for(alarm in AlarmStore.alarms) {
-            if(alarm.id == selectedAlarmId){
-                selectedAlarm = alarm
-            }
-        }
-        check(selectedAlarm != null){ "SelectedAlarm must not be null" }
+        val selectedAlarm = AlarmStore.alarms.first { it.id == selectedAlarmId }
         AlarmStore.selectedAlarm = selectedAlarm
         val assetManager = this.resources.assets
         val defaultSoundDir = assetManager.list("default")
         check(defaultSoundDir != null) { "default sound list must not be null" }
         val defaultSoundAdapter = DefaultSoundRecyclerAdapter(defaultSoundDir)
         localSoundAdapter = LocalSoundRecyclerAdapter(SoundActionsCreator, defaultSoundAdapter)
-        defaultSoundAdapter.setlocalAdapter(localSoundAdapter)
+        defaultSoundAdapter.setLocalSoundAdapter(localSoundAdapter)
         local_sound_list.layoutManager = LinearLayoutManager(this)
         local_sound_list.adapter = localSoundAdapter
         updateUI()
@@ -117,7 +128,7 @@ class SoundSelectActivity : AppCompatActivity() {
     }
 
     private fun updateUI() {
-        localSoundAdapter?.setItems(SoundStore.sounds)
+        localSoundAdapter.setItems(SoundStore.sounds)
     }
 
     private fun getFileName(uri: Uri): String? {

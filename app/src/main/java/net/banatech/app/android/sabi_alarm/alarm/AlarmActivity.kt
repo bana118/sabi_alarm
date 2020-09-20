@@ -36,7 +36,6 @@ class AlarmActivity : AppCompatActivity() {
     private lateinit var alarmStore: AlarmStore
     private lateinit var listAdapter: AlarmRecyclerAdapter
 
-
     companion object {
         lateinit var db: AlarmDatabase
     }
@@ -52,11 +51,13 @@ class AlarmActivity : AppCompatActivity() {
         setupView()
         db = AlarmDatabase.getInstance(this.applicationContext)
         val dao = db.alarmDao()
-        CoroutineScope(Dispatchers.Main).launch {
-            withContext(Dispatchers.Main){
-                AlarmStore.restoreAlarms(dao.getAll())
-                updateUI()
-                listAdapter.notifyDataSetChanged()
+        if (AlarmStore.alarms.isEmpty()) {
+            CoroutineScope(Dispatchers.Main).launch {
+                withContext(Dispatchers.Main){
+                    AlarmStore.restoreAlarms(dao.getAll())
+                    updateUI()
+                    listAdapter.notifyDataSetChanged()
+                }
             }
         }
         val channelId = getString(R.string.channel_id)

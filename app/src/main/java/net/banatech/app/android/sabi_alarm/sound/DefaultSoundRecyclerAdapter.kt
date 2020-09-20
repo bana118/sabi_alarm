@@ -17,21 +17,17 @@ class DefaultSoundRecyclerAdapter(private val defaultAlarmSoundArray: Array<Stri
 
     class DefaultSoundViewHolder(val soundFileView: View) : RecyclerView.ViewHolder(soundFileView)
 
-    // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): DefaultSoundViewHolder {
-        // create a new view
         val soundFileView = LayoutInflater.from(parent.context)
             .inflate(R.layout.default_sound_file_view, parent, false)
-        // set the view's size, margins, paddings and layout parameters
         return DefaultSoundViewHolder(
             soundFileView
         )
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(holder: DefaultSoundViewHolder, position: Int) {
         holder.soundFileView.sound_file_name.text = defaultAlarmSoundArray[position]
         val checkBox = holder.soundFileView.sound_file_check
@@ -56,7 +52,7 @@ class DefaultSoundRecyclerAdapter(private val defaultAlarmSoundArray: Array<Stri
         }
     }
 
-    fun setlocalAdapter(adapter: LocalSoundRecyclerAdapter) {
+    fun setLocalSoundAdapter(adapter: LocalSoundRecyclerAdapter) {
         localSoundAdapter = adapter
     }
 
