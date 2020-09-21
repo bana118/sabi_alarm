@@ -47,7 +47,7 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
             PendingIntent.FLAG_UPDATE_CURRENT
         )
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(R.mipmap.ic_launcher_round)
+            .setSmallIcon(R.mipmap.sabi_alarm_round)
             .setContentTitle(this.getString(R.string.app_name))
             .setContentText("アラーム！")
             .setCategory(NotificationCompat.CATEGORY_ALARM)
