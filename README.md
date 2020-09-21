@@ -1,5 +1,6 @@
 # Sabi Alarm
-アラーム音の再生開始時間を変更できるアラームアプリ
+アラーム音の再生開始時間を変更できるアラームアプリ  
+
 <img src="https://user-images.githubusercontent.com/43720583/93774393-32eff980-fc5c-11ea-920c-9539c773586e.gif" width="30%">
 
 # Version
