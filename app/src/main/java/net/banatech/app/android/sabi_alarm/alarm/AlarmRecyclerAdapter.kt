@@ -128,7 +128,7 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
                     val sumSeconds = seekBar.progress / 1000
                     val minute = sumSeconds / 60
                     val second = sumSeconds % 60
-                    val milli =  seekBar.progress % 1000
+                    val milli = seekBar.progress % 1000
                     val soundStartTimeText = String.format("%02d:%02d.%03d", minute, second, milli)
                     viewHolder.alarmView.sound_start_time_text.text = soundStartTimeText
                     actionsCreator.changeSoundStartTime(
