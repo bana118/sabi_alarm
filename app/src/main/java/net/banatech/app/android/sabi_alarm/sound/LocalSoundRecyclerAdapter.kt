@@ -57,7 +57,8 @@ class LocalSoundRecyclerAdapter(
                 AlarmStore.selectedAlarm.id,
                 sounds[position].fileName,
                 false,
-                sounds[position].stringUri
+                sounds[position].stringUri,
+                holder.soundFileView.context
             )
             if (AlarmStore.selectedAlarm.soundFileName == sounds[position].fileName) {
                 checkBox.visibility = View.VISIBLE
@@ -82,7 +83,8 @@ class LocalSoundRecyclerAdapter(
                     AlarmStore.selectedAlarm.id,
                     "beethoven_no5_1st.mp3",
                     true,
-                    ""
+                    "",
+                    holder.soundFileView.context
                 )
             }
             SoundActionsCreator.remove(sounds[position].id, holder.soundFileView.context)

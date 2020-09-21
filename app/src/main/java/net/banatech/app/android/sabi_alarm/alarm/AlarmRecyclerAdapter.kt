@@ -119,23 +119,24 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
         soundSeekBar.setOnSeekBarChangeListener(
             object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                    val sumSeconds = progress / 1000
-                    val minute = sumSeconds / 60
-                    val second = sumSeconds % 60
-                    val milli = progress % 1000
-                    val soundStartTimeText = String.format("%02d:%02d.%03d", minute, second, milli)
-                    viewHolder.alarmView.sound_start_time_text.text = soundStartTimeText
-                    actionsCreator.changeSoundStartTime(
-                        alarms[position].id,
-                        progress,
-                        soundStartTimeText
-                    )
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar) {
                 }
 
                 override fun onStopTrackingTouch(seekBar: SeekBar) {
+                    val sumSeconds = seekBar.progress / 1000
+                    val minute = sumSeconds / 60
+                    val second = sumSeconds % 60
+                    val milli = seekBar.progress % 1000
+                    val soundStartTimeText = String.format("%02d:%02d.%03d", minute, second, milli)
+                    viewHolder.alarmView.sound_start_time_text.text = soundStartTimeText
+                    actionsCreator.changeSoundStartTime(
+                        alarms[position].id,
+                        seekBar.progress,
+                        soundStartTimeText,
+                        viewHolder.alarmView.context
+                    )
                 }
             }
         )
@@ -172,7 +173,8 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
         alarmDetail.vibration_check_box.setOnClickListener {
             actionsCreator.switchVibration(
                 alarms[position].id,
-                alarmDetail.vibration_check_box.isChecked
+                alarmDetail.vibration_check_box.isChecked,
+                viewHolder.alarmView.context
             )
             if (alarms[position].isVibration) {
                 vibrator?.vibrate(vibrationEffect)
@@ -348,13 +350,21 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
                     mediaPlayer.setOnCompletionListener {
                         val sharedPreferences =
                             PreferenceManager.getDefaultSharedPreferences(context)
-                        val enableLoop = sharedPreferences.getBoolean("enable_sound_loop", false)
-                        if (enableLoop) {
-                            it.seekTo(alarm.soundStartTime)
-                            it.start()
-                        } else {
-                            it.release()
-                            alarmIdToSoundTestMediaPlayers = Pair(0, null)
+                        val soundFinishAction =
+                            sharedPreferences.getString("sound_finish_action", "0")?.toInt() ?: 0
+                        when (soundFinishAction) {
+                            0 -> {
+                                it.seekTo(alarm.soundStartTime)
+                                it.start()
+                            }
+                            1 -> {
+                                it.seekTo(0)
+                                it.start()
+                            }
+                            2 -> {
+                                it.release()
+                                alarmIdToSoundTestMediaPlayers = Pair(0, null)
+                            }
                         }
                     }
                 } catch (e: IOException) {
@@ -377,13 +387,21 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
                     mediaPlayer.setOnCompletionListener {
                         val sharedPreferences =
                             PreferenceManager.getDefaultSharedPreferences(context)
-                        val enableLoop = sharedPreferences.getBoolean("enable_sound_loop", false)
-                        if (enableLoop) {
-                            it.seekTo(alarm.soundStartTime)
-                            it.start()
-                        } else {
-                            it.release()
-                            alarmIdToSoundTestMediaPlayers = Pair(0, null)
+                        val soundFinishAction =
+                            sharedPreferences.getString("sound_finish_action", "0")?.toInt() ?: 0
+                        when (soundFinishAction) {
+                            0 -> {
+                                it.seekTo(alarm.soundStartTime)
+                                it.start()
+                            }
+                            1 -> {
+                                it.seekTo(0)
+                                it.start()
+                            }
+                            2 -> {
+                                it.release()
+                                alarmIdToSoundTestMediaPlayers = Pair(0, null)
+                            }
                         }
                     }
                 } catch (e: IOException) {
@@ -456,9 +474,20 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
 
     override fun getItemCount() = alarms.size
 
-    fun setItems(alarms: ArrayList<Alarm>) {
-        alarms.sortWith(compareBy({ it.hour }, { it.minute }))
-        this.alarms = alarms
+    fun setItems(alarms: ArrayList<Alarm>, alarmSortPreferenceValue: Int) {
+        when (alarmSortPreferenceValue) {
+            0 -> {
+                alarms.sortWith(compareBy({ it.hour }, { it.minute }))
+                this.alarms = alarms
+            }
+            1 -> {
+                alarms.sortWith(compareBy({ -it.hour }, { -it.minute }))
+                this.alarms = alarms
+            }
+            2 -> {
+                this.alarms = alarms
+            }
+        }
     }
 
     interface OnItemClickListener {

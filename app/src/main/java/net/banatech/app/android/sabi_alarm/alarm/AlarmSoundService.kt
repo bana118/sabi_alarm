@@ -21,8 +21,12 @@ import java.io.IOException
 
 class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
     lateinit var alarm: Alarm
-    lateinit var mediaPlayer: MediaPlayer
-    private var vibrator: Vibrator? = null
+
+    companion object {
+        private var mediaPlayer: MediaPlayer? = null
+        private var vibrator: Vibrator? = null
+    }
+
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
@@ -34,7 +38,6 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
         alarm = AlarmStore.alarms.first { it.id == id }
         val stopSoundActivityIntent = Intent(this, StopAlarmActivity::class.java)
         stopSoundActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        stopSoundActivityIntent.putExtra("id", id)
         val channelId = getString(R.string.channel_id)
         val stopSoundFullScreenIntent = Intent(stopSoundActivityIntent)
         val stopSoundFullScreenPendingIntent = PendingIntent.getActivity(
@@ -56,13 +59,13 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
         startForeground(1, notification)
         play()
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        val stopAlarmMinutes = sharedPreferences.getString("stop_sound_time", "-1")?.toLong()
-        if (stopAlarmMinutes != null && stopAlarmMinutes > 0) {
+        val stopAlarmMinutes = sharedPreferences.getString("stop_sound_time", "0")?.toLong() ?: 0
+        if (stopAlarmMinutes > 0) {
             Handler().postDelayed({
                 val alarm = AlarmStore.alarms.first { it.id == id }
                 if (!alarm.isRepeatable) {
                     alarm.enable = false
-                    AlarmStore.updateDb(alarm)
+                    AlarmStore.updateDb(alarm, this)
                 }
                 stopService(Intent(this, AlarmSoundService::class.java))
 
@@ -96,31 +99,40 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
             val fileName = "default/${alarm.soundFileName}"
             val assetFileDescriptor = this.assets.openFd(fileName)
             try {
-                mediaPlayer.reset()
-                mediaPlayer.setDataSource(assetFileDescriptor)
-                mediaPlayer.setAudioAttributes(
+                mediaPlayer?.reset()
+                mediaPlayer?.setDataSource(assetFileDescriptor)
+                mediaPlayer?.setAudioAttributes(
                     AudioAttributes.Builder()
                         .setUsage(AudioAttributes.USAGE_ALARM)
                         .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                         .build()
                 )
-                mediaPlayer.prepare()
-                mediaPlayer.seekTo(alarm.soundStartTime)
-                mediaPlayer.start()
-                mediaPlayer.setOnCompletionListener {
+                mediaPlayer?.prepare()
+                mediaPlayer?.seekTo(alarm.soundStartTime)
+                mediaPlayer?.start()
+                mediaPlayer?.setOnCompletionListener {
                     val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-                    val enableLoop = sharedPreferences.getBoolean("enable_sound_loop", false)
-                    if (enableLoop) {
-                        it.seekTo(alarm.soundStartTime)
-                        it.start()
-                    } else {
-                        it.release()
-                        if (!alarm.isRepeatable) {
-                            alarm.enable = false
-                            AlarmStore.updateDb(alarm)
+                    val soundFinishAction =
+                        sharedPreferences.getString("sound_finish_action", "0")?.toInt() ?: 0
+                    when (soundFinishAction) {
+                        0 -> {
+                            it.seekTo(alarm.soundStartTime)
+                            it.start()
                         }
-                        stopService(Intent(this, AlarmSoundService::class.java))
+                        1 -> {
+                            it.seekTo(0)
+                            it.start()
+                        }
+                        2 -> {
+                            it.release()
+                            if (!alarm.isRepeatable) {
+                                alarm.enable = false
+                                AlarmStore.updateDb(alarm, this)
+                            }
+                            stopService(Intent(this, AlarmSoundService::class.java))
+                        }
                     }
+
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -128,30 +140,38 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
         } else {
             val fileUri = Uri.parse(alarm.soundFileUri)
             try {
-                mediaPlayer.reset()
-                mediaPlayer.setDataSource(this, fileUri)
-                mediaPlayer.setAudioAttributes(
+                mediaPlayer?.reset()
+                mediaPlayer?.setDataSource(this, fileUri)
+                mediaPlayer?.setAudioAttributes(
                     AudioAttributes.Builder()
                         .setUsage(AudioAttributes.USAGE_ALARM)
                         .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                         .build()
                 )
-                mediaPlayer.prepare()
-                mediaPlayer.seekTo(alarm.soundStartTime)
-                mediaPlayer.start()
-                mediaPlayer.setOnCompletionListener {
+                mediaPlayer?.prepare()
+                mediaPlayer?.seekTo(alarm.soundStartTime)
+                mediaPlayer?.start()
+                mediaPlayer?.setOnCompletionListener {
                     val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-                    val enableLoop = sharedPreferences.getBoolean("enable_sound_loop", false)
-                    if (enableLoop) {
-                        it.seekTo(alarm.soundStartTime)
-                        it.start()
-                    } else {
-                        it.release()
-                        if (!alarm.isRepeatable) {
-                            alarm.enable = false
-                            AlarmStore.updateDb(alarm)
+                    val soundFinishAction =
+                        sharedPreferences.getString("sound_finish_action", "0")?.toInt() ?: 0
+                    when (soundFinishAction) {
+                        0 -> {
+                            it.seekTo(alarm.soundStartTime)
+                            it.start()
                         }
-                        stopService(Intent(this, AlarmSoundService::class.java))
+                        1 -> {
+                            it.seekTo(0)
+                            it.start()
+                        }
+                        2 -> {
+                            it.release()
+                            if (!alarm.isRepeatable) {
+                                alarm.enable = false
+                                AlarmStore.updateDb(alarm, this)
+                            }
+                            stopService(Intent(this, AlarmSoundService::class.java))
+                        }
                     }
                 }
             } catch (e: IOException) {
@@ -162,7 +182,7 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
 
     private fun stop() {
         vibrator?.cancel()
-        mediaPlayer.stop()
-        mediaPlayer.release()
+        mediaPlayer?.stop()
+        mediaPlayer?.release()
     }
 }
