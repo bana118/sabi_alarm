@@ -6,7 +6,7 @@ import android.os.Handler
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
-import kotlinx.android.synthetic.main.activity_play_sound.*
+import kotlinx.android.synthetic.main.activity_stop_alarm.*
 import net.banatech.app.android.sabi_alarm.R
 import net.banatech.app.android.sabi_alarm.alarm.database.Alarm
 
@@ -16,7 +16,7 @@ class StopAlarmActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        setContentView(R.layout.activity_play_sound)
+        setContentView(R.layout.activity_stop_alarm)
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         val stopAlarmMinutes = sharedPreferences.getString("stop_sound_time", "0")?.toLong() ?: 0
         if (stopAlarmMinutes > 0) {
