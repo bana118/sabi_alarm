@@ -15,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.TimePicker
 import androidx.core.content.ContextCompat
@@ -145,8 +146,21 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
         val alarmSwitch = viewHolder.alarmView.alarm_switch
 
         // Sound test play
-        alarmDetail.test_play_button.setOnClickListener {
-            soundPlayAndStop(alarms[position], viewHolder.alarmView.context)
+        alarmDetail.sound_play_button.setOnClickListener {
+            soundPlayAndStop(
+                alarms[position],
+                viewHolder.alarmView.context,
+                viewHolder.alarmView.sound_play_button,
+                viewHolder.alarmView.sound_stop_button
+            )
+        }
+        alarmDetail.sound_stop_button.setOnClickListener {
+            soundPlayAndStop(
+                alarms[position],
+                viewHolder.alarmView.context,
+                viewHolder.alarmView.sound_play_button,
+                viewHolder.alarmView.sound_stop_button
+            )
         }
 
         //Switch alarm on/off
@@ -265,7 +279,10 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
 
         //Destroy alarm
         alarmDetail.delete_button.setOnClickListener {
-            stopPlayingSound()
+            stopPlayingSound(
+                viewHolder.alarmView.sound_play_button,
+                viewHolder.alarmView.sound_stop_button
+            )
             alarmDetail.visibility = View.GONE
             viewHolder.alarmView.alarm_down_arrow.visibility = View.VISIBLE
             alarmDetail.repeat_check_box.isChecked = false
@@ -287,7 +304,10 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
 
         //Select alarm sound
         alarmDetail.sound_button.setOnClickListener {
-            stopPlayingSound()
+            stopPlayingSound(
+                viewHolder.alarmView.sound_play_button,
+                viewHolder.alarmView.sound_stop_button
+            )
             val intent = Intent(alarmDetail.context, SoundSelectActivity::class.java).apply {
                 putExtra("ALARM_ID", alarms[position].id)
             }
@@ -297,7 +317,7 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
 
         // TODO The sabi detection function will have to wait
 //        alarmDetail.sabi_detect_button.setOnClickListener {
-//            stopPlayingSound()
+//            stopPlayingSound(viewHolder.alarmView.sound_play_button, viewHolder.alarmView.sound_stop_button)
 //            Detector.detect(Uri.parse(""), viewHolder.alarmView.context.assets)
 //        }
     }
@@ -322,12 +342,19 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
         weekButton.setBackgroundResource(R.drawable.unselected_round_button)
     }
 
-    private fun soundPlayAndStop(alarm: Alarm, context: Context) {
+    private fun soundPlayAndStop(
+        alarm: Alarm,
+        context: Context,
+        soundStartButton: ImageButton,
+        soundStopButton: ImageButton
+    ) {
         if (alarmIdToSoundTestMediaPlayers.second != null && alarmIdToSoundTestMediaPlayers.first == alarm.id) {
             val mediaPlayer = alarmIdToSoundTestMediaPlayers.second
             check(mediaPlayer != null) { "mediaPlayer must not be null" }
             mediaPlayer.stop()
             mediaPlayer.release()
+            soundStartButton.visibility = View.VISIBLE
+            soundStopButton.visibility = View.INVISIBLE
             alarmIdToSoundTestMediaPlayers = Pair(0, null)
         } else if (alarmIdToSoundTestMediaPlayers.second == null) {
             val mediaPlayer = MediaPlayer()
@@ -347,6 +374,8 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
                     mediaPlayer.prepare()
                     mediaPlayer.seekTo(alarm.soundStartTime)
                     mediaPlayer.start()
+                    soundStartButton.visibility = View.INVISIBLE
+                    soundStopButton.visibility = View.VISIBLE
                     mediaPlayer.setOnCompletionListener {
                         val sharedPreferences =
                             PreferenceManager.getDefaultSharedPreferences(context)
@@ -364,6 +393,8 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
                             2 -> {
                                 it.release()
                                 alarmIdToSoundTestMediaPlayers = Pair(0, null)
+                                soundStartButton.visibility = View.VISIBLE
+                                soundStopButton.visibility = View.INVISIBLE
                             }
                         }
                     }
@@ -384,6 +415,8 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
                     mediaPlayer.prepare()
                     mediaPlayer.seekTo(alarm.soundStartTime)
                     mediaPlayer.start()
+                    soundStartButton.visibility = View.INVISIBLE
+                    soundStopButton.visibility = View.VISIBLE
                     mediaPlayer.setOnCompletionListener {
                         val sharedPreferences =
                             PreferenceManager.getDefaultSharedPreferences(context)
@@ -401,6 +434,8 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
                             2 -> {
                                 it.release()
                                 alarmIdToSoundTestMediaPlayers = Pair(0, null)
+                                soundStartButton.visibility = View.VISIBLE
+                                soundStopButton.visibility = View.INVISIBLE
                             }
                         }
                     }
@@ -413,6 +448,8 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
             check(existMediaPlayer != null) { "existMediaPlayer must not be null" }
             existMediaPlayer.stop()
             existMediaPlayer.release()
+            soundStartButton.visibility = View.VISIBLE
+            soundStopButton.visibility = View.INVISIBLE
             val mediaPlayer = MediaPlayer()
             alarmIdToSoundTestMediaPlayers = Pair(alarm.id, mediaPlayer)
             if (alarm.isDefaultSound) {
@@ -462,12 +499,14 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
         }
     }
 
-    private fun stopPlayingSound() {
+    private fun stopPlayingSound(soundPlayButton: ImageButton, soundStopButton: ImageButton) {
         if (alarmIdToSoundTestMediaPlayers.second != null) {
             val mediaPlayer = alarmIdToSoundTestMediaPlayers.second
             check(mediaPlayer != null) { "mediaPlayer must not be null" }
             mediaPlayer.stop()
             mediaPlayer.release()
+            soundPlayButton.visibility = View.VISIBLE
+            soundStopButton.visibility = View.INVISIBLE
             alarmIdToSoundTestMediaPlayers = Pair(0, null)
         }
     }
