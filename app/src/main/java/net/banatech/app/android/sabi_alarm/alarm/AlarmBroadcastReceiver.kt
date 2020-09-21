@@ -24,6 +24,9 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
                     val alarm = AlarmStore.alarms.first { it.id == id }
                     if (alarm.isRepeatable) {
                         RepeatAlarmManager.nextSetAlarm(id, context)
+                    } else {
+                        alarm.enable = false
+                        AlarmStore.updateDb(alarm, context)
                     }
                     startServiceIntent.putExtra("id", id)
                     context.startForegroundService(startServiceIntent)
@@ -33,6 +36,9 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
             val alarm = AlarmStore.alarms.first { it.id == id }
             if (alarm.isRepeatable) {
                 RepeatAlarmManager.nextSetAlarm(id, context)
+            } else {
+                alarm.enable = false
+                AlarmStore.updateDb(alarm, context)
             }
             startServiceIntent.putExtra("id", id)
             context.startForegroundService(startServiceIntent)

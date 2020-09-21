@@ -49,19 +49,21 @@ object AlarmActionsCreator {
         )
     }
 
-    fun switchDetail(id: Int, isShowDetail: Boolean) {
+    fun switchDetail(id: Int, isShowDetail: Boolean, context: Context) {
         Dispatcher.dispatch(
             AlarmActions.ALARM_IS_SHOW_DETAIL_SWITCH,
             AlarmActions.KEY_ID, id,
-            AlarmActions.KEY_IS_SHOW_DETAIL_SWITCH, isShowDetail
+            AlarmActions.KEY_IS_SHOW_DETAIL_SWITCH, isShowDetail,
+            AlarmActions.KEY_CONTEXT, context
         )
     }
 
-    fun switchVibration(id: Int, isVibration: Boolean) {
+    fun switchVibration(id: Int, isVibration: Boolean, context: Context) {
         Dispatcher.dispatch(
             AlarmActions.ALARM_IS_VIBRATION_SWITCH,
             AlarmActions.KEY_ID, id,
-            AlarmActions.KEY_IS_VIBRATION, isVibration
+            AlarmActions.KEY_IS_VIBRATION, isVibration,
+            AlarmActions.KEY_CONTEXT, context
         )
     }
 
@@ -84,22 +86,35 @@ object AlarmActionsCreator {
         )
     }
 
-    fun selectSound(id: Int, soundFileName: String, isDefaultSound: Boolean, soundFileUri: String) {
+    fun selectSound(
+        id: Int,
+        soundFileName: String,
+        isDefaultSound: Boolean,
+        soundFileUri: String,
+        context: Context
+    ) {
         Dispatcher.dispatch(
             AlarmActions.ALARM_SOUND_SELECT,
-            AlarmActions.KEY_ID,  id,
+            AlarmActions.KEY_ID, id,
             AlarmActions.KEY_SOUND_FILE_NAME, soundFileName,
             AlarmActions.KEY_IS_DEFAULT_SOUND, isDefaultSound,
-            AlarmActions.KEY_SOUND_FILE_URI, soundFileUri
+            AlarmActions.KEY_SOUND_FILE_URI, soundFileUri,
+            AlarmActions.KEY_CONTEXT, context
         )
     }
 
-    fun changeSoundStartTime(id: Int, soundStartTime: Int, soundStartTimeText: String){
+    fun changeSoundStartTime(
+        id: Int,
+        soundStartTime: Int,
+        soundStartTimeText: String,
+        context: Context
+    ) {
         Dispatcher.dispatch(
             AlarmActions.ALARM_SOUND_START_TIME_CHANGE,
             AlarmActions.KEY_ID, id,
             AlarmActions.KEY_SOUND_START_TIME, soundStartTime,
-            AlarmActions.KEY_SOUND_START_TIME_TEXT, soundStartTimeText
+            AlarmActions.KEY_SOUND_START_TIME_TEXT, soundStartTimeText,
+            AlarmActions.KEY_CONTEXT, context
         )
     }
 }

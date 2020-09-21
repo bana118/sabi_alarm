@@ -11,6 +11,7 @@ import net.banatech.app.android.sabi_alarm.actions.Action
 import net.banatech.app.android.sabi_alarm.actions.alarm.AlarmActions
 import net.banatech.app.android.sabi_alarm.alarm.AlarmActivity
 import net.banatech.app.android.sabi_alarm.alarm.database.Alarm
+import net.banatech.app.android.sabi_alarm.alarm.database.AlarmDatabase
 import net.banatech.app.android.sabi_alarm.stores.Store
 import org.greenrobot.eventbus.Subscribe
 import java.util.*
@@ -92,22 +93,28 @@ object AlarmStore : Store() {
             AlarmActions.ALARM_IS_SHOW_DETAIL_SWITCH -> {
                 val id = action.data[AlarmActions.KEY_ID]
                 val isShowDetail = action.data[AlarmActions.KEY_IS_SHOW_DETAIL_SWITCH]
+                val context = action.data[AlarmActions.KEY_CONTEXT]
                 check(id is Int) { "Id value must be Int" }
                 check(isShowDetail is Boolean) { "IsShowDetail value must be Int" }
+                check(context is Context) { "Context value must be Context" }
                 switchDetail(
                     id,
-                    isShowDetail
+                    isShowDetail,
+                    context
                 )
                 emitStoreChange()
             }
             AlarmActions.ALARM_IS_VIBRATION_SWITCH -> {
                 val id = action.data[AlarmActions.KEY_ID]
                 val isVibration = action.data[AlarmActions.KEY_IS_VIBRATION]
+                val context = action.data[AlarmActions.KEY_CONTEXT]
                 check(id is Int) { "Id value must be Int" }
                 check(isVibration is Boolean) { "IsVibration value must be Int" }
+                check(context is Context) { "Context value must be Context" }
                 switchVibration(
                     id,
-                    isVibration
+                    isVibration,
+                    context
                 )
                 emitStoreChange()
             }
@@ -147,15 +154,18 @@ object AlarmStore : Store() {
                 val soundFileName = action.data[AlarmActions.KEY_SOUND_FILE_NAME]
                 val isDefaultSound = action.data[AlarmActions.KEY_IS_DEFAULT_SOUND]
                 val soundFileUri = action.data[AlarmActions.KEY_SOUND_FILE_URI]
+                val context = action.data[AlarmActions.KEY_CONTEXT]
                 check(id is Int) { "Id value must be Int" }
                 check(soundFileName is String) { "SoundFileName value must be String" }
                 check(isDefaultSound is Boolean) { "IsDefaultSound value must be Boolean" }
                 check(soundFileUri is String) { "SoundFileUri value must be String" }
+                check(context is Context) { "Context value must be Context" }
                 selectSound(
                     id,
                     soundFileName,
                     isDefaultSound,
-                    soundFileUri
+                    soundFileUri,
+                    context
                 )
                 emitStoreSoundSelect()
             }
@@ -163,13 +173,16 @@ object AlarmStore : Store() {
                 val id = action.data[AlarmActions.KEY_ID]
                 val soundStartTime = action.data[AlarmActions.KEY_SOUND_START_TIME]
                 val soundStartTimeText = action.data[AlarmActions.KEY_SOUND_START_TIME_TEXT]
+                val context = action.data[AlarmActions.KEY_CONTEXT]
                 check(id is Int) { "Id value must be Int" }
                 check(soundStartTime is Int) { "SoundStartTime value must be Int" }
                 check(soundStartTimeText is String) { "SoundStartTime value must be String" }
+                check(context is Context) { "Context value must be Context" }
                 changeSoundStartTime(
                     id,
                     soundStartTime,
-                    soundStartTimeText
+                    soundStartTimeText,
+                    context
                 )
             }
         }
@@ -247,7 +260,7 @@ object AlarmStore : Store() {
                 true
             )
         }
-        updateDb(alarm)
+        updateDb(alarm, context)
     }
 
     private fun switchEnable(id: Int, enable: Boolean, context: Context) {
@@ -266,19 +279,19 @@ object AlarmStore : Store() {
                 true
             )
         }
-        updateDb(alarm)
+        updateDb(alarm, context)
     }
 
-    private fun switchDetail(id: Int, isShowDetail: Boolean) {
+    private fun switchDetail(id: Int, isShowDetail: Boolean, context: Context) {
         val alarm = alarms.first { it.id == id }
         alarm.isShowDetail = isShowDetail
-        updateDb(alarm)
+        updateDb(alarm, context)
     }
 
-    private fun switchVibration(id: Int, isVibration: Boolean) {
+    private fun switchVibration(id: Int, isVibration: Boolean, context: Context) {
         val alarm = alarms.first { it.id == id }
         alarm.isVibration = isVibration
-        updateDb(alarm)
+        updateDb(alarm, context)
     }
 
     private fun switchRepeatable(id: Int, isReadable: Boolean, context: Context) {
@@ -291,7 +304,7 @@ object AlarmStore : Store() {
                 false
             )
         }
-        updateDb(alarm)
+        updateDb(alarm, context)
     }
 
     private fun switchWeekEnable(id: Int, dayOfWeek: Int, dayEnable: Boolean, context: Context) {
@@ -352,14 +365,15 @@ object AlarmStore : Store() {
                 false
             )
         }
-        updateDb(alarm)
+        updateDb(alarm, context)
     }
 
     private fun selectSound(
         id: Int,
         soundFileName: String,
         isDefaultSound: Boolean,
-        soundFileUri: String
+        soundFileUri: String,
+        context: Context
     ) {
         val alarm = alarms.first { it.id == id }
         alarm.soundFileName = soundFileName
@@ -368,18 +382,19 @@ object AlarmStore : Store() {
         alarm.soundStartTime = 0
         val soundStartTimeText = "00:00.000"
         alarm.soundStartTimeText = soundStartTimeText
-        updateDb(alarm)
+        updateDb(alarm, context)
     }
 
     private fun changeSoundStartTime(
         id: Int,
         soundStartTimeMilli: Int,
-        soundStartTimeText: String
+        soundStartTimeText: String,
+        context: Context
     ) {
         val alarm = alarms.first { it.id == id }
         alarm.soundStartTime = soundStartTimeMilli
         alarm.soundStartTimeText = soundStartTimeText
-        updateDb(alarm)
+        updateDb(alarm, context)
     }
 
     private fun addAlarm(alarm: Alarm, context: Context) {
@@ -407,8 +422,9 @@ object AlarmStore : Store() {
         RepeatAlarmManager.cancelAlarm(alarm.id, context, enableToast)
     }
 
-    fun updateDb(alarm: Alarm) {
-        val dao = AlarmActivity.db.alarmDao()
+    fun updateDb(alarm: Alarm, context: Context) {
+        val db = AlarmDatabase.getInstance(context)
+        val dao = db.alarmDao()
         CoroutineScope(Dispatchers.Main).launch {
             withContext(Dispatchers.Default) {
                 dao.update(alarm)

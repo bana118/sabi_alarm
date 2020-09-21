@@ -128,7 +128,8 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
                     actionsCreator.changeSoundStartTime(
                         alarms[position].id,
                         progress,
-                        soundStartTimeText
+                        soundStartTimeText,
+                        viewHolder.alarmView.context
                     )
                 }
 
@@ -172,7 +173,8 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
         alarmDetail.vibration_check_box.setOnClickListener {
             actionsCreator.switchVibration(
                 alarms[position].id,
-                alarmDetail.vibration_check_box.isChecked
+                alarmDetail.vibration_check_box.isChecked,
+                viewHolder.alarmView.context
             )
             if (alarms[position].isVibration) {
                 vibrator?.vibrate(vibrationEffect)

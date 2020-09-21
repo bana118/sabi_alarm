@@ -50,7 +50,7 @@ class AlarmActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         initDependencies()
         setupView()
-        db = AlarmDatabase.getInstance(this.applicationContext)
+        db = AlarmDatabase.getInstance(applicationContext)
         val dao = db.alarmDao()
         if (AlarmStore.alarms.isEmpty()) {
             CoroutineScope(Dispatchers.Main).launch {
@@ -106,7 +106,7 @@ class AlarmActivity : AppCompatActivity() {
         alarm_list.setHasFixedSize(true)
         listAdapter.setOnItemClickListener(object : AlarmRecyclerAdapter.OnItemClickListener {
             override fun onItemClickListener(view: View, position: Int, alarm: Alarm) {
-                actionCreator.switchDetail(alarm.id, !alarm.isShowDetail)
+                actionCreator.switchDetail(alarm.id, !alarm.isShowDetail, applicationContext)
                 val alarmDetail = view.include_alarm_detail
                 if (alarm.isShowDetail) {
                     alarmDetail.visibility = View.VISIBLE
@@ -164,7 +164,7 @@ class AlarmActivity : AppCompatActivity() {
     }
 
     private fun addAlarm(hour: Int, minute: Int) {
-        actionCreator.create(hour, minute, this.applicationContext)
+        actionCreator.create(hour, minute, applicationContext)
         listAdapter.notifyDataSetChanged()
     }
 
