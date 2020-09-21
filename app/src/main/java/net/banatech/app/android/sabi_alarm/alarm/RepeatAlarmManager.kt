@@ -84,7 +84,9 @@ object RepeatAlarmManager {
     }
 
     private fun calcDayOfWeekDiff(alarm: Alarm, isNextSet: Boolean): Long {
-        val nowDayOfWeek = Calendar.DAY_OF_WEEK
+        val calender = Calendar.getInstance()
+        // Sunday -> 0, Monday -> 1, ...
+        val nowDayOfWeek = calender.get(Calendar.DAY_OF_WEEK) - 1
         val weekList = listOf(
             alarm.isSundayAlarm,
             alarm.isMondayAlarm,
@@ -95,10 +97,10 @@ object RepeatAlarmManager {
             alarm.isSaturdayAlarm
         )
         var day = 0
-        for (i in nowDayOfWeek until nowDayOfWeek + 7) {
-            val index = i % 7
+        for (i in 0 until 7) {
+            val index = (i + nowDayOfWeek) % 7
             if (weekList[index]) {
-                day = i % 7
+                day = i
                 break
             }
         }
@@ -106,6 +108,5 @@ object RepeatAlarmManager {
             day = 7
         }
         return day.toLong() * 24 * 60 * 60 * 1000
-
     }
 }
