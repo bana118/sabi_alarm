@@ -18,8 +18,8 @@ class StopAlarmActivity : AppCompatActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         setContentView(R.layout.activity_play_sound)
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        val stopAlarmMinutes = sharedPreferences.getString("stop_sound_time", "0")?.toLong()
-        if (stopAlarmMinutes != null && stopAlarmMinutes > 0) {
+        val stopAlarmMinutes = sharedPreferences.getString("stop_sound_time", "0")?.toLong() ?: 0
+        if (stopAlarmMinutes > 0) {
             Handler().postDelayed({
                 stopService(Intent(this, AlarmSoundService::class.java))
                 startActivity(Intent(this, AlarmActivity::class.java))

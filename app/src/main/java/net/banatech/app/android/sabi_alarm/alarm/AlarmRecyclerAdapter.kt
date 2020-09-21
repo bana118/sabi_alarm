@@ -351,21 +351,19 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
                         val sharedPreferences =
                             PreferenceManager.getDefaultSharedPreferences(context)
                         val soundFinishAction =
-                            sharedPreferences.getString("sound_finish_action", "0")?.toInt()
-                        if (soundFinishAction != null) {
-                            when (soundFinishAction) {
-                                0 -> {
-                                    it.seekTo(alarm.soundStartTime)
-                                    it.start()
-                                }
-                                1 -> {
-                                    it.seekTo(0)
-                                    it.start()
-                                }
-                                2 -> {
-                                    it.release()
-                                    alarmIdToSoundTestMediaPlayers = Pair(0, null)
-                                }
+                            sharedPreferences.getString("sound_finish_action", "0")?.toInt() ?: 0
+                        when (soundFinishAction) {
+                            0 -> {
+                                it.seekTo(alarm.soundStartTime)
+                                it.start()
+                            }
+                            1 -> {
+                                it.seekTo(0)
+                                it.start()
+                            }
+                            2 -> {
+                                it.release()
+                                alarmIdToSoundTestMediaPlayers = Pair(0, null)
                             }
                         }
                     }
@@ -390,21 +388,19 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
                         val sharedPreferences =
                             PreferenceManager.getDefaultSharedPreferences(context)
                         val soundFinishAction =
-                            sharedPreferences.getString("sound_finish_action", "0")?.toInt()
-                        if (soundFinishAction != null) {
-                            when (soundFinishAction) {
-                                0 -> {
-                                    it.seekTo(alarm.soundStartTime)
-                                    it.start()
-                                }
-                                1 -> {
-                                    it.seekTo(0)
-                                    it.start()
-                                }
-                                2 -> {
-                                    it.release()
-                                    alarmIdToSoundTestMediaPlayers = Pair(0, null)
-                                }
+                            sharedPreferences.getString("sound_finish_action", "0")?.toInt() ?: 0
+                        when (soundFinishAction) {
+                            0 -> {
+                                it.seekTo(alarm.soundStartTime)
+                                it.start()
+                            }
+                            1 -> {
+                                it.seekTo(0)
+                                it.start()
+                            }
+                            2 -> {
+                                it.release()
+                                alarmIdToSoundTestMediaPlayers = Pair(0, null)
                             }
                         }
                     }
@@ -478,9 +474,20 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
 
     override fun getItemCount() = alarms.size
 
-    fun setItems(alarms: ArrayList<Alarm>) {
-        alarms.sortWith(compareBy({ it.hour }, { it.minute }))
-        this.alarms = alarms
+    fun setItems(alarms: ArrayList<Alarm>, alarmSortPreferenceValue: Int) {
+        when (alarmSortPreferenceValue) {
+            0 -> {
+                alarms.sortWith(compareBy({ it.hour }, { it.minute }))
+                this.alarms = alarms
+            }
+            1 -> {
+                alarms.sortWith(compareBy({ -it.hour }, { -it.minute }))
+                this.alarms = alarms
+            }
+            2 -> {
+                this.alarms = alarms
+            }
+        }
     }
 
     interface OnItemClickListener {

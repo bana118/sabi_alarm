@@ -21,10 +21,12 @@ import java.io.IOException
 
 class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
     lateinit var alarm: Alarm
+
     companion object {
         private var mediaPlayer: MediaPlayer? = null
         private var vibrator: Vibrator? = null
     }
+
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
@@ -57,8 +59,8 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
         startForeground(1, notification)
         play()
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        val stopAlarmMinutes = sharedPreferences.getString("stop_sound_time", "-1")?.toLong()
-        if (stopAlarmMinutes != null && stopAlarmMinutes > 0) {
+        val stopAlarmMinutes = sharedPreferences.getString("stop_sound_time", "0")?.toLong() ?: 0
+        if (stopAlarmMinutes > 0) {
             Handler().postDelayed({
                 val alarm = AlarmStore.alarms.first { it.id == id }
                 if (!alarm.isRepeatable) {
@@ -111,27 +113,26 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
                 mediaPlayer?.setOnCompletionListener {
                     val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
                     val soundFinishAction =
-                        sharedPreferences.getString("sound_finish_action", "0")?.toInt()
-                    if (soundFinishAction != null) {
-                        when (soundFinishAction) {
-                            0 -> {
-                                it.seekTo(alarm.soundStartTime)
-                                it.start()
+                        sharedPreferences.getString("sound_finish_action", "0")?.toInt() ?: 0
+                    when (soundFinishAction) {
+                        0 -> {
+                            it.seekTo(alarm.soundStartTime)
+                            it.start()
+                        }
+                        1 -> {
+                            it.seekTo(0)
+                            it.start()
+                        }
+                        2 -> {
+                            it.release()
+                            if (!alarm.isRepeatable) {
+                                alarm.enable = false
+                                AlarmStore.updateDb(alarm, this)
                             }
-                            1 -> {
-                                it.seekTo(0)
-                                it.start()
-                            }
-                            2 -> {
-                                it.release()
-                                if (!alarm.isRepeatable) {
-                                    alarm.enable = false
-                                    AlarmStore.updateDb(alarm, this)
-                                }
-                                stopService(Intent(this, AlarmSoundService::class.java))
-                            }
+                            stopService(Intent(this, AlarmSoundService::class.java))
                         }
                     }
+
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -153,25 +154,23 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
                 mediaPlayer?.setOnCompletionListener {
                     val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
                     val soundFinishAction =
-                        sharedPreferences.getString("sound_finish_action", "0")?.toInt()
-                    if (soundFinishAction != null) {
-                        when (soundFinishAction) {
-                            0 -> {
-                                it.seekTo(alarm.soundStartTime)
-                                it.start()
+                        sharedPreferences.getString("sound_finish_action", "0")?.toInt() ?: 0
+                    when (soundFinishAction) {
+                        0 -> {
+                            it.seekTo(alarm.soundStartTime)
+                            it.start()
+                        }
+                        1 -> {
+                            it.seekTo(0)
+                            it.start()
+                        }
+                        2 -> {
+                            it.release()
+                            if (!alarm.isRepeatable) {
+                                alarm.enable = false
+                                AlarmStore.updateDb(alarm, this)
                             }
-                            1 -> {
-                                it.seekTo(0)
-                                it.start()
-                            }
-                            2 -> {
-                                it.release()
-                                if (!alarm.isRepeatable) {
-                                    alarm.enable = false
-                                    AlarmStore.updateDb(alarm, this)
-                                }
-                                stopService(Intent(this, AlarmSoundService::class.java))
-                            }
+                            stopService(Intent(this, AlarmSoundService::class.java))
                         }
                     }
                 }

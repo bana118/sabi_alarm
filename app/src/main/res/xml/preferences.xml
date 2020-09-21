@@ -3,14 +3,22 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ListPreference
+        android:key="alarm_sort"
+        android:title="アラームの自動並び替え"
+        android:entries="@array/alarm_sort_labels"
+        android:entryValues="@array/alarm_sort_values"
+        android:dialogTitle="アラームの自動並び替"
+        android:defaultValue="0"
+        app:useSimpleSummaryProvider="true"/>
+
+    <ListPreference
         android:key="sound_finish_action"
-        android:title="消音までの時間"
+        android:title="曲が終わった時のアクション"
         android:entries="@array/sound_finish_action_labels"
         android:entryValues="@array/sound_finish_action_values"
         android:dialogTitle="曲が終わった時のアクション"
         android:defaultValue="0"
         app:useSimpleSummaryProvider="true"/>
-
 
     <ListPreference
         android:key="stop_sound_time"

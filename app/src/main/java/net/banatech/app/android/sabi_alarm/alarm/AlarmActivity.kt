@@ -11,6 +11,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.TimePicker
 import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -136,7 +137,9 @@ class AlarmActivity : AppCompatActivity() {
     }
 
     private fun updateUI() {
-        listAdapter.setItems(AlarmStore.alarms)
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        val alarmSortPreferenceValue = sharedPreferences.getString("alarm_sort", "0")?.toInt() ?: 0
+        listAdapter.setItems(AlarmStore.alarms, alarmSortPreferenceValue)
     }
 
     private fun notifyDestroy() {
