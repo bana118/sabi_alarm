@@ -25,5 +25,7 @@
     <string name="add_local_sound">追加</string>
     <string name="sabi_detect">サビ</string>
     <string name="delete_button_description">削除</string>
+    <string name="sound_play_button_description">再生</string>
+    <string name="sound_stop_button_description">停止</string>
     <string name="sound_stop_text">STOP!</string>
 </resources>
