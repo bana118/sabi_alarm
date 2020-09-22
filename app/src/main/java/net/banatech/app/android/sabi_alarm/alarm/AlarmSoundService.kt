@@ -34,7 +34,8 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         require(intent != null)
         val id = intent.getIntExtra("id", 0)
-        mediaPlayer = MediaPlayer()
+        vibrator?.cancel()
+        mediaPlayer?.stop()
         alarm = AlarmStore.alarms.first { it.id == id }
         val stopSoundActivityIntent = Intent(this, StopAlarmActivity::class.java)
         stopSoundActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -84,6 +85,7 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
     }
 
     private fun play() {
+        mediaPlayer = MediaPlayer()
         val context = applicationContext
         if (alarm.isVibration) {
             vibrator =
@@ -184,6 +186,7 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
         vibrator?.cancel()
         mediaPlayer?.stop()
         mediaPlayer?.release()
+        vibrator = null
         mediaPlayer = null
     }
 }
