@@ -23,7 +23,7 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
     lateinit var alarm: Alarm
 
     companion object {
-        private var mediaPlayer: MediaPlayer? = null
+        var mediaPlayer: MediaPlayer? = null
         private var vibrator: Vibrator? = null
     }
 
@@ -184,5 +184,6 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
         vibrator?.cancel()
         mediaPlayer?.stop()
         mediaPlayer?.release()
+        mediaPlayer = null
     }
 }
