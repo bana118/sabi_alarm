@@ -22,7 +22,6 @@ class StopAlarmActivity : AppCompatActivity() {
         if (stopAlarmMinutes > 0) {
             Handler().postDelayed({
                 stopService(Intent(this, AlarmSoundService::class.java))
-                startActivity(Intent(this, AlarmActivity::class.java))
                 finish()
             }, stopAlarmMinutes * 60 * 1000)
         }
@@ -31,5 +30,11 @@ class StopAlarmActivity : AppCompatActivity() {
             startActivity(Intent(this, AlarmActivity::class.java))
             finish()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopService(Intent(this, AlarmSoundService::class.java))
+        finish()
     }
 }
