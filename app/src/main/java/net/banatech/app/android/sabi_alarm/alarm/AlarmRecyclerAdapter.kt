@@ -10,7 +10,6 @@ import android.net.Uri
 import android.os.VibrationEffect
 import android.os.VibrationEffect.DEFAULT_AMPLITUDE
 import android.os.Vibrator
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,6 +35,8 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
     lateinit var itemListener: OnItemClickListener
     lateinit var soundStartTimeTextListener: OnSoundStartTimeTextClickListener
     private var alarmIdToSoundTestMediaPlayers: Pair<Int, MediaPlayer?> = Pair(0, null)
+    private var playingSoundStartButton: ImageButton? = null
+    private var playingSoundStopButton: ImageButton? = null
 
     companion object {
         lateinit var actionsCreator: AlarmActionsCreator
@@ -280,10 +281,6 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
                     weekAlarmArray[i] = !weekAlarmArray[i]
                     selectWeekButton(weekButtonList[i], viewHolder)
                 }
-                Log.d(
-                    "debug",
-                    "repeatable${alarms[position].isRepeatable}, week${weekAlarmArray[i]}"
-                )
             }
             if (weekAlarmArray[i]) {
                 selectWeekButton(weekButtonList[i], viewHolder)
@@ -374,6 +371,8 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
         } else if (alarmIdToSoundTestMediaPlayers.second == null) {
             val mediaPlayer = MediaPlayer()
             alarmIdToSoundTestMediaPlayers = Pair(alarm.id, mediaPlayer)
+            this.playingSoundStartButton = soundStartButton
+            this.playingSoundStopButton = soundStopButton
             if (alarm.isDefaultSound) {
                 val fileName = "default/${alarm.soundFileName}"
                 val assetFileDescriptor = context.assets.openFd(fileName)
@@ -463,10 +462,14 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
             check(existMediaPlayer != null) { "existMediaPlayer must not be null" }
             existMediaPlayer.stop()
             existMediaPlayer.release()
-            soundStartButton.visibility = View.VISIBLE
-            soundStopButton.visibility = View.INVISIBLE
+            this.playingSoundStartButton?.visibility = View.VISIBLE
+            this.playingSoundStopButton?.visibility = View.INVISIBLE
+            soundStartButton.visibility = View.INVISIBLE
+            soundStopButton.visibility = View.VISIBLE
             val mediaPlayer = MediaPlayer()
             alarmIdToSoundTestMediaPlayers = Pair(alarm.id, mediaPlayer)
+            this.playingSoundStartButton = soundStartButton
+            this.playingSoundStopButton = soundStopButton
             if (alarm.isDefaultSound) {
                 val fileName = "default/${alarm.soundFileName}"
                 val assetFileDescriptor = context.assets.openFd(fileName)
@@ -483,8 +486,26 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
                     mediaPlayer.seekTo(alarm.soundStartTime)
                     mediaPlayer.start()
                     mediaPlayer.setOnCompletionListener {
-                        it.release()
-                        alarmIdToSoundTestMediaPlayers = Pair(0, null)
+                        val sharedPreferences =
+                            PreferenceManager.getDefaultSharedPreferences(context)
+                        val soundFinishAction =
+                            sharedPreferences.getString("sound_finish_action", "0")?.toInt() ?: 0
+                        when (soundFinishAction) {
+                            0 -> {
+                                it.seekTo(alarm.soundStartTime)
+                                it.start()
+                            }
+                            1 -> {
+                                it.seekTo(0)
+                                it.start()
+                            }
+                            2 -> {
+                                it.release()
+                                alarmIdToSoundTestMediaPlayers = Pair(0, null)
+                                soundStartButton.visibility = View.VISIBLE
+                                soundStopButton.visibility = View.INVISIBLE
+                            }
+                        }
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -504,8 +525,26 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
                     mediaPlayer.seekTo(alarm.soundStartTime)
                     mediaPlayer.start()
                     mediaPlayer.setOnCompletionListener {
-                        it.release()
-                        alarmIdToSoundTestMediaPlayers = Pair(0, null)
+                        val sharedPreferences =
+                            PreferenceManager.getDefaultSharedPreferences(context)
+                        val soundFinishAction =
+                            sharedPreferences.getString("sound_finish_action", "0")?.toInt() ?: 0
+                        when (soundFinishAction) {
+                            0 -> {
+                                it.seekTo(alarm.soundStartTime)
+                                it.start()
+                            }
+                            1 -> {
+                                it.seekTo(0)
+                                it.start()
+                            }
+                            2 -> {
+                                it.release()
+                                alarmIdToSoundTestMediaPlayers = Pair(0, null)
+                                soundStartButton.visibility = View.VISIBLE
+                                soundStopButton.visibility = View.INVISIBLE
+                            }
+                        }
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()
