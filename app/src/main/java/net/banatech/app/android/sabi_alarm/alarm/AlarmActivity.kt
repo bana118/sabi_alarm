@@ -118,6 +118,30 @@ class AlarmActivity : AppCompatActivity() {
                 }
             }
         })
+        listAdapter.setOnSoundStartTimeTextClickListener(object :
+            AlarmRecyclerAdapter.OnSoundStartTimeTextClickListener {
+            override fun onSoundStartTimeTextClickListener(
+                view: View,
+                position: Int,
+                alarm: Alarm
+            ) {
+                val dialog = NumberPickerDialog()
+                val soundStartTimeMillis = alarm.soundStartTime
+                val sumSeconds = soundStartTimeMillis / 1000
+                val initMinutes = sumSeconds / 60
+                val initSeconds = sumSeconds % 60
+                val initMillis = soundStartTimeMillis % 1000
+                dialog.setDialogInit(
+                    alarm,
+                    initMinutes,
+                    initSeconds,
+                    initMillis,
+                    view.context,
+                    listAdapter
+                )
+                dialog.show(supportFragmentManager, "再生開始時間")
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
