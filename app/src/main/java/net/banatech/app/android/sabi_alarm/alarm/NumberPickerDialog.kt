@@ -111,7 +111,7 @@ class NumberPickerDialog : DialogFragment() {
         } else {
             59
         }
-        val maxMillis = if (seconds == maxSeconds) {
+        val maxMillis = if (minutes == maxMinutes && seconds == maxSeconds) {
             this.durationMilli?.rem(1000) ?: 999
         } else {
             999
