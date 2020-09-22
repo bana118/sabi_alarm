@@ -47,10 +47,6 @@ class AlarmActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
-        initDependencies()
-        setupView()
         db = AlarmDatabase.getInstance(applicationContext)
         val dao = db.alarmDao()
         if (AlarmStore.alarms.isEmpty()) {
@@ -73,6 +69,17 @@ class AlarmActivity : AppCompatActivity() {
         val notificationManager =
             getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(alarmChannel)
+
+        if (AlarmSoundService.mediaPlayer != null) {
+            val stopSoundActivityIntent = Intent(this, StopAlarmActivity::class.java)
+            stopSoundActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(stopSoundActivityIntent)
+        }
+
+        setContentView(R.layout.activity_main)
+        setSupportActionBar(toolbar)
+        initDependencies()
+        setupView()
     }
 
     private fun initDependencies() {

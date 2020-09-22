@@ -18,6 +18,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.banatech.app.android.sabi_alarm.R
 import net.banatech.app.android.sabi_alarm.actions.sound.SoundActionsCreator
+import net.banatech.app.android.sabi_alarm.alarm.AlarmSoundService
+import net.banatech.app.android.sabi_alarm.alarm.StopAlarmActivity
 import net.banatech.app.android.sabi_alarm.dispatcher.Dispatcher
 import net.banatech.app.android.sabi_alarm.setting.SettingActivity
 import net.banatech.app.android.sabi_alarm.sound.database.SoundDatabase
@@ -47,6 +49,11 @@ class SoundSelectActivity : AppCompatActivity() {
                     localSoundAdapter.notifyDataSetChanged()
                 }
             }
+        }
+        if (AlarmSoundService.mediaPlayer != null) {
+            val stopSoundActivityIntent = Intent(this, StopAlarmActivity::class.java)
+            stopSoundActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(stopSoundActivityIntent)
         }
         setContentView(R.layout.sound_select)
         setSupportActionBar(toolbar)
