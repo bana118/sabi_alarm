@@ -14,10 +14,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.SeekBar
-import android.widget.TimePicker
+import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.preference.PreferenceManager
@@ -36,7 +33,8 @@ import kotlin.collections.ArrayList
 
 class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
     RecyclerView.Adapter<AlarmRecyclerAdapter.AlarmViewHolder>() {
-    lateinit var listener: OnItemClickListener
+    lateinit var itemListener: OnItemClickListener
+    lateinit var soundStartTimeTextListener: OnSoundStartTimeTextClickListener
     private var alarmIdToSoundTestMediaPlayers: Pair<Int, MediaPlayer?> = Pair(0, null)
 
     companion object {
@@ -70,7 +68,7 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
     override fun onBindViewHolder(viewHolder: AlarmViewHolder, position: Int) {
         //Show alarm detail
         viewHolder.alarmView.setOnClickListener {
-            listener.onItemClickListener(it, position, alarms[position])
+            itemListener.onItemClickListener(it, position, alarms[position])
         }
 
         //Edit alarm time
@@ -96,6 +94,17 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
 
         //Change sound start time
         viewHolder.alarmView.sound_start_time_text.text = alarms[position].soundStartTimeText
+
+        // Change sound start time by number picker
+        viewHolder.alarmView.sound_start_time_text.setOnClickListener {
+            soundStartTimeTextListener.onSoundStartTimeTextClickListener(
+                it,
+                position,
+                alarms[position]
+            )
+        }
+
+        // Change sound start time by seek bar
         val soundSeekBar = viewHolder.alarmView.sound_start_time
         val retriever = MediaMetadataRetriever()
         if (alarms[position].isDefaultSound) {
@@ -541,6 +550,14 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
 
 
     fun setOnItemClickListener(listener: OnItemClickListener) {
-        this.listener = listener
+        this.itemListener = listener
+    }
+
+    interface OnSoundStartTimeTextClickListener {
+        fun onSoundStartTimeTextClickListener(view: View, position: Int, alarm: Alarm)
+    }
+
+    fun setOnSoundStartTimeTextClickListener(listener: OnSoundStartTimeTextClickListener) {
+        this.soundStartTimeTextListener = listener
     }
 }
