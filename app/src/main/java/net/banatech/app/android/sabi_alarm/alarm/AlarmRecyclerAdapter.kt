@@ -7,9 +7,12 @@ import android.media.AudioAttributes
 import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.net.Uri
+import android.os.Environment
 import android.os.VibrationEffect
 import android.os.VibrationEffect.DEFAULT_AMPLITUDE
 import android.os.Vibrator
+import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -107,26 +110,32 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
 
         // Change sound start time by seek bar
         val soundSeekBar = viewHolder.alarmView.sound_start_time
-        val retriever = MediaMetadataRetriever()
-        if (alarms[position].isDefaultSound) {
-            val assetFileDescriptor =
-                viewHolder.alarmView.context.assets.openFd("default/${alarms[position].soundFileName}")
-            retriever.setDataSource(
-                assetFileDescriptor.fileDescriptor,
-                assetFileDescriptor.startOffset,
-                assetFileDescriptor.length
-            )
-        } else {
-            retriever.setDataSource(
-                viewHolder.alarmView.context,
-                Uri.parse(alarms[position].soundFileUri)
-            )
+        try {
+            val retriever = MediaMetadataRetriever()
+            if (alarms[position].isDefaultSound) {
+                val assetFileDescriptor =
+                    viewHolder.alarmView.context.assets.openFd("default/${alarms[position].soundFileName}")
+                retriever.setDataSource(
+                    assetFileDescriptor.fileDescriptor,
+                    assetFileDescriptor.startOffset,
+                    assetFileDescriptor.length
+                )
+            } else {
+                retriever.setDataSource(
+                    viewHolder.alarmView.context,
+                    Uri.parse(alarms[position].soundFileUri)
+                )
+            }
+            val duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+            retriever.release()
+            check(duration is String) { "Duration value must be String" }
+            val durationMilli = Integer.parseInt(duration)
+            soundSeekBar.max = durationMilli
+            soundSeekBar.progress = alarms[position].soundStartTime
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
-        val duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-        retriever.release()
-        val durationMilli = Integer.parseInt(duration)
-        soundSeekBar.max = durationMilli
-        soundSeekBar.progress = alarms[position].soundStartTime
+
         soundSeekBar.setOnSeekBarChangeListener(
             object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
@@ -419,6 +428,7 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
                 val fileUri = Uri.parse(alarm.soundFileUri)
                 try {
                     mediaPlayer.reset()
+                    Log.d("banatech", fileUri.toString())
                     mediaPlayer.setDataSource(context, fileUri)
                     mediaPlayer.setAudioAttributes(
                         AudioAttributes.Builder()
