@@ -7,12 +7,9 @@ import android.media.AudioAttributes
 import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.net.Uri
-import android.os.Environment
 import android.os.VibrationEffect
 import android.os.VibrationEffect.DEFAULT_AMPLITUDE
 import android.os.Vibrator
-import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +26,7 @@ import net.banatech.app.android.sabi_alarm.actions.alarm.AlarmActionsCreator
 import net.banatech.app.android.sabi_alarm.alarm.database.Alarm
 import net.banatech.app.android.sabi_alarm.sound.SoundSelectActivity
 import java.io.IOException
+import java.lang.RuntimeException
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -132,7 +130,7 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
             val durationMilli = Integer.parseInt(duration)
             soundSeekBar.max = durationMilli
             soundSeekBar.progress = alarms[position].soundStartTime
-        } catch (e: IOException) {
+        } catch (e: RuntimeException) {
             e.printStackTrace()
         }
 
@@ -428,7 +426,6 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
                 val fileUri = Uri.parse(alarm.soundFileUri)
                 try {
                     mediaPlayer.reset()
-                    Log.d("banatech", fileUri.toString())
                     mediaPlayer.setDataSource(context, fileUri)
                     mediaPlayer.setAudioAttributes(
                         AudioAttributes.Builder()
