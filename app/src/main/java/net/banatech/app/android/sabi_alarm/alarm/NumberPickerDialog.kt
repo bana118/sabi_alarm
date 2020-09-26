@@ -11,6 +11,7 @@ import androidx.fragment.app.DialogFragment
 import net.banatech.app.android.sabi_alarm.R
 import net.banatech.app.android.sabi_alarm.actions.alarm.AlarmActionsCreator
 import net.banatech.app.android.sabi_alarm.alarm.database.Alarm
+import java.io.IOException
 
 class NumberPickerDialog : DialogFragment() {
     private var initMinutes: Int? = null
@@ -135,24 +136,30 @@ class NumberPickerDialog : DialogFragment() {
         this.initMinutes = initMinutes
         this.initSeconds = initSeconds
         this.initMillis = initMillis
-        val retriever = MediaMetadataRetriever()
-        if (alarm.isDefaultSound) {
-            val assetFileDescriptor = viewContext.assets.openFd("default/${alarm.soundFileName}")
-            retriever.setDataSource(
-                assetFileDescriptor.fileDescriptor,
-                assetFileDescriptor.startOffset,
-                assetFileDescriptor.length
-            )
-        } else {
-            retriever.setDataSource(
-                viewContext,
-                Uri.parse(alarm.soundFileUri)
-            )
+        try {
+            val retriever = MediaMetadataRetriever()
+            if (alarm.isDefaultSound) {
+                val assetFileDescriptor =
+                    viewContext.assets.openFd("default/${alarm.soundFileName}")
+                retriever.setDataSource(
+                    assetFileDescriptor.fileDescriptor,
+                    assetFileDescriptor.startOffset,
+                    assetFileDescriptor.length
+                )
+            } else {
+                retriever.setDataSource(
+                    viewContext,
+                    Uri.parse(alarm.soundFileUri)
+                )
+            }
+            val duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+            retriever.release()
+            check(duration is String) { "Duration value must be String" }
+            val durationMilli = Integer.parseInt(duration)
+            this.durationMilli = durationMilli
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
-        val duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-        retriever.release()
-        val durationMilli = Integer.parseInt(duration)
-        this.durationMilli = durationMilli
         this.viewContext = viewContext
         this.listAdapter = listAdapter
     }

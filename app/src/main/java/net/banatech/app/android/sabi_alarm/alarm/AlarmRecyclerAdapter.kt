@@ -26,6 +26,7 @@ import net.banatech.app.android.sabi_alarm.actions.alarm.AlarmActionsCreator
 import net.banatech.app.android.sabi_alarm.alarm.database.Alarm
 import net.banatech.app.android.sabi_alarm.sound.SoundSelectActivity
 import java.io.IOException
+import java.lang.RuntimeException
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -107,26 +108,32 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
 
         // Change sound start time by seek bar
         val soundSeekBar = viewHolder.alarmView.sound_start_time
-        val retriever = MediaMetadataRetriever()
-        if (alarms[position].isDefaultSound) {
-            val assetFileDescriptor =
-                viewHolder.alarmView.context.assets.openFd("default/${alarms[position].soundFileName}")
-            retriever.setDataSource(
-                assetFileDescriptor.fileDescriptor,
-                assetFileDescriptor.startOffset,
-                assetFileDescriptor.length
-            )
-        } else {
-            retriever.setDataSource(
-                viewHolder.alarmView.context,
-                Uri.parse(alarms[position].soundFileUri)
-            )
+        try {
+            val retriever = MediaMetadataRetriever()
+            if (alarms[position].isDefaultSound) {
+                val assetFileDescriptor =
+                    viewHolder.alarmView.context.assets.openFd("default/${alarms[position].soundFileName}")
+                retriever.setDataSource(
+                    assetFileDescriptor.fileDescriptor,
+                    assetFileDescriptor.startOffset,
+                    assetFileDescriptor.length
+                )
+            } else {
+                retriever.setDataSource(
+                    viewHolder.alarmView.context,
+                    Uri.parse(alarms[position].soundFileUri)
+                )
+            }
+            val duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+            retriever.release()
+            check(duration is String) { "Duration value must be String" }
+            val durationMilli = Integer.parseInt(duration)
+            soundSeekBar.max = durationMilli
+            soundSeekBar.progress = alarms[position].soundStartTime
+        } catch (e: RuntimeException) {
+            e.printStackTrace()
         }
-        val duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-        retriever.release()
-        val durationMilli = Integer.parseInt(duration)
-        soundSeekBar.max = durationMilli
-        soundSeekBar.progress = alarms[position].soundStartTime
+
         soundSeekBar.setOnSeekBarChangeListener(
             object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {

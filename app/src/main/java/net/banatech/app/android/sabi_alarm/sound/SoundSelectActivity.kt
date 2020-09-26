@@ -97,6 +97,10 @@ class SoundSelectActivity : AppCompatActivity() {
             resultData?.data?.also { uri ->
                 val fileName = getFileName(uri)
                 check(fileName is String) { "FileName must be String" }
+                this.contentResolver.takePersistableUriPermission(
+                    uri,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION
+                )
                 SoundActionsCreator.add(fileName, uri.toString(), this)
                 localSoundAdapter.notifyDataSetChanged()
             }
