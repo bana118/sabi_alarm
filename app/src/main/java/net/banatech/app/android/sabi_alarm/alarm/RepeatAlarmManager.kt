@@ -97,11 +97,21 @@ object RepeatAlarmManager {
             alarm.isSaturdayAlarm
         )
         var day = 0
-        for (i in 0 until 7) {
-            val index = (i + nowDayOfWeek) % 7
-            if (weekList[index]) {
-                day = i
-                break
+        if (isNextSet) {
+            for (i in 1 until 8) {
+                val index = (i + nowDayOfWeek) % 7
+                if (weekList[index]) {
+                    day = if (i == 0) 7 else i
+                    break
+                }
+            }
+        } else {
+            for (i in 0 until 7) {
+                val index = (i + nowDayOfWeek) % 7
+                if (weekList[index]) {
+                    day = i
+                    break
+                }
             }
         }
         if (day == 0 && isNextSet) {
