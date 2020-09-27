@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.widget.Toast
 import net.banatech.app.android.sabi_alarm.stores.alarm.AlarmStore
 import net.banatech.app.android.sabi_alarm.alarm.database.Alarm
@@ -16,6 +17,7 @@ import java.util.*
 
 object RepeatAlarmManager {
     fun setAlarm(id: Int, context: Context, enableToast: Boolean) {
+        Log.d("debug", id.toString())
         val alarm = AlarmStore.alarms.first { it.id == id }
         val setTime = LocalTime.of(alarm.hour, alarm.minute)
         val nowTime = LocalTime.of(LocalTime.now().hour, LocalTime.now().minute)
@@ -37,7 +39,15 @@ object RepeatAlarmManager {
         } else {
             alarmTime.toEpochSecond(OffsetDateTime.now().offset) * 1000 // seconds -> milliseconds
         }
-        val clockInfo = AlarmManager.AlarmClockInfo(alarmTimeMilli, null)
+        val alarmActivityIntent = Intent(context, AlarmActivity::class.java)
+        val alarmActivityPendingIntent =
+            PendingIntent.getActivity(
+                context,
+                0,
+                alarmActivityIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        val clockInfo = AlarmManager.AlarmClockInfo(alarmTimeMilli, alarmActivityPendingIntent)
         if (alarmManager != null && pendingIntent != null) {
             alarmManager.setAlarmClock(
                 clockInfo,
@@ -60,7 +70,15 @@ object RepeatAlarmManager {
         )
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
         val nextAlarmTimeMilli = calcDayOfWeekDiff(alarm, true) + System.currentTimeMillis()
-        val clockInfo = AlarmManager.AlarmClockInfo(nextAlarmTimeMilli, null)
+        val alarmActivityIntent = Intent(context, AlarmActivity::class.java)
+        val alarmActivityPendingIntent =
+            PendingIntent.getActivity(
+                context,
+                0,
+                alarmActivityIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        val clockInfo = AlarmManager.AlarmClockInfo(nextAlarmTimeMilli, alarmActivityPendingIntent)
         if (alarmManager != null && pendingIntent != null) {
             alarmManager.setAlarmClock(
                 clockInfo,
