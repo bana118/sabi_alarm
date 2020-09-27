@@ -44,9 +44,7 @@ object SoundStore {
     }
 
     private fun add(soundFileName: String, stringUri: String, context: Context) {
-        val id = System.currentTimeMillis().toInt() //TODO unnecessary when using database
         val sound = Sound(
-            id = id,
             fileName = soundFileName,
             stringUri = stringUri
         )
