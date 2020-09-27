@@ -34,7 +34,7 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
         val id = intent.getIntExtra("id", 0)
         stop()
         alarm = AlarmStore.alarms.first { it.id == id }
-        val stopSoundActivityIntent = Intent(this, StopAlarmActivity::class.java)
+        val stopSoundActivityIntent = Intent(this, AlarmStopActivity::class.java)
         stopSoundActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         val channelId = getString(R.string.channel_id)
         val stopSoundFullScreenIntent = Intent(stopSoundActivityIntent)

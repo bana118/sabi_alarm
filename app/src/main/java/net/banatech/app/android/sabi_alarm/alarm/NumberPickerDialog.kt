@@ -18,9 +18,9 @@ class NumberPickerDialog : DialogFragment() {
     private var initSeconds: Int? = null
     private var initMillis: Int? = null
     private var position: Int? = null
-    lateinit var alarm: Alarm
-    lateinit var viewContext: Context
-    lateinit var listAdapter: AlarmRecyclerAdapter
+    private lateinit var alarm: Alarm
+    private lateinit var viewContext: Context
+    private lateinit var listAdapter: AlarmRecyclerAdapter
     private var durationMilli: Int? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

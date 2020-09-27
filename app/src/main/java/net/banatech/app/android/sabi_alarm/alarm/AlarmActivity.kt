@@ -71,7 +71,7 @@ class AlarmActivity : AppCompatActivity() {
         notificationManager.createNotificationChannel(alarmChannel)
 
         if (AlarmSoundService.mediaPlayer != null) {
-            val stopSoundActivityIntent = Intent(this, StopAlarmActivity::class.java)
+            val stopSoundActivityIntent = Intent(this, AlarmStopActivity::class.java)
             stopSoundActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(stopSoundActivityIntent)
         }
