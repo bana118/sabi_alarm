@@ -8,7 +8,6 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.os.*
 import android.os.VibrationEffect.DEFAULT_AMPLITUDE
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
@@ -34,8 +33,6 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
         require(intent != null)
         val id = intent.getIntExtra("id", 0)
         stop()
-        Log.d("debug1", AlarmStore.alarms.toString())
-        Log.d("debug2", id.toString())
         alarm = AlarmStore.alarms.first { it.id == id }
         val stopSoundActivityIntent = Intent(this, StopAlarmActivity::class.java)
         stopSoundActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -98,7 +95,10 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
             vibrator?.vibrate(vibrationEffect)
         }
         val isAvailable =
-             alarm.isDefaultSound || LocalSoundRecyclerAdapter.isAvailable(Uri.parse(alarm.soundFileUri), context)
+            alarm.isDefaultSound || LocalSoundRecyclerAdapter.isAvailable(
+                Uri.parse(alarm.soundFileUri),
+                context
+            )
         if (alarm.isDefaultSound) {
             val fileName = "default/${alarm.soundFileName}"
             val assetFileDescriptor = this.assets.openFd(fileName)

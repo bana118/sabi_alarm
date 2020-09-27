@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.android.synthetic.main.sound_select.*
@@ -148,7 +149,9 @@ class SoundSelectActivity : AppCompatActivity() {
     }
 
     private fun updateUI() {
-        localSoundAdapter.setItems(SoundStore.sounds)
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        val soundSortPreferenceValue = sharedPreferences.getString("sound_sort", "0")?.toInt() ?: 0
+        localSoundAdapter.setItems(SoundStore.sounds, soundSortPreferenceValue)
     }
 
     private fun getFileName(uri: Uri): String? {

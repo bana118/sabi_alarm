@@ -132,7 +132,21 @@ class LocalSoundRecyclerAdapter(
         }
     }
 
-    fun setItems(sounds: ArrayList<Sound>) {
+    fun setItems(sounds: ArrayList<Sound>, soundSortPreferenceValue: Int) {
+        when (soundSortPreferenceValue) {
+            0 -> {
+                sounds.sortWith(compareBy({ it.fileName }, { it.stringUri }))
+                this.sounds = sounds
+            }
+            1 -> {
+                sounds.sortWith(compareBy({ it.fileName }, { it.stringUri }))
+                sounds.reverse()
+                this.sounds = sounds
+            }
+            2 -> {
+                this.sounds = sounds
+            }
+        }
         this.sounds = sounds
     }
 

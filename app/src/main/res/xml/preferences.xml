@@ -7,7 +7,16 @@
         android:title="アラームの自動並び替え"
         android:entries="@array/alarm_sort_labels"
         android:entryValues="@array/alarm_sort_values"
-        android:dialogTitle="アラームの自動並び替"
+        android:dialogTitle="アラームの自動並び替え"
+        android:defaultValue="0"
+        app:useSimpleSummaryProvider="true"/>
+
+    <ListPreference
+        android:key="sound_sort"
+        android:title="音楽の自動並び替え"
+        android:entries="@array/sound_sort_labels"
+        android:entryValues="@array/sound_sort_values"
+        android:dialogTitle="音楽の自動並び替え"
         android:defaultValue="0"
         app:useSimpleSummaryProvider="true"/>
 
