@@ -24,9 +24,9 @@ import kotlinx.android.synthetic.main.alarm_week.view.*
 import net.banatech.app.android.sabi_alarm.R
 import net.banatech.app.android.sabi_alarm.actions.alarm.AlarmActionsCreator
 import net.banatech.app.android.sabi_alarm.alarm.database.Alarm
+import net.banatech.app.android.sabi_alarm.sound.LocalSoundRecyclerAdapter
 import net.banatech.app.android.sabi_alarm.sound.SoundSelectActivity
 import java.io.IOException
-import java.lang.RuntimeException
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -68,6 +68,18 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
     }
 
     override fun onBindViewHolder(viewHolder: AlarmViewHolder, position: Int) {
+        // non available sound uri
+        val isAvailable = LocalSoundRecyclerAdapter.isAvailable(
+            Uri.parse(alarms[position].soundFileUri),
+            viewHolder.alarmView.context
+        )
+        if (!alarms[position].isDefaultSound && !isAvailable) {
+            LocalSoundRecyclerAdapter.setDefaultSound(
+                alarms[position].id,
+                viewHolder.alarmView.context
+            )
+        }
+
         //Show alarm detail
         viewHolder.alarmView.setOnClickListener {
             itemListener.onItemClickListener(it, position, alarms[position])
@@ -421,6 +433,7 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()
+                    Toast.makeText(context, "音楽ファイルの読み込みに失敗しました", Toast.LENGTH_SHORT).show()
                 }
             } else {
                 val fileUri = Uri.parse(alarm.soundFileUri)
@@ -461,6 +474,7 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()
+                    Toast.makeText(context, "音楽ファイルの読み込みに失敗しました", Toast.LENGTH_SHORT).show()
                 }
             }
         } else {
@@ -515,6 +529,7 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()
+                    Toast.makeText(context, "音楽ファイルの読み込みに失敗しました", Toast.LENGTH_SHORT).show()
                 }
             } else {
                 val fileUri = Uri.parse(alarm.soundFileUri)
@@ -553,6 +568,7 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()
+                    Toast.makeText(context, "音楽ファイルの読み込みに失敗しました", Toast.LENGTH_SHORT).show()
                 }
             }
         }

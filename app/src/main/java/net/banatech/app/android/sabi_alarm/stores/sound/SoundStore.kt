@@ -46,7 +46,7 @@ object SoundStore {
     private fun add(soundFileName: String, stringUri: String, context: Context) {
         val notExists = sounds.filter {
             it.stringUri == stringUri
-        }.isNotEmpty()
+        }.isEmpty()
         if (notExists) {
             val sound = Sound(
                 fileName = soundFileName,
