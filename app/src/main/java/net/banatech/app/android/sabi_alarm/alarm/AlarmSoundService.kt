@@ -101,7 +101,6 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
             val fileName = "default/${alarm.soundFileName}"
             val assetFileDescriptor = this.assets.openFd(fileName)
             try {
-                mediaPlayer?.reset()
                 mediaPlayer?.setDataSource(assetFileDescriptor)
                 mediaPlayer?.setAudioAttributes(
                     AudioAttributes.Builder()
@@ -142,7 +141,6 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
         } else {
             val fileUri = Uri.parse(alarm.soundFileUri)
             try {
-                mediaPlayer?.reset()
                 mediaPlayer?.setDataSource(this, fileUri)
                 mediaPlayer?.setAudioAttributes(
                     AudioAttributes.Builder()
@@ -185,6 +183,7 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
     private fun stop() {
         vibrator?.cancel()
         mediaPlayer?.stop()
+        mediaPlayer?.reset()
         mediaPlayer?.release()
         vibrator = null
         mediaPlayer = null

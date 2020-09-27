@@ -371,6 +371,7 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
             val mediaPlayer = alarmIdToSoundTestMediaPlayers.second
             check(mediaPlayer != null) { "mediaPlayer must not be null" }
             mediaPlayer.stop()
+            mediaPlayer.reset()
             mediaPlayer.release()
             soundStartButton.visibility = View.VISIBLE
             soundStopButton.visibility = View.INVISIBLE
@@ -384,7 +385,6 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
                 val fileName = "default/${alarm.soundFileName}"
                 val assetFileDescriptor = context.assets.openFd(fileName)
                 try {
-                    mediaPlayer.reset()
                     mediaPlayer.setDataSource(assetFileDescriptor)
                     mediaPlayer.setAudioAttributes(
                         AudioAttributes.Builder()
@@ -425,7 +425,6 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
             } else {
                 val fileUri = Uri.parse(alarm.soundFileUri)
                 try {
-                    mediaPlayer.reset()
                     mediaPlayer.setDataSource(context, fileUri)
                     mediaPlayer.setAudioAttributes(
                         AudioAttributes.Builder()
@@ -468,6 +467,7 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
             val existMediaPlayer = alarmIdToSoundTestMediaPlayers.second
             check(existMediaPlayer != null) { "existMediaPlayer must not be null" }
             existMediaPlayer.stop()
+            existMediaPlayer.reset()
             existMediaPlayer.release()
             this.playingSoundStartButton?.visibility = View.VISIBLE
             this.playingSoundStopButton?.visibility = View.INVISIBLE
@@ -481,7 +481,6 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
                 val fileName = "default/${alarm.soundFileName}"
                 val assetFileDescriptor = context.assets.openFd(fileName)
                 try {
-                    mediaPlayer.reset()
                     mediaPlayer.setDataSource(assetFileDescriptor)
                     mediaPlayer.setAudioAttributes(
                         AudioAttributes.Builder()
@@ -520,7 +519,6 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
             } else {
                 val fileUri = Uri.parse(alarm.soundFileUri)
                 try {
-                    mediaPlayer.reset()
                     mediaPlayer.setDataSource(context, fileUri)
                     mediaPlayer.setAudioAttributes(
                         AudioAttributes.Builder()
@@ -565,6 +563,7 @@ class AlarmRecyclerAdapter(actionsCreator: AlarmActionsCreator) :
             val mediaPlayer = alarmIdToSoundTestMediaPlayers.second
             check(mediaPlayer != null) { "mediaPlayer must not be null" }
             mediaPlayer.stop()
+            mediaPlayer.reset()
             mediaPlayer.release()
             soundPlayButton.visibility = View.VISIBLE
             soundStopButton.visibility = View.INVISIBLE
