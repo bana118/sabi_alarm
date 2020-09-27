@@ -72,7 +72,7 @@ class LocalSoundRecyclerAdapter(
             }
             defaultSoundAdapter.notifyDataSetChanged()
         }
-        if (AlarmStore.selectedAlarm.soundFileName == sounds[position].fileName) {
+        if (!AlarmStore.selectedAlarm.isDefaultSound && AlarmStore.selectedAlarm.soundFileUri == sounds[position].stringUri) {
             checkBox.visibility = View.VISIBLE
         } else {
             checkBox.visibility = View.INVISIBLE
