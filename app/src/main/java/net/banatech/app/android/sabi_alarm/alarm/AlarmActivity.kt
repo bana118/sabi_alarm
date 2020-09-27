@@ -139,6 +139,7 @@ class AlarmActivity : AppCompatActivity() {
                 val initSeconds = sumSeconds % 60
                 val initMillis = soundStartTimeMillis % 1000
                 dialog.setDialogInit(
+                    position,
                     alarm,
                     initMinutes,
                     initSeconds,
