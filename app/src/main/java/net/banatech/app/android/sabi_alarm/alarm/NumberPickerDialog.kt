@@ -17,9 +17,10 @@ class NumberPickerDialog : DialogFragment() {
     private var initMinutes: Int? = null
     private var initSeconds: Int? = null
     private var initMillis: Int? = null
-    lateinit var alarm: Alarm
-    lateinit var viewContext: Context
-    lateinit var listAdapter: AlarmRecyclerAdapter
+    private var position: Int? = null
+    private lateinit var alarm: Alarm
+    private lateinit var viewContext: Context
+    private lateinit var listAdapter: AlarmRecyclerAdapter
     private var durationMilli: Int? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -61,7 +62,13 @@ class NumberPickerDialog : DialogFragment() {
                 )
                 secondsPicker.maxValue =
                     calcDialogLimits(newValue, secondsPicker.value)["maxSeconds"] ?: 59
-                this.listAdapter.notifyDataSetChanged()
+                val nonNullPosition = position ?: -1
+                if (nonNullPosition != -1) {
+                    listAdapter.notifyItemChanged(nonNullPosition)
+                } else {
+                    listAdapter.notifyDataSetChanged()
+                }
+
             }
             secondsPicker.setOnValueChangedListener { picker, oldValue, newValue ->
                 val soundStartTimeMillis =
@@ -80,7 +87,12 @@ class NumberPickerDialog : DialogFragment() {
                 )
                 millisPicker.maxValue =
                     calcDialogLimits(minutesPicker.value, newValue)["maxMillis"] ?: 999
-                this.listAdapter.notifyDataSetChanged()
+                val nonNullPosition = position ?: -1
+                if (nonNullPosition != -1) {
+                    listAdapter.notifyItemChanged(nonNullPosition)
+                } else {
+                    listAdapter.notifyDataSetChanged()
+                }
             }
             millisPicker.setOnValueChangedListener { picker, oldValue, newValue ->
                 val soundStartTimeMillis =
@@ -97,7 +109,12 @@ class NumberPickerDialog : DialogFragment() {
                     soundStartTimeText,
                     this.viewContext
                 )
-                this.listAdapter.notifyDataSetChanged()
+                val nonNullPosition = position ?: -1
+                if (nonNullPosition != -1) {
+                    listAdapter.notifyItemChanged(nonNullPosition)
+                } else {
+                    listAdapter.notifyDataSetChanged()
+                }
             }
 
             builder.setView(numberPickerDialog)
@@ -125,6 +142,7 @@ class NumberPickerDialog : DialogFragment() {
     }
 
     fun setDialogInit(
+        position: Int,
         alarm: Alarm,
         initMinutes: Int,
         initSeconds: Int,
@@ -132,6 +150,7 @@ class NumberPickerDialog : DialogFragment() {
         viewContext: Context,
         listAdapter: AlarmRecyclerAdapter
     ) {
+        this.position = position
         this.alarm = alarm
         this.initMinutes = initMinutes
         this.initSeconds = initSeconds

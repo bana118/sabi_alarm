@@ -37,7 +37,15 @@ object RepeatAlarmManager {
         } else {
             alarmTime.toEpochSecond(OffsetDateTime.now().offset) * 1000 // seconds -> milliseconds
         }
-        val clockInfo = AlarmManager.AlarmClockInfo(alarmTimeMilli, null)
+        val alarmActivityIntent = Intent(context, AlarmActivity::class.java)
+        val alarmActivityPendingIntent =
+            PendingIntent.getActivity(
+                context,
+                0,
+                alarmActivityIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        val clockInfo = AlarmManager.AlarmClockInfo(alarmTimeMilli, alarmActivityPendingIntent)
         if (alarmManager != null && pendingIntent != null) {
             alarmManager.setAlarmClock(
                 clockInfo,
@@ -60,7 +68,15 @@ object RepeatAlarmManager {
         )
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
         val nextAlarmTimeMilli = calcDayOfWeekDiff(alarm, true) + System.currentTimeMillis()
-        val clockInfo = AlarmManager.AlarmClockInfo(nextAlarmTimeMilli, null)
+        val alarmActivityIntent = Intent(context, AlarmActivity::class.java)
+        val alarmActivityPendingIntent =
+            PendingIntent.getActivity(
+                context,
+                0,
+                alarmActivityIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        val clockInfo = AlarmManager.AlarmClockInfo(nextAlarmTimeMilli, alarmActivityPendingIntent)
         if (alarmManager != null && pendingIntent != null) {
             alarmManager.setAlarmClock(
                 clockInfo,

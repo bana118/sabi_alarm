@@ -71,7 +71,7 @@ class AlarmActivity : AppCompatActivity() {
         notificationManager.createNotificationChannel(alarmChannel)
 
         if (AlarmSoundService.mediaPlayer != null) {
-            val stopSoundActivityIntent = Intent(this, StopAlarmActivity::class.java)
+            val stopSoundActivityIntent = Intent(this, AlarmStopActivity::class.java)
             stopSoundActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(stopSoundActivityIntent)
         }
@@ -139,6 +139,7 @@ class AlarmActivity : AppCompatActivity() {
                 val initSeconds = sumSeconds % 60
                 val initMillis = soundStartTimeMillis % 1000
                 dialog.setDialogInit(
+                    position,
                     alarm,
                     initMinutes,
                     initSeconds,
