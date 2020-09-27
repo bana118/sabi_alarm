@@ -44,17 +44,20 @@ object SoundStore {
     }
 
     private fun add(soundFileName: String, stringUri: String, context: Context) {
-        val id = System.currentTimeMillis().toInt() //TODO unnecessary when using database
-        val sound = Sound(
-            id = id,
-            fileName = soundFileName,
-            stringUri = stringUri
-        )
-        sounds.add(sound)
-        val dao = SoundSelectActivity.db.soundDao()
-        CoroutineScope(Dispatchers.Main).launch {
-            withContext(Dispatchers.Default) {
-                dao.insertAll(sound)
+        val notExists = sounds.filter {
+            it.stringUri == stringUri
+        }.isEmpty()
+        if (notExists) {
+            val sound = Sound(
+                fileName = soundFileName,
+                stringUri = stringUri
+            )
+            sounds.add(sound)
+            val dao = SoundSelectActivity.db.soundDao()
+            CoroutineScope(Dispatchers.Main).launch {
+                withContext(Dispatchers.Default) {
+                    dao.insertAll(sound)
+                }
             }
         }
     }
