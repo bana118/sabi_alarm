@@ -25,6 +25,7 @@ class LocalSoundRecyclerAdapter(
 
     companion object {
         lateinit var actionsCreator: SoundActionsCreator
+
         fun isAvailable(uri: Uri, context: Context): Boolean {
             val file = DocumentFile.fromSingleUri(context, uri)
             return file != null && file.canRead()
