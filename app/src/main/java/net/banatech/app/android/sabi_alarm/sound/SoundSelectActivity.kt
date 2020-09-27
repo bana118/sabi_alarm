@@ -188,7 +188,7 @@ class SoundSelectActivity : AppCompatActivity() {
 
     @Subscribe
     fun onSoundSelectEvent(event: AlarmStore.AlarmSoundSelectEvent) {
-        Log.d("event", "alarm sound select event")
+        Log.d("event", "alarm sound select event 2")
         updateUI()
     }
 }

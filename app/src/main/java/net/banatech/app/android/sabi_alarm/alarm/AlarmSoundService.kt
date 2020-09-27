@@ -8,6 +8,7 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.os.*
 import android.os.VibrationEffect.DEFAULT_AMPLITUDE
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
@@ -32,8 +33,9 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         require(intent != null)
         val id = intent.getIntExtra("id", 0)
-        vibrator?.cancel()
-        mediaPlayer?.stop()
+        stop()
+        Log.d("debug1", AlarmStore.alarms.toString())
+        Log.d("debug2", id.toString())
         alarm = AlarmStore.alarms.first { it.id == id }
         val stopSoundActivityIntent = Intent(this, StopAlarmActivity::class.java)
         stopSoundActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -95,6 +97,8 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
             )
             vibrator?.vibrate(vibrationEffect)
         }
+        val isAvailable =
+             alarm.isDefaultSound || LocalSoundRecyclerAdapter.isAvailable(Uri.parse(alarm.soundFileUri), context)
         if (alarm.isDefaultSound) {
             val fileName = "default/${alarm.soundFileName}"
             val assetFileDescriptor = this.assets.openFd(fileName)
@@ -104,8 +108,6 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
                 e.printStackTrace()
             }
         } else {
-            val isAvailable =
-                LocalSoundRecyclerAdapter.isAvailable(Uri.parse(alarm.soundFileUri), context)
             if (isAvailable) {
                 val fileUri = Uri.parse(alarm.soundFileUri)
                 try {
@@ -114,8 +116,10 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
                     e.printStackTrace()
                 }
             } else {
-                LocalSoundRecyclerAdapter.setDefaultSound(alarm.id, context)
-                val fileName = "default/${alarm.soundFileName}"
+                val assetManager = context.resources.assets
+                val defaultSoundDir = assetManager.list("default")
+                check(defaultSoundDir != null) { "default sound list must not be null" }
+                val fileName = "default/${defaultSoundDir.first()}"
                 val assetFileDescriptor = this.assets.openFd(fileName)
                 try {
                     mediaPlayer?.setDataSource(assetFileDescriptor)
@@ -131,7 +135,12 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
                 .build()
         )
         mediaPlayer?.prepare()
-        mediaPlayer?.seekTo(alarm.soundStartTime)
+        if (isAvailable) {
+            mediaPlayer?.seekTo(alarm.soundStartTime)
+        } else {
+            mediaPlayer?.seekTo(0)
+        }
+
         mediaPlayer?.start()
         mediaPlayer?.setOnCompletionListener {
             val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -139,7 +148,11 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
                 sharedPreferences.getString("sound_finish_action", "0")?.toInt() ?: 0
             when (soundFinishAction) {
                 0 -> {
-                    it.seekTo(alarm.soundStartTime)
+                    if (isAvailable) {
+                        it.seekTo(alarm.soundStartTime)
+                    } else {
+                        it.seekTo(0)
+                    }
                     it.start()
                 }
                 1 -> {

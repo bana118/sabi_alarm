@@ -228,7 +228,7 @@ class AlarmActivity : AppCompatActivity() {
     }
 
     @Subscribe
-    fun onAlarmSoundSelectyEvent(event: AlarmStore.AlarmSoundSelectEvent) {
-        Log.d("event", "alarm sound select even 1")
+    fun onAlarmSoundSelectEvent(event: AlarmStore.AlarmSoundSelectEvent) {
+        Log.d("event", "alarm sound select event 1")
     }
 }
