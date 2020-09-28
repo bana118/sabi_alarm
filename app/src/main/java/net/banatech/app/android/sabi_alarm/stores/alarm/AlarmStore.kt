@@ -189,8 +189,10 @@ object AlarmStore : Store() {
     }
 
     private fun create(hour: Int, minute: Int, context: Context) {
+        val id = System.currentTimeMillis().toInt() //TODO Use a better ID
         val timeText = String.format("%02d:%02d", hour, minute)
         val alarm = Alarm(
+            id = id,
             hour = hour,
             minute = minute,
             timeText = timeText,

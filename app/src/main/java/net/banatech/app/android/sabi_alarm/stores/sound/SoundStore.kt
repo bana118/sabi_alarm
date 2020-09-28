@@ -48,7 +48,9 @@ object SoundStore {
             it.stringUri == stringUri
         }.isEmpty()
         if (notExists) {
+            val id = System.currentTimeMillis().toInt() //TODO Use a better ID
             val sound = Sound(
+                id = id,
                 fileName = soundFileName,
                 stringUri = stringUri
             )
