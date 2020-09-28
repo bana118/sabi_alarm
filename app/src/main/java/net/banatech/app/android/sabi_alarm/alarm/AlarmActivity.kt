@@ -70,12 +70,6 @@ class AlarmActivity : AppCompatActivity() {
             getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(alarmChannel)
 
-        if (AlarmSoundService.mediaPlayer != null) {
-            val stopSoundActivityIntent = Intent(this, AlarmStopActivity::class.java)
-            stopSoundActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(stopSoundActivityIntent)
-        }
-
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         initDependencies()
@@ -190,12 +184,22 @@ class AlarmActivity : AppCompatActivity() {
         dispatcher.register(this)
         dispatcher.register(alarmStore)
         listAdapter.notifyDataSetChanged()
+        // TODO これがないとアラーム起動時にAlarmStopActivityではなくAlarmActivityが起動する
+        if (AlarmSoundService.mediaPlayer != null) {
+            val stopSoundActivityIntent = Intent(this, AlarmStopActivity::class.java)
+            startActivity(stopSoundActivityIntent)
+        }
     }
 
     override fun onPause() {
         super.onPause()
         dispatcher.unregister(this)
         dispatcher.unregister(alarmStore)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopService(Intent(this, AlarmSoundService::class.java))
     }
 
     private fun addAlarm(hour: Int, minute: Int) {

@@ -34,14 +34,12 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
         val id = intent.getIntExtra("id", 0)
         stop()
         alarm = AlarmStore.alarms.first { it.id == id }
-        val stopSoundActivityIntent = Intent(this, AlarmStopActivity::class.java)
-        stopSoundActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        val alarmStopActivityIntent = Intent(this, AlarmStopActivity::class.java)
         val channelId = getString(R.string.channel_id)
-        val stopSoundFullScreenIntent = Intent(stopSoundActivityIntent)
-        val stopSoundFullScreenPendingIntent = PendingIntent.getActivity(
+        val alarmStopPendingIntent = PendingIntent.getActivity(
             this,
             id,
-            stopSoundFullScreenIntent,
+            alarmStopActivityIntent,
             PendingIntent.FLAG_UPDATE_CURRENT
         )
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
@@ -50,11 +48,11 @@ class AlarmSoundService : Service(), MediaPlayer.OnCompletionListener {
             .setContentText("アラーム！")
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setAutoCancel(true)
-            .addAction(0, "アラームを停止", stopSoundFullScreenPendingIntent)
-            .setFullScreenIntent(stopSoundFullScreenPendingIntent, true)
+            .addAction(R.mipmap.sabi_alarm_round, "アラームを停止", alarmStopPendingIntent)
+            .setFullScreenIntent(alarmStopPendingIntent, true)
 
         val notification = notificationBuilder.build()
-        startForeground(1, notification)
+        startForeground(id, notification)
         play()
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         val stopAlarmMinutes = sharedPreferences.getString("stop_sound_time", "0")?.toLong() ?: 0
