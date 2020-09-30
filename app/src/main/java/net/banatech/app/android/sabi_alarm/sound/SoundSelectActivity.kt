@@ -39,7 +39,7 @@ class SoundSelectActivity : AppCompatActivity() {
     private val readRequestCode = 42
 
     private lateinit var localSoundAdapter: LocalSoundRecyclerAdapter
-    private lateinit var mAdView : AdView
+    private lateinit var mAdView: AdView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

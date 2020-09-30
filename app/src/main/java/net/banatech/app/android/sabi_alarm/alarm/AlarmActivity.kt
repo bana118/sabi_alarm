@@ -41,7 +41,7 @@ class AlarmActivity : AppCompatActivity() {
     private lateinit var actionCreator: AlarmActionsCreator
     private lateinit var alarmStore: AlarmStore
     private lateinit var listAdapter: AlarmRecyclerAdapter
-    private lateinit var mAdView : AdView
+    private lateinit var mAdView: AdView
 
     companion object {
         lateinit var db: AlarmDatabase
@@ -79,6 +79,7 @@ class AlarmActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         initDependencies()
         setupView()
+
         MobileAds.initialize(this) {}
         mAdView = findViewById(R.id.alarm_ad_view)
         val adRequest = AdRequest.Builder().build()

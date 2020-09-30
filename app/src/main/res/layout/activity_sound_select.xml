@@ -11,11 +11,11 @@
         android:id="@+id/sound_select_ad_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        app:adSize="BANNER"
+        app:adUnitId="ca-app-pub-3940256099942544/6300978111"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:adSize="BANNER"
-        app:adUnitId="ca-app-pub-3940256099942544/6300978111">
+        app:layout_constraintTop_toTopOf="parent">
     </com.google.android.gms.ads.AdView>
 
     <com.google.android.material.appbar.AppBarLayout

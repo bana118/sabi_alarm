@@ -11,7 +11,7 @@ import net.banatech.app.android.sabi_alarm.R
 
 class SettingActivity : AppCompatActivity() {
 
-    private lateinit var mAdView : AdView
+    private lateinit var mAdView: AdView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
