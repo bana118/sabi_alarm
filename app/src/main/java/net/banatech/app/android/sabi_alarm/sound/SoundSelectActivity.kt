@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
-import kotlinx.android.synthetic.main.activity_main.sound_select_toolbar
 import kotlinx.android.synthetic.main.activity_sound_select.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -61,7 +60,7 @@ class SoundSelectActivity : AppCompatActivity() {
             startActivity(stopSoundActivityIntent)
         }
         setContentView(R.layout.activity_sound_select)
-        setSupportActionBar(sound_select_toolbar)
+        setSupportActionBar(toolbar)
         val selectedAlarmId = intent.getIntExtra("ALARM_ID", 0)
         val selectedAlarm = AlarmStore.alarms.first { it.id == selectedAlarmId }
         AlarmStore.selectedAlarm = selectedAlarm
