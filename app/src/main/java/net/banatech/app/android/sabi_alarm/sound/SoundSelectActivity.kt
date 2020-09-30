@@ -11,8 +11,11 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import kotlinx.android.synthetic.main.activity_main.toolbar
-import kotlinx.android.synthetic.main.sound_select.*
+import kotlinx.android.synthetic.main.activity_sound_select.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -37,6 +40,7 @@ class SoundSelectActivity : AppCompatActivity() {
     private val readRequestCode = 42
 
     private lateinit var localSoundAdapter: LocalSoundRecyclerAdapter
+    private lateinit var mAdView : AdView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +60,7 @@ class SoundSelectActivity : AppCompatActivity() {
             stopSoundActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(stopSoundActivityIntent)
         }
-        setContentView(R.layout.sound_select)
+        setContentView(R.layout.activity_sound_select)
         setSupportActionBar(toolbar)
         val selectedAlarmId = intent.getIntExtra("ALARM_ID", 0)
         val selectedAlarm = AlarmStore.alarms.first { it.id == selectedAlarmId }
@@ -81,6 +85,11 @@ class SoundSelectActivity : AppCompatActivity() {
             startActivityForResult(intent, readRequestCode)
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        MobileAds.initialize(this) {}
+        mAdView = findViewById(R.id.sound_select_ad_view)
+        val adRequest = AdRequest.Builder().build()
+        mAdView.loadAd(adRequest)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {

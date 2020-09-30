@@ -14,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.alarm_view.view.*
@@ -23,13 +25,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.banatech.app.android.sabi_alarm.R
 import net.banatech.app.android.sabi_alarm.actions.alarm.AlarmActionsCreator
-import net.banatech.app.android.sabi_alarm.dispatcher.Dispatcher
-import net.banatech.app.android.sabi_alarm.stores.alarm.AlarmStore
 import net.banatech.app.android.sabi_alarm.alarm.database.Alarm
 import net.banatech.app.android.sabi_alarm.alarm.database.AlarmDatabase
+import net.banatech.app.android.sabi_alarm.dispatcher.Dispatcher
 import net.banatech.app.android.sabi_alarm.setting.SettingActivity
+import net.banatech.app.android.sabi_alarm.stores.alarm.AlarmStore
 import org.greenrobot.eventbus.Subscribe
 import java.util.*
+import com.google.android.gms.ads.MobileAds
 
 
 class AlarmActivity : AppCompatActivity() {
@@ -38,6 +41,7 @@ class AlarmActivity : AppCompatActivity() {
     private lateinit var actionCreator: AlarmActionsCreator
     private lateinit var alarmStore: AlarmStore
     private lateinit var listAdapter: AlarmRecyclerAdapter
+    private lateinit var mAdView : AdView
 
     companion object {
         lateinit var db: AlarmDatabase
@@ -58,6 +62,7 @@ class AlarmActivity : AppCompatActivity() {
                 }
             }
         }
+
         val channelId = getString(R.string.channel_id)
         val name = getString(R.string.channel_name)
         val descriptionText = getString(R.string.channel_description)
@@ -74,6 +79,10 @@ class AlarmActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         initDependencies()
         setupView()
+        MobileAds.initialize(this) {}
+        mAdView = findViewById(R.id.alarm_ad_view)
+        val adRequest = AdRequest.Builder().build()
+        mAdView.loadAd(adRequest)
     }
 
     private fun initDependencies() {
