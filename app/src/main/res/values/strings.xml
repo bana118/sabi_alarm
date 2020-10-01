@@ -28,4 +28,6 @@
     <string name="sound_play_button_description">再生</string>
     <string name="sound_stop_button_description">停止</string>
     <string name="sound_stop_text">STOP!</string>
+    <string name="snooze_label">分のスヌーズ</string>
+    <string name="snooze">Snooze</string>
 </resources>

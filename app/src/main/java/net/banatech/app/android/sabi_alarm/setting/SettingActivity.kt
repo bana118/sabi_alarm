@@ -4,14 +4,15 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.toolbar
+import kotlinx.android.synthetic.main.setting.*
+import net.banatech.app.android.sabi_alarm.BuildConfig
 import net.banatech.app.android.sabi_alarm.R
 
 class SettingActivity : AppCompatActivity() {
-
-    private lateinit var mAdView: AdView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,9 +26,6 @@ class SettingActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         MobileAds.initialize(this) {}
-        mAdView = findViewById(R.id.setting_ad_view)
-        val adRequest = AdRequest.Builder().build()
-        mAdView.loadAd(adRequest)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -37,6 +35,18 @@ class SettingActivity : AppCompatActivity() {
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (setting_ad_view_layout.childCount == 0) {
+            val adView = AdView(this)
+            adView.adSize = AdSize.BANNER
+            adView.adUnitId = BuildConfig.ADMOB_BANNER_ID
+            setting_ad_view_layout.addView(adView)
+            val adRequest = AdRequest.Builder().build()
+            adView.loadAd(adRequest)
         }
     }
 }
