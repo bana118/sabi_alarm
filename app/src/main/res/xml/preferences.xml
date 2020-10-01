@@ -38,14 +38,14 @@
         android:defaultValue="1"
         app:useSimpleSummaryProvider="true"/>
 
-<!--    <ListPreference-->
-<!--        android:key="snooze_time"-->
-<!--        android:title="スヌーズの時間"-->
-<!--        android:entries="@array/snooze_time_labels"-->
-<!--        android:entryValues="@array/snooze_time_values"-->
-<!--        android:dialogTitle="スヌーズの時間"-->
-<!--        android:defaultValue="1"-->
-<!--        app:useSimpleSummaryProvider="true"/>-->
+    <ListPreference
+        android:key="snooze_time"
+        android:title="スヌーズの時間"
+        android:entries="@array/snooze_time_labels"
+        android:entryValues="@array/snooze_time_values"
+        android:dialogTitle="スヌーズの時間"
+        android:defaultValue="1"
+        app:useSimpleSummaryProvider="true"/>
 
     <Preference android:title="開発ページ(Github)" >
         <intent android:action="android.intent.action.VIEW"
