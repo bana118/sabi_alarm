@@ -17,7 +17,7 @@ targetSdkVersion 29
 # Active Build Variant
 
 | 名前 | 概要 |
-| :--- | :---: |
+| :---: | :---: |
 | demoDebug | 開発用，テスト用の広告を使用 |
 | fullRelease | リリース用 |
 
