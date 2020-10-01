@@ -15,6 +15,7 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
@@ -33,6 +34,7 @@ import net.banatech.app.android.sabi_alarm.stores.alarm.AlarmStore
 import org.greenrobot.eventbus.Subscribe
 import java.util.*
 import com.google.android.gms.ads.MobileAds
+import net.banatech.app.android.sabi_alarm.BuildConfig
 
 
 class AlarmActivity : AppCompatActivity() {
@@ -41,7 +43,6 @@ class AlarmActivity : AppCompatActivity() {
     private lateinit var actionCreator: AlarmActionsCreator
     private lateinit var alarmStore: AlarmStore
     private lateinit var listAdapter: AlarmRecyclerAdapter
-    private lateinit var mAdView: AdView
 
     companion object {
         lateinit var db: AlarmDatabase
@@ -81,9 +82,6 @@ class AlarmActivity : AppCompatActivity() {
         setupView()
 
         MobileAds.initialize(this) {}
-        mAdView = findViewById(R.id.alarm_ad_view)
-        val adRequest = AdRequest.Builder().build()
-        mAdView.loadAd(adRequest)
     }
 
     private fun initDependencies() {
@@ -194,6 +192,16 @@ class AlarmActivity : AppCompatActivity() {
         dispatcher.register(this)
         dispatcher.register(alarmStore)
         listAdapter.notifyDataSetChanged()
+
+        if (alarm_ad_view_layout.childCount == 0) {
+            val adView = AdView(this)
+            adView.adSize = AdSize.BANNER
+            adView.adUnitId = BuildConfig.ADMOB_BANNER_ID
+            alarm_ad_view_layout.addView(adView)
+            val adRequest = AdRequest.Builder().build()
+            adView.loadAd(adRequest)
+        }
+
         // TODO これがないとアラーム起動時にAlarmStopActivityではなくAlarmActivityが起動する
         if (AlarmSoundService.mediaPlayer != null) {
             val stopSoundActivityIntent = Intent(this, AlarmStopActivity::class.java)
