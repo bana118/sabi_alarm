@@ -24,6 +24,25 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    flavorDimensions "version"
+    productFlavors {
+        demo {
+            dimension "version"
+            applicationIdSuffix ".demo"
+            versionNameSuffix "-demo"
+            buildConfigField "boolean", "DEMO_MODE", "true"
+            buildConfigField "String", "ADMOB_ID", "\"ca-app-pub-3817107084963630~1785134081\""
+            buildConfigField "String", "ADMOB_BANNER_ID", "\"ca-app-pub-3817107084963630/1272136377\""
+        }
+        full {
+            dimension "version"
+            applicationIdSuffix ".full"
+            versionNameSuffix "-full"
+            buildConfigField "boolean", "DEMO_MODE", "false"
+            buildConfigField "String", "ADMOB_ID", "\"ca-app-pub-3817107084963630~1785134081\""
+            buildConfigField "String", "ADMOB_BANNER_ID", "\"ca-app-pub-3940256099942544/6300978111\""
+        }
+    }
     sourceSets {
         test.java.srcDirs += 'src/test/java'
         androidTest.java.srcDirs += 'src/androidTest/java'
