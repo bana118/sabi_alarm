@@ -7,10 +7,11 @@
     android:layout_height="match_parent"
     tools:context=".alarm.AlarmActivity">
 
+    <!-- layout height is banner height -->
     <LinearLayout
         android:id="@+id/alarm_ad_view_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/alarm_app_bar"
         app:layout_constraintEnd_toEndOf="parent"

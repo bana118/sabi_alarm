@@ -6,10 +6,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".setting.SettingActivity">
 
+    <!-- layout height is banner height -->
     <LinearLayout
         android:id="@+id/setting_ad_view_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/setting_app_bar"
         app:layout_constraintEnd_toEndOf="parent"
