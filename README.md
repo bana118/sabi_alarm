@@ -12,7 +12,14 @@ JVM: OpenJDK 64-Bit Server VM by JetBrains s.r.o
 Windows 10 10.0  
 Kotlin version: 1.3.72  
 minSdkVersion 27  
-targetSdkVersion 29  
+targetSdkVersion 29
+
+# Active Build Variant
+
+| 名前 | 概要 |
+| :--- | :---: |
+| demoDebug | 開発用，テスト用の広告を使用 |
+| fullRelease | リリース用 |
 
 # デフォルト音源について
 アラーム用のデフォルト音源として[クラシック名曲サウンドライブラリー](https://classical-sound.seesaa.net/)さんのフリー音源を使用させていただいています
