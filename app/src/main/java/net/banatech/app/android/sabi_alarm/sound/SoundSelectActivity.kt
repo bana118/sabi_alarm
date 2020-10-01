@@ -12,13 +12,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import kotlinx.android.synthetic.main.activity_sound_select.*
+import kotlinx.android.synthetic.main.activity_sound_select.toolbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import net.banatech.app.android.sabi_alarm.BuildConfig
 import net.banatech.app.android.sabi_alarm.R
 import net.banatech.app.android.sabi_alarm.actions.sound.SoundActionsCreator
 import net.banatech.app.android.sabi_alarm.alarm.AlarmSoundService
@@ -39,7 +42,6 @@ class SoundSelectActivity : AppCompatActivity() {
     private val readRequestCode = 42
 
     private lateinit var localSoundAdapter: LocalSoundRecyclerAdapter
-    private lateinit var mAdView: AdView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,9 +88,6 @@ class SoundSelectActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         MobileAds.initialize(this) {}
-        mAdView = findViewById(R.id.sound_select_ad_view)
-        val adRequest = AdRequest.Builder().build()
-        mAdView.loadAd(adRequest)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
@@ -126,6 +125,15 @@ class SoundSelectActivity : AppCompatActivity() {
         }
         if (!Dispatcher.isRegistered(AlarmStore)) {
             Dispatcher.register(AlarmStore)
+        }
+
+        if (sound_select_ad_view_layout.childCount == 0) {
+            val adView = AdView(this)
+            adView.adSize = AdSize.BANNER
+            adView.adUnitId = BuildConfig.ADMOB_BANNER_ID
+            sound_select_ad_view_layout.addView(adView)
+            val adRequest = AdRequest.Builder().build()
+            adView.loadAd(adRequest)
         }
     }
 

@@ -7,16 +7,16 @@
     android:layout_height="match_parent"
     tools:context=".alarm.AlarmActivity">
 
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/sound_select_ad_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:adSize="BANNER"
-        app:adUnitId="ca-app-pub-3940256099942544/6300978111"
+    <!-- layout height is banner height -->
+    <LinearLayout
+        android:id="@+id/sound_select_ad_view_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/sound_select_app_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-    </com.google.android.gms.ads.AdView>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/sound_select_app_bar"
@@ -25,7 +25,7 @@
         android:theme="@style/AppTheme.AppBarOverlay"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sound_select_ad_view">
+        app:layout_constraintTop_toBottomOf="@id/sound_select_ad_view_layout">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
