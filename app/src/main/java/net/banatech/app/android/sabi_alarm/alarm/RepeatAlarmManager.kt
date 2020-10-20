@@ -67,7 +67,8 @@ object RepeatAlarmManager {
             context, alarm.id, intent, PendingIntent.FLAG_UPDATE_CURRENT
         )
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
-        val nextAlarmTimeMilli = calcDayOfWeekDiff(alarm, true) + System.currentTimeMillis()
+        val fixCurrentTimeMills = (System.currentTimeMillis() / 1000 / 60) * 1000 * 60
+        val nextAlarmTimeMilli = calcDayOfWeekDiff(alarm, true) + fixCurrentTimeMills
         val alarmActivityIntent = Intent(context, AlarmActivity::class.java)
         val alarmActivityPendingIntent =
             PendingIntent.getActivity(
