@@ -59,7 +59,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.2.1'
     implementation "androidx.viewpager2:viewpager2:1.0.0" //ViewPager2
     testImplementation 'junit:junit:4.12'
-    implementation 'androidx.preference:preference:1.1.1'
+    implementation 'androidx.preference:preference-ktx:1.1.1'
     implementation 'androidx.documentfile:documentfile:1.0.1'
     implementation 'com.google.android.gms:play-services-ads:19.5.0'
     // Optional -- Robolectric environment
