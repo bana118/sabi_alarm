@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="alarm_sort_labels">
-        <item>Ascending order</item>
-        <item>Descending order</item>
-        <item>Disable sort</item>
+        <item>昇順</item>
+        <item>降順</item>
+        <item>並び替えない</item>
     </string-array>
     <string-array name="alarm_sort_values">
         <item>0</item>
@@ -11,9 +11,9 @@
         <item>2</item>
     </string-array>
     <string-array name="sound_sort_labels">
-        <item>Ascending order</item>
-        <item>Descending order</item>
-        <item>Disable sort</item>
+        <item>昇順</item>
+        <item>降順</item>
+        <item>並び替えない</item>
     </string-array>
     <string-array name="sound_sort_values">
         <item>0</item>
@@ -21,9 +21,9 @@
         <item>2</item>
     </string-array>
     <string-array name="sound_finish_action_labels">
-        <item>Play from the set start time</item>
-        <item>Play from the beginning</item>
-        <item>Stop alarm</item>
+        <item>設定した再生開始時間から再生</item>
+        <item>曲の初めから再生</item>
+        <item>アラームを止める</item>
     </string-array>
     <string-array name="sound_finish_action_values">
         <item>0</item>
@@ -31,13 +31,13 @@
         <item>2</item>
     </string-array>
     <string-array name="stop_sound_time_labels">
-        <item>1 minute</item>
-        <item>5 minutes</item>
-        <item>10 minutes</item>
-        <item>15 minutes</item>
-        <item>20 minutes</item>
-        <item>25 minutes</item>
-        <item>Never</item>
+        <item>1分</item>
+        <item>5分</item>
+        <item>10分</item>
+        <item>15分</item>
+        <item>20分</item>
+        <item>25分</item>
+        <item>なし</item>
     </string-array>
     <string-array name="stop_sound_time_values">
         <item>1</item>
@@ -49,36 +49,36 @@
         <item>0</item>
     </string-array>
     <string-array name="snooze_time_labels">
-        <item>1 minute</item>
-        <item>2 minutes</item>
-        <item>3 minutes</item>
-        <item>4 minutes</item>
-        <item>5 minutes</item>
-        <item>6 minutes</item>
-        <item>7 minutes</item>
-        <item>8 minutes</item>
-        <item>9 minutes</item>
-        <item>10 minutes</item>
-        <item>11 minutes</item>
-        <item>12 minutes</item>
-        <item>13 minutes</item>
-        <item>14 minutes</item>
-        <item>15 minutes</item>
-        <item>16 minutes</item>
-        <item>17 minutes</item>
-        <item>18 minutes</item>
-        <item>19 minutes</item>
-        <item>20 minutes</item>
-        <item>21 minutes</item>
-        <item>22 minutes</item>
-        <item>23 minutes</item>
-        <item>24 minutes</item>
-        <item>25 minutes</item>
-        <item>26 minutes</item>
-        <item>27 minutes</item>
-        <item>28 minutes</item>
-        <item>29 minutes</item>
-        <item>30 minutes</item>
+        <item>1分</item>
+        <item>2分</item>
+        <item>3分</item>
+        <item>4分</item>
+        <item>5分</item>
+        <item>6分</item>
+        <item>7分</item>
+        <item>8分</item>
+        <item>9分</item>
+        <item>10分</item>
+        <item>11分</item>
+        <item>12分</item>
+        <item>13分</item>
+        <item>14分</item>
+        <item>15分</item>
+        <item>16分</item>
+        <item>17分</item>
+        <item>18分</item>
+        <item>19分</item>
+        <item>20分</item>
+        <item>21分</item>
+        <item>22分</item>
+        <item>23分</item>
+        <item>24分</item>
+        <item>25分</item>
+        <item>26分</item>
+        <item>27分</item>
+        <item>28分</item>
+        <item>29分</item>
+        <item>30分</item>
     </string-array>
     <string-array name="snooze_time_values">
         <item>1</item>
