@@ -36,4 +36,8 @@
     <string name="stop_sound_time_setting_label">Silence after</string>
     <string name="snooze_time_setting_label">Snooze length</string>
     <string name="github_link_label">Github</string>
+    <string name="stop_alarm_toast_label">Alarm stopped</string>
+    <string name="delete_alarm_snackbar_label">Alarm deleted</string>
+    <string name="undo_delete_alarm_snackbar_label">UNDO</string>
+    <string name="set_alarm_toast_label">Alarm set</string>
 </resources>

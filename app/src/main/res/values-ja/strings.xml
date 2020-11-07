@@ -36,4 +36,8 @@
     <string name="stop_sound_time_setting_label">消音までの時間</string>
     <string name="snooze_time_setting_label">スヌーズの時間</string>
     <string name="github_link_label">Github</string>
+    <string name="stop_alarm_toast_label">アラームを停止しました</string>
+    <string name="delete_alarm_snackbar_label">アラームを削除しました</string>
+    <string name="undo_delete_alarm_snackbar_label">元に戻す</string>
+    <string name="set_alarm_toast_label">アラームをセットしました</string>
 </resources>

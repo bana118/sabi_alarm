@@ -178,8 +178,8 @@ class AlarmActivity : AppCompatActivity() {
 
     private fun notifyDestroy() {
         if (AlarmStore.canUndo) {
-            val snackbar = Snackbar.make(main_layout, "削除しました", Snackbar.LENGTH_LONG)
-            snackbar.setAction("元に戻す") {
+            val snackbar = Snackbar.make(main_layout, R.string.delete_alarm_snackbar_label, Snackbar.LENGTH_LONG)
+            snackbar.setAction(R.string.undo_delete_alarm_snackbar_label) {
                 actionCreator.undoDestroy(this)
                 listAdapter.notifyDataSetChanged()
             }
@@ -202,7 +202,7 @@ class AlarmActivity : AppCompatActivity() {
             adView.loadAd(adRequest)
         }
 
-        // TODO これがないとアラーム起動時にAlarmStopActivityではなくAlarmActivityが起動する
+        // これがないとアラーム起動時にAlarmStopActivityではなくAlarmActivityが起動する
         if (AlarmSoundService.mediaPlayer != null) {
             val stopSoundActivityIntent = Intent(this, AlarmStopActivity::class.java)
             startActivity(stopSoundActivityIntent)
