@@ -13,8 +13,8 @@ android {
         applicationId "net.banatech.app.android.sabi_alarm"
         minSdkVersion 27
         targetSdkVersion 30
-        versionCode 12
-        versionName "0.0.26"
+        versionCode 13
+        versionName "0.0.27"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
