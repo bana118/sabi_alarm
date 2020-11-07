@@ -4,50 +4,50 @@
 
     <ListPreference
         android:key="alarm_sort"
-        android:title="アラームの自動並び替え"
+        android:title="@string/alarm_sort_setting_label"
         android:entries="@array/alarm_sort_labels"
         android:entryValues="@array/alarm_sort_values"
-        android:dialogTitle="アラームの自動並び替え"
+        android:dialogTitle="@string/alarm_sort_setting_label"
         android:defaultValue="0"
         app:useSimpleSummaryProvider="true"/>
 
     <ListPreference
         android:key="sound_sort"
-        android:title="音楽の自動並び替え"
+        android:title="@string/sound_sort_setting_label"
         android:entries="@array/sound_sort_labels"
         android:entryValues="@array/sound_sort_values"
-        android:dialogTitle="音楽の自動並び替え"
+        android:dialogTitle="@string/sound_sort_setting_label"
         android:defaultValue="0"
         app:useSimpleSummaryProvider="true"/>
 
     <ListPreference
         android:key="sound_finish_action"
-        android:title="曲が終わった時のアクション"
+        android:title="@string/sound_finish_action_setting_label"
         android:entries="@array/sound_finish_action_labels"
         android:entryValues="@array/sound_finish_action_values"
-        android:dialogTitle="曲が終わった時のアクション"
+        android:dialogTitle="@string/sound_finish_action_setting_label"
         android:defaultValue="0"
         app:useSimpleSummaryProvider="true"/>
 
     <ListPreference
         android:key="stop_sound_time"
-        android:title="消音までの時間"
+        android:title="@string/stop_sound_time_setting_label"
         android:entries="@array/stop_sound_time_labels"
         android:entryValues="@array/stop_sound_time_values"
-        android:dialogTitle="消音までの時間"
+        android:dialogTitle="@string/stop_sound_time_setting_label"
         android:defaultValue="1"
         app:useSimpleSummaryProvider="true"/>
 
 <!--    <ListPreference-->
 <!--        android:key="snooze_time"-->
-<!--        android:title="スヌーズの時間"-->
+<!--        android:title="@string/snooze_time_setting_label"-->
 <!--        android:entries="@array/snooze_time_labels"-->
 <!--        android:entryValues="@array/snooze_time_values"-->
-<!--        android:dialogTitle="スヌーズの時間"-->
+<!--        android:dialogTitle="@string/snooze_time_setting_label"-->
 <!--        android:defaultValue="1"-->
 <!--        app:useSimpleSummaryProvider="true"/>-->
 
-    <Preference android:title="開発ページ(Github)" >
+    <Preference android:title="@string/github_link_label" >
         <intent android:action="android.intent.action.VIEW"
             android:data="https://github.com/bana118/sabi_alarm" />
     </Preference>
