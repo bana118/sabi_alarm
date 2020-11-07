@@ -5,13 +5,13 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.widget.Toast
+import net.banatech.app.android.sabi_alarm.R
 import net.banatech.app.android.sabi_alarm.stores.alarm.AlarmStore
 import net.banatech.app.android.sabi_alarm.alarm.database.Alarm
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.OffsetDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 object RepeatAlarmManager {
@@ -52,8 +52,8 @@ object RepeatAlarmManager {
                 pendingIntent
             )
             if (enableToast) {
-                val formatter = DateTimeFormatter.ofPattern("HH:mm にアラームをセットしました")
-                val alarmText = alarmTime.format(formatter)
+                val toastLabel = context.getString(R.string.set_alarm_toast_label)
+                val alarmText = "$toastLabel ${alarm.timeText}"
                 Toast.makeText(context, alarmText, Toast.LENGTH_SHORT).show()
             }
         }
@@ -95,7 +95,7 @@ object RepeatAlarmManager {
         if (alarmManager != null && pendingIntent != null) {
             alarmManager.cancel(pendingIntent)
             if (enableToast) {
-                Toast.makeText(context, "このアラームを停止しました", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, R.string.stop_alarm_toast_label, Toast.LENGTH_SHORT).show()
             }
         }
     }
