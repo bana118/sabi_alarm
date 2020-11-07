@@ -202,7 +202,7 @@ class AlarmActivity : AppCompatActivity() {
             adView.loadAd(adRequest)
         }
 
-        // TODO これがないとアラーム起動時にAlarmStopActivityではなくAlarmActivityが起動する
+        // これがないとアラーム起動時にAlarmStopActivityではなくAlarmActivityが起動する
         if (AlarmSoundService.mediaPlayer != null) {
             val stopSoundActivityIntent = Intent(this, AlarmStopActivity::class.java)
             startActivity(stopSoundActivityIntent)
